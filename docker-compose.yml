@@ -1,0 +1,177 @@
+version: '3.8'
+
+# ============================================================
+# JEMIL — Environnement de développement local
+#
+# Démarre tout l'environnement avec une seule commande :
+#   docker compose up -d
+#
+# Pour voir les logs :
+#   docker compose logs -f
+#
+# Pour arrêter :
+#   docker compose down
+#
+# Pour tout remettre à zéro (attention : supprime les données) :
+#   docker compose down -v
+# ============================================================
+
+services:
+
+  # ── RabbitMQ — Message Broker ─────────────────────────────
+  # Interface de management accessible sur http://localhost:15672
+  # Login : guest / guest
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: jemil-rabbitmq
+    ports:
+      - "5672:5672"    # port AMQP (utilisé par Spring)
+      - "15672:15672"  # interface web de management
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: /
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── PostgreSQL — Base de données Agency ────────────────────
+  postgres-agency:
+    image: postgres:15-alpine
+    container_name: jemil-postgres-agency
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: agency_db
+      POSTGRES_USER: jemil
+      POSTGRES_PASSWORD: jemil_secret
+    volumes:
+      - postgres_agency_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jemil -d agency_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── PostgreSQL — Base de données Booking ──────────────────
+  postgres-booking:
+    image: postgres:15-alpine
+    container_name: jemil-postgres-booking
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: booking_db
+      POSTGRES_USER: jemil
+      POSTGRES_PASSWORD: jemil_secret
+    volumes:
+      - postgres_booking_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jemil -d booking_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── PostgreSQL — Base de données Payment ──────────────────
+  postgres-payment:
+    image: postgres:15-alpine
+    container_name: jemil-postgres-payment
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: jemil
+      POSTGRES_PASSWORD: jemil_secret
+    volumes:
+      - postgres_payment_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jemil -d payment_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── PostgreSQL — Base de données Ticketing ────────────────
+  postgres-ticketing:
+    image: postgres:15-alpine
+    container_name: jemil-postgres-ticketing
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: ticketing_db
+      POSTGRES_USER: jemil
+      POSTGRES_PASSWORD: jemil_secret
+    volumes:
+      - postgres_ticketing_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jemil -d ticketing_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── PostgreSQL — Base de données Notification ─────────────
+  postgres-notification:
+    image: postgres:15-alpine
+    container_name: jemil-postgres-notification
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_DB: notification_db
+      POSTGRES_USER: jemil
+      POSTGRES_PASSWORD: jemil_secret
+    volumes:
+      - postgres_notification_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jemil -d notification_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── SonarQube — Analyse qualité ───────────────────────────
+  # Accessible sur http://localhost:9000
+  # Login par défaut : admin / admin (change-le à la première connexion)
+  # Lance l'analyse : ./gradlew sonar
+  sonarqube:
+    image: sonarqube:10-community
+    container_name: jemil-sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://postgres-sonar:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+    depends_on:
+      postgres-sonar:
+        condition: service_healthy
+
+  # Base de données dédiée à SonarQube
+  postgres-sonar:
+    image: postgres:15-alpine
+    container_name: jemil-postgres-sonar
+    environment:
+      POSTGRES_DB: sonar
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+    volumes:
+      - postgres_sonar_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sonar -d sonar"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  rabbitmq_data:
+  postgres_agency_data:
+  postgres_booking_data:
+  postgres_payment_data:
+  postgres_ticketing_data:
+  postgres_notification_data:
+  postgres_sonar_data:
+  sonarqube_data:
+  sonarqube_logs:

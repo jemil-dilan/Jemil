@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="V2-create-routes" author="jemil-dev">
+
+        <createTable tableName="routes"
+                     remarks="Routes opérées par les agences (ex: Douala → Yaoundé)">
+
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="agency_id" type="UUID"
+                    remarks="Référence vers l'agence propriétaire de cette route">
+                <constraints nullable="false"
+                             foreignKeyName="fk_routes_agency"
+                             references="agencies(id)"/>
+            </column>
+
+            <column name="origin" type="VARCHAR(100)"
+                    remarks="Ville de départ">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="destination" type="VARCHAR(100)"
+                    remarks="Ville d'arrivée">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="total_seats" type="INT"
+                    remarks="Nombre total de places dans le bus">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <createIndex indexName="idx_routes_agency_id" tableName="routes">
+            <column name="agency_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_routes_origin_destination" tableName="routes">
+            <column name="origin"/>
+            <column name="destination"/>
+        </createIndex>
+
+        <!-- Contrainte : même route ne peut pas être dupliquée pour une agence -->
+        <addUniqueConstraint
+            tableName="routes"
+            columnNames="agency_id, origin, destination"
+            constraintName="uq_route_agency_origin_destination"/>
+
+        <!-- Contrainte : départ ≠ destination -->
+        <sql>
+            ALTER TABLE routes
+            ADD CONSTRAINT chk_route_different_cities
+            CHECK (LOWER(origin) != LOWER(destination));
+        </sql>
+
+        <!-- Contrainte : places entre 1 et 100 -->
+        <sql>
+            ALTER TABLE routes
+            ADD CONSTRAINT chk_route_seats
+            CHECK (total_seats BETWEEN 1 AND 100);
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>
