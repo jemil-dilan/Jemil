@@ -1,0 +1,83 @@
+version: '3.8'
+
+# ============================================================
+# JEMIL — Environnement de développement local (Single Module)
+# ============================================================
+
+services:
+
+  # ── PostgreSQL — Base de données unique pour JEMIL ─────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: jemil-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${DB_NAME:-jemil_db}
+      POSTGRES_USER: ${DB_USER:-jemil}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-jemil_secret}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-jemil} -d ${DB_NAME:-jemil_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Keycloak — Gestion des identités ───────────────────────────
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1.0
+    container_name: jemil-keycloak
+    command: start-dev
+    ports:
+      - "8081:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
+  # ── SonarQube — Analyse qualité ───────────────────────────
+  sonarqube:
+    image: sonarqube:10-community
+    container_name: jemil-sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://postgres-sonar:5432/sonar
+      SONAR_JDBC_USERNAME: ${SONAR_DB_USER:-sonar}
+      SONAR_JDBC_PASSWORD: ${SONAR_DB_PASSWORD:-sonar}
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/api/system/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    depends_on:
+      postgres-sonar:
+        condition: service_healthy
+
+  # Base de données dédiée à SonarQube
+  postgres-sonar:
+    image: postgres:15-alpine
+    container_name: jemil-postgres-sonar
+    ports:
+      - "5432:5435"
+    environment:
+      POSTGRES_DB: ${SONAR_DB:-sonar}
+      POSTGRES_USER: ${SONAR_DB_USER:-sonar}
+      POSTGRES_PASSWORD: ${SONAR_DB_PASSWORD:-sonar}
+    volumes:
+      - postgres_sonar_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SONAR_DB_USER:-sonar} -d ${SONAR_DB:-sonar}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  postgres_sonar_data:
+  sonarqube_data:
+  sonarqube_logs:

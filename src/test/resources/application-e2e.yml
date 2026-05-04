@@ -1,0 +1,48 @@
+---
+spring:
+  application:
+    name: "jemil-backend"
+  datasource:
+    url: "jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:jemil_db}"
+    username: "${DB_USER:jemil}"
+    password: "${DB_PASSWORD:jemil_secret}"
+    driver-class-name: "org.postgresql.Driver"
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: "validate"
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: "org.hibernate.dialect.PostgreSQLDialect"
+        format_sql: true
+        default_schema: "public"
+  liquibase:
+    change-log: "classpath:db/changelog/db.changelog-master.xml"
+    enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, info, metrics"
+  endpoint:
+    health:
+      show-details: "when-authorized"
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  level:
+    cm.jemil: "DEBUG"
+    org.springframework: "INFO"
+    org.hibernate.SQL: "WARN"
+springdoc:
+  api-docs:
+    path: "/api-docs"
+  swagger-ui:
+    path: "/swagger-ui.html"
+    operationsSorter: "method"
+server:
+  port: 8080
