@@ -1,19 +1,18 @@
 package cm.jemil.agency.e2e.steps;
 
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import cm.jemil.agency.e2e.config.CucumberSpringConfiguration;
 import io.cucumber.java.Before;
 import io.cucumber.java.fr.*;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-
 import java.util.List;
 import java.util.Map;
-
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * Step Definitions Cucumber pour les scénarios d'agence.
@@ -37,7 +36,7 @@ public class AgencyStepDefinitions extends CucumberSpringConfiguration {
     public void setUp() {
         // Configure RestAssured pour pointer vers le serveur de test
         RestAssured.baseURI = "http://localhost";
-        RestAssured.port    = port;
+        RestAssured.port = port;
 
         // Nettoie la DB avant chaque scénario pour l'isolation
         jdbcTemplate.execute("DELETE FROM routes");
@@ -60,10 +59,7 @@ public class AgencyStepDefinitions extends CucumberSpringConfiguration {
                 "city", ville,
                 "contactPhone", "+237600000000");
 
-        Response response = given()
-                .contentType(ContentType.JSON)
-                .body(body)
-                .post("/api/v1/agencies");
+        Response response = given().contentType(ContentType.JSON).body(body).post("/api/v1/agencies");
 
         assertThat(response.statusCode())
                 .as("L'agence de contexte devrait être créée avec succès")
@@ -77,14 +73,11 @@ public class AgencyStepDefinitions extends CucumberSpringConfiguration {
         Map<String, String> data = dataTable.asMap(String.class, String.class);
 
         Map<String, String> body = Map.of(
-                "name",         data.getOrDefault("nom", ""),
-                "city",         data.getOrDefault("ville", ""),
+                "name", data.getOrDefault("nom", ""),
+                "city", data.getOrDefault("ville", ""),
                 "contactPhone", data.getOrDefault("telephone", ""));
 
-        lastResponse = given()
-                .contentType(ContentType.JSON)
-                .body(body)
-                .post("/api/v1/agencies");
+        lastResponse = given().contentType(ContentType.JSON).body(body).post("/api/v1/agencies");
 
         // Sauvegarde l'ID si la création a réussi
         if (lastResponse.statusCode() == 201) {
@@ -98,15 +91,12 @@ public class AgencyStepDefinitions extends CucumberSpringConfiguration {
                 .as("Un ID d'agence doit exister avant de faire une recherche par ID")
                 .isNotNull();
 
-        lastResponse = given()
-                .get("/api/v1/agencies/" + lastCreatedAgencyId);
+        lastResponse = given().get("/api/v1/agencies/" + lastCreatedAgencyId);
     }
 
     @Quand("je récupère les agences de la ville {string}")
     public void je_recupere_les_agences_par_ville(String ville) {
-        lastResponse = given()
-                .queryParam("city", ville)
-                .get("/api/v1/agencies");
+        lastResponse = given().queryParam("city", ville).get("/api/v1/agencies");
     }
 
     // ── Steps "Alors" (Then) ──────────────────────────────────
@@ -147,9 +137,7 @@ public class AgencyStepDefinitions extends CucumberSpringConfiguration {
     @Alors("la réponse contient le nom {string}")
     public void la_reponse_contient_le_nom(String nom) {
         String actualName = lastResponse.jsonPath().getString("name");
-        assertThat(actualName)
-                .as("Le nom dans la réponse devrait être " + nom)
-                .isEqualTo(nom);
+        assertThat(actualName).as("Le nom dans la réponse devrait être " + nom).isEqualTo(nom);
     }
 
     @Alors("la liste contient {int} agence(s)")

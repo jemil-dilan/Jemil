@@ -2,8 +2,8 @@ package cm.jemil.agency.application.usecase;
 
 import cm.jemil.agency.domain.model.Agency;
 import cm.jemil.agency.domain.port.in.RegisterAgencyUseCase;
-import cm.jemil.agency.domain.port.out.AgencyRepository;
 import cm.jemil.agency.domain.port.out.AgencyEventPublisher;
+import cm.jemil.agency.domain.port.out.AgencyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -30,11 +30,9 @@ public class RegisterAgencyService implements RegisterAgencyUseCase {
     private final AgencyRepository agencyRepository;
     private final AgencyEventPublisher eventPublisher;
 
-    public RegisterAgencyService(
-            AgencyRepository agencyRepository,
-            AgencyEventPublisher eventPublisher) {
+    public RegisterAgencyService(AgencyRepository agencyRepository, AgencyEventPublisher eventPublisher) {
         this.agencyRepository = agencyRepository;
-        this.eventPublisher   = eventPublisher;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override

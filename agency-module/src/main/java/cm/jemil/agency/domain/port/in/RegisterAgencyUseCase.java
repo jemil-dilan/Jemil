@@ -1,7 +1,6 @@
 package cm.jemil.agency.domain.port.in;
 
 import cm.jemil.agency.domain.model.Agency;
-import cm.jemil.agency.domain.model.AgencyId;
 
 /**
  * Port entrant : ce que le monde extérieur peut DEMANDER au module Agency.

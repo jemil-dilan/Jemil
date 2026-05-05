@@ -13,11 +13,7 @@ import java.time.Instant;
  * <p>Quand on passe en microservices, cet événement sera sérialisé
  * en JSON et publié sur RabbitMQ / Kafka.
  */
-public record AgencyRegisteredEvent(
-        AgencyId agencyId,
-        String agencyName,
-        String city,
-        Instant occurredAt) {
+public record AgencyRegisteredEvent(AgencyId agencyId, String agencyName, String city, Instant occurredAt) {
 
     public AgencyRegisteredEvent(AgencyId agencyId, String agencyName, String city) {
         this(agencyId, agencyName, city, Instant.now());

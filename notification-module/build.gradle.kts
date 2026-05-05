@@ -16,7 +16,7 @@ dependencies {
     annotationProcessor(libs.mapstruct.processor)
 
     // Africa's Talking SDK pour SMS au Cameroun
-    implementation("com.africastalking:core:3.4.4")
+    implementation("com.github.AfricasTalkingLtd.africastalking-java:core:v3.5.3")
 
     testImplementation(libs.testcontainers.postgresql)
     testImplementation(libs.testcontainers.rabbitmq)

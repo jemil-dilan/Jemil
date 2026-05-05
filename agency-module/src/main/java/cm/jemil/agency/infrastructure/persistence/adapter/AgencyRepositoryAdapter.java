@@ -33,7 +33,7 @@ public class AgencyRepositoryAdapter implements AgencyRepository {
     @Override
     public Agency save(Agency agency) {
         AgencyJpaEntity entity = toJpaEntity(agency);
-        AgencyJpaEntity saved  = jpaRepository.save(entity);
+        AgencyJpaEntity saved = jpaRepository.save(entity);
         return toDomainAgency(saved);
     }
 
@@ -73,11 +73,7 @@ public class AgencyRepositoryAdapter implements AgencyRepository {
         // Conversion des routes
         agency.getRoutes().forEach(route -> {
             RouteJpaEntity routeEntity = new RouteJpaEntity(
-                    route.getId().value(),
-                    entity,
-                    route.getOrigin(),
-                    route.getDestination(),
-                    route.getTotalSeats());
+                    route.getId().value(), entity, route.getOrigin(), route.getDestination(), route.getTotalSeats());
             entity.getRoutes().add(routeEntity);
         });
 
@@ -86,9 +82,8 @@ public class AgencyRepositoryAdapter implements AgencyRepository {
 
     // ── Conversion JPA → Domaine ───────────────────────────────
     private Agency toDomainAgency(AgencyJpaEntity entity) {
-        List<Route> routes = entity.getRoutes().stream()
-                .map(this::toDomainRoute)
-                .toList();
+        List<Route> routes =
+                entity.getRoutes().stream().map(this::toDomainRoute).toList();
 
         return Agency.reconstitute(
                 AgencyId.from(entity.getId()),

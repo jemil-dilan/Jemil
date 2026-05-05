@@ -20,5 +20,4 @@ dependencies {
     implementation("io.spring.gradle:dependency-management-plugin:1.1.4")
     implementation("com.diffplug.spotless:spotless-plugin-gradle:6.25.0")
     implementation("net.ltgt.gradle:gradle-errorprone-plugin:3.1.0")
-    implementation("org.openapi.generator:org.openapi.generator.gradle.plugin:7.4.0")
 }

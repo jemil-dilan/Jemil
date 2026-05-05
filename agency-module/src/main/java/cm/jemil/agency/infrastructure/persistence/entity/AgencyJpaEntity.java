@@ -42,11 +42,7 @@ public class AgencyJpaEntity {
     @Column(name = "status", nullable = false, length = 20)
     private AgencyStatus status;
 
-    @OneToMany(
-            mappedBy = "agency",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "agency", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RouteJpaEntity> routes = new ArrayList<>();
 
     @CreationTimestamp
@@ -61,24 +57,59 @@ public class AgencyJpaEntity {
     protected AgencyJpaEntity() {}
 
     public AgencyJpaEntity(UUID id, String name, String city, String contactPhone, AgencyStatus status) {
-        this.id           = id;
-        this.name         = name;
-        this.city         = city;
+        this.id = id;
+        this.name = name;
+        this.city = city;
         this.contactPhone = contactPhone;
-        this.status       = status;
+        this.status = status;
     }
 
     // ── Getters et Setters (JPA en a besoin) ──────────────────
-    public UUID getId()                        { return id; }
-    public String getName()                    { return name; }
-    public void setName(String name)           { this.name = name; }
-    public String getCity()                    { return city; }
-    public void setCity(String city)           { this.city = city; }
-    public String getContactPhone()            { return contactPhone; }
-    public void setContactPhone(String phone)  { this.contactPhone = phone; }
-    public AgencyStatus getStatus()            { return status; }
-    public void setStatus(AgencyStatus status) { this.status = status; }
-    public List<RouteJpaEntity> getRoutes()    { return routes; }
-    public Instant getCreatedAt()              { return createdAt; }
-    public Instant getUpdatedAt()              { return updatedAt; }
+    public UUID getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String phone) {
+        this.contactPhone = phone;
+    }
+
+    public AgencyStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AgencyStatus status) {
+        this.status = status;
+    }
+
+    public List<RouteJpaEntity> getRoutes() {
+        return routes;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
 }

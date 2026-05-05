@@ -31,7 +31,9 @@ public class SpringAgencyEventPublisher implements AgencyEventPublisher {
 
     @Override
     public void publish(Object domainEvent) {
-        log.debug("Publication de l'événement domaine : {}", domainEvent.getClass().getSimpleName());
+        log.debug(
+                "Publication de l'événement domaine : {}",
+                domainEvent.getClass().getSimpleName());
         springPublisher.publishEvent(domainEvent);
     }
 }

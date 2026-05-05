@@ -19,12 +19,12 @@ public class Route {
     private boolean active;
 
     private Route(RouteId id, AgencyId agencyId, String origin, String destination, int totalSeats) {
-        this.id          = id;
-        this.agencyId    = agencyId;
-        this.origin      = origin;
+        this.id = id;
+        this.agencyId = agencyId;
+        this.origin = origin;
         this.destination = destination;
-        this.totalSeats  = totalSeats;
-        this.active      = true;
+        this.totalSeats = totalSeats;
+        this.active = true;
     }
 
     static Route create(RouteId id, AgencyId agencyId, String origin, String destination, int totalSeats) {
@@ -32,8 +32,8 @@ public class Route {
         return new Route(id, agencyId, origin, destination, totalSeats);
     }
 
-    static Route reconstitute(RouteId id, AgencyId agencyId, String origin,
-                               String destination, int totalSeats, boolean active) {
+    public static Route reconstitute(
+        RouteId id, AgencyId agencyId, String origin, String destination, int totalSeats, boolean active) {
         Route route = new Route(id, agencyId, origin, destination, totalSeats);
         route.active = active;
         return route;
@@ -58,12 +58,29 @@ public class Route {
         }
     }
 
-    public RouteId getId()          { return id; }
-    public AgencyId getAgencyId()   { return agencyId; }
-    public String getOrigin()       { return origin; }
-    public String getDestination()  { return destination; }
-    public int getTotalSeats()      { return totalSeats; }
-    public boolean isActive()       { return active; }
+    public RouteId getId() {
+        return id;
+    }
+
+    public AgencyId getAgencyId() {
+        return agencyId;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public int getTotalSeats() {
+        return totalSeats;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -73,5 +90,7 @@ public class Route {
     }
 
     @Override
-    public int hashCode() { return Objects.hash(id); }
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

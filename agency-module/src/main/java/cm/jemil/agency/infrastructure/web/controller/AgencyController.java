@@ -38,12 +38,10 @@ public class AgencyController {
     private final AgencyWebMapper mapper;
 
     public AgencyController(
-            RegisterAgencyUseCase registerAgencyUseCase,
-            GetAgencyUseCase getAgencyUseCase,
-            AgencyWebMapper mapper) {
+            RegisterAgencyUseCase registerAgencyUseCase, GetAgencyUseCase getAgencyUseCase, AgencyWebMapper mapper) {
         this.registerAgencyUseCase = registerAgencyUseCase;
-        this.getAgencyUseCase      = getAgencyUseCase;
-        this.mapper                = mapper;
+        this.getAgencyUseCase = getAgencyUseCase;
+        this.mapper = mapper;
     }
 
     /**
@@ -51,13 +49,10 @@ public class AgencyController {
      * Enregistre une nouvelle agence partenaire JEMIL.
      */
     @PostMapping
-    public ResponseEntity<AgencyResponse> registerAgency(
-            @RequestBody RegisterAgencyRequest request) {
+    public ResponseEntity<AgencyResponse> registerAgency(@RequestBody RegisterAgencyRequest request) {
 
-        RegisterAgencyCommand command = new RegisterAgencyCommand(
-                request.name(),
-                request.city(),
-                request.contactPhone());
+        RegisterAgencyCommand command =
+                new RegisterAgencyCommand(request.name(), request.city(), request.contactPhone());
 
         Agency agency = registerAgencyUseCase.registerAgency(command);
 
@@ -75,7 +70,8 @@ public class AgencyController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<AgencyResponse> getAgency(@PathVariable String id) {
-        return getAgencyUseCase.findById(AgencyId.from(id))
+        return getAgencyUseCase
+                .findById(AgencyId.from(id))
                 .map(mapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -86,12 +82,9 @@ public class AgencyController {
      * Récupère les agences actives, optionnellement filtrées par ville.
      */
     @GetMapping
-    public ResponseEntity<List<AgencyResponse>> getAgencies(
-            @RequestParam(required = false) String city) {
+    public ResponseEntity<List<AgencyResponse>> getAgencies(@RequestParam(required = false) String city) {
 
-        List<Agency> agencies = city != null
-                ? getAgencyUseCase.findByCity(city)
-                : getAgencyUseCase.findAllActive();
+        List<Agency> agencies = city != null ? getAgencyUseCase.findByCity(city) : getAgencyUseCase.findAllActive();
 
         return ResponseEntity.ok(agencies.stream().map(mapper::toResponse).toList());
     }
@@ -100,16 +93,8 @@ public class AgencyController {
     // Ces records seront remplacés par les classes générées par OpenAPI
     // une fois que tu auras défini agency-api.yml
 
-    public record RegisterAgencyRequest(
-            String name,
-            String city,
-            String contactPhone) {}
+    public record RegisterAgencyRequest(String name, String city, String contactPhone) {}
 
     public record AgencyResponse(
-            String id,
-            String name,
-            String city,
-            String contactPhone,
-            String status,
-            int routeCount) {}
+            String id, String name, String city, String contactPhone, String status, int routeCount) {}
 }

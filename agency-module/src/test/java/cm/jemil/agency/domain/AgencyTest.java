@@ -1,17 +1,16 @@
 package cm.jemil.agency.domain;
 
+import static org.assertj.core.api.Assertions.*;
+
 import cm.jemil.agency.domain.event.AgencyRegisteredEvent;
 import cm.jemil.agency.domain.exception.AgencyDomainException;
 import cm.jemil.agency.domain.model.Agency;
 import cm.jemil.agency.domain.model.AgencyStatus;
 import cm.jemil.agency.domain.model.Route;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
 
 /**
  * Tests unitaires de l'Aggregate Agency.
@@ -77,8 +76,7 @@ class AgencyTest {
                     .isInstanceOf(AgencyDomainException.class)
                     .hasMessageContaining("nom");
 
-            assertThatThrownBy(() -> Agency.register(null, "Douala", null))
-                    .isInstanceOf(AgencyDomainException.class);
+            assertThatThrownBy(() -> Agency.register(null, "Douala", null)).isInstanceOf(AgencyDomainException.class);
         }
 
         @Test
@@ -143,8 +141,7 @@ class AgencyTest {
         void should_reject_invalid_seats() {
             Agency agency = Agency.register("Global Voyages", "Douala", null);
 
-            assertThatThrownBy(() -> agency.addRoute("Douala", "Yaoundé", 0))
-                    .isInstanceOf(AgencyDomainException.class);
+            assertThatThrownBy(() -> agency.addRoute("Douala", "Yaoundé", 0)).isInstanceOf(AgencyDomainException.class);
 
             assertThatThrownBy(() -> agency.addRoute("Douala", "Yaoundé", 101))
                     .isInstanceOf(AgencyDomainException.class);

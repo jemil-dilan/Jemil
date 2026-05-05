@@ -12,8 +12,8 @@ en microservice autonome sans modifier le domaine.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    Clients (REST / Events)               │
-└──────────┬──────────┬──────────┬──────────┬────────────┘
+│                    Clients (REST / Events)              │
+└──────────┬──────────┬──────────┬──────────┬────────────-┘
            │          │          │          │
     ┌──────▼──┐ ┌─────▼───┐ ┌───▼─────┐ ┌──▼────────┐
     │ Agency  │ │ Booking │ │ Payment │ │ Ticketing │
@@ -21,8 +21,8 @@ en microservice autonome sans modifier le domaine.
     └─────────┘ └─────────┘ └─────────┘ └───────────┘
            │          │          │          │
     ┌──────▼──────────▼──────────▼──────────▼─────────┐
-    │           Spring ApplicationEvents (phase 1)     │
-    │              → RabbitMQ (phase 2)                │
+    │           Spring ApplicationEvents (phase 1)    │
+    │              → RabbitMQ (phase 2)               │
     └─────────────────────────────────────────────────┘
            │
     ┌──────▼──────────┐
@@ -60,13 +60,13 @@ module-name/
 
 ## Modules
 
-| Module | Port | Responsabilité |
-|--------|------|----------------|
-| `agency-module` | 8081 | Agences, routes, horaires |
-| `booking-module` | 8082 | Réservations, passagers |
-| `payment-module` | 8083 | Paiements MoMo, Stripe |
-| `ticketing-module` | 8084 | QR codes, validation embarquement |
-| `notification-module` | 8085 | SMS, email (Africa's Talking) |
+| Module                | Port | Responsabilité                    |
+|-----------------------|------|-----------------------------------|
+| `agency-module`       | 8081 | Agences, routes, horaires         |
+| `booking-module`      | 8082 | Réservations, passagers           |
+| `payment-module`      | 8083 | Paiements MoMo, Stripe            |
+| `ticketing-module`    | 8084 | QR codes, validation embarquement |
+| `notification-module` | 8085 | SMS, email (Africa's Talking)     |
 
 ---
 
@@ -138,16 +138,16 @@ http://localhost:8081/swagger-ui.html
 
 ## Outils de qualité inclus
 
-| Outil | Rôle | Déclenchement |
-|-------|------|---------------|
-| **Spotless + Palantir** | Formatage automatique | `./gradlew spotlessApply` |
-| **Error Prone** | Détection bugs à la compilation | Automatique à chaque `build` |
-| **Checkstyle** | Conventions de code | Automatique à chaque `build` |
-| **Jacoco** | Couverture de code | Après chaque `test` |
-| **SonarQube** | Analyse qualité globale | `./gradlew sonar` |
-| **ArchUnit** | Vérification architecture | Pendant les `test` |
-| **Testcontainers** | Vraie DB en tests | Pendant les `test` |
-| **Cucumber** | Tests e2e en Gherkin | Pendant les `test` |
+| Outil                   | Rôle                            | Déclenchement                |
+|-------------------------|---------------------------------|------------------------------|
+| **Spotless + Palantir** | Formatage automatique           | `./gradlew spotlessApply`    |
+| **Error Prone**         | Détection bugs à la compilation | Automatique à chaque `build` |
+| **Checkstyle**          | Conventions de code             | Automatique à chaque `build` |
+| **Jacoco**              | Couverture de code              | Après chaque `test`          |
+| **SonarQube**           | Analyse qualité globale         | `./gradlew sonar`            |
+| **ArchUnit**            | Vérification architecture       | Pendant les `test`           |
+| **Testcontainers**      | Vraie DB en tests               | Pendant les `test`           |
+| **Cucumber**            | Tests e2e en Gherkin            | Pendant les `test`           |
 
 ---
 
@@ -208,3 +208,27 @@ test(agency): ajouter scénario Cucumber pour agence suspendue
 refactor(domain): extraire la validation dans des Value Objects
 docs: mettre à jour le README avec les nouvelles commandes
 ```
+
+---
+
+## Project Status Report (May 2026)
+
+### ✅ Done & Functional
+*   **Architectural Foundation:** Multi-module Gradle structure with shared conventions (`buildSrc`). Strict Hexagonal Architecture and DDD patterns applied.
+*   **Agency Module (Reference Implementation):**
+    *   **Core Domain:** `Agency` Aggregate Root managing status and `Routes`.
+    *   **Persistence:** PostgreSQL integration with Liquibase migrations.
+    *   **API-First:** Contract-first development using OpenAPI.
+    *   **Messaging:** Outbox pattern for `AgencyRegisteredEvent` via RabbitMQ.
+*   **Quality Gates:** Full integration of Spotless, Checkstyle, Error Prone, and Jacoco.
+*   **Testing:** Comprehensive suite including ArchUnit (architectural rules), Cucumber (BDD/E2E), and Testcontainers (integration).
+
+### 🚀 The Good (Strengths)
+*   **High Rigor:** Architectural boundaries are enforced by code (ArchUnit), preventing technical debt in the domain layer.
+*   **Scalability:** The project is "Microservices Ready" by design. Moving a module to its own repo would require minimal effort.
+*   **Developer Experience:** Standardized commands for formatting, testing, and quality checks.
+
+### ⚠️ Areas for Improvement
+*   **Module Imbalance:** Other modules (`booking`, `payment`, `ticketing`, `notification`) are currently skeletons.
+*   **Inter-Module Strategy:** Need to finalize the pattern for synchronous vs. asynchronous communication between modules as they grow.
+*   **Boilerplate:** The hexagonal layers (Domain ↔ Entity ↔ DTO) add overhead. Ensure MapStruct mappers stay updated to minimize manual work.

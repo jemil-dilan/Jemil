@@ -23,10 +23,6 @@ java {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 // ── Dépendances communes à tous les modules ───────────────────
 dependencies {
     // Error Prone — analyse statique à la compilation

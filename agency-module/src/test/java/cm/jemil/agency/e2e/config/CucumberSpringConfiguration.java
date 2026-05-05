@@ -30,11 +30,10 @@ public class CucumberSpringConfiguration {
     // Le container PostgreSQL démarre une seule fois pour tous les tests
     // (réutilisé entre les scénarios pour la performance)
     @Container
-    static PostgreSQLContainer<?> postgres =
-            new PostgreSQLContainer<>("postgres:15-alpine")
-                    .withDatabaseName("agency_db_test")
-                    .withUsername("jemil_test")
-                    .withPassword("jemil_test_secret");
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine")
+            .withDatabaseName("agency_db_test")
+            .withUsername("jemil_test")
+            .withPassword("jemil_test_secret");
 
     @LocalServerPort
     protected int port;
@@ -42,12 +41,13 @@ public class CucumberSpringConfiguration {
     // Injecte les propriétés du container dans Spring
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url",      postgres::getJdbcUrl);
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
         // Désactive RabbitMQ en test (on le mocke)
         registry.add("spring.rabbitmq.host", () -> "localhost");
-        registry.add("spring.autoconfigure.exclude",
+        registry.add(
+                "spring.autoconfigure.exclude",
                 () -> "org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration");
     }
 }

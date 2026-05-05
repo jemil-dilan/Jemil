@@ -8,7 +8,6 @@
 
 plugins {
     alias(libs.plugins.sonarqube)
-    alias(libs.plugins.spotless) apply false // appliqué dans les conventions
 }
 
 // ── SonarQube (analyse qualité centralisée) ──────────────────

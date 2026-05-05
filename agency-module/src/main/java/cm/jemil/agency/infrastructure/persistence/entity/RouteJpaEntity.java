@@ -30,21 +30,40 @@ public class RouteJpaEntity {
 
     protected RouteJpaEntity() {}
 
-    public RouteJpaEntity(UUID id, AgencyJpaEntity agency, String origin,
-                           String destination, int totalSeats) {
-        this.id          = id;
-        this.agency      = agency;
-        this.origin      = origin;
+    public RouteJpaEntity(UUID id, AgencyJpaEntity agency, String origin, String destination, int totalSeats) {
+        this.id = id;
+        this.agency = agency;
+        this.origin = origin;
         this.destination = destination;
-        this.totalSeats  = totalSeats;
-        this.active      = true;
+        this.totalSeats = totalSeats;
+        this.active = true;
     }
 
-    public UUID getId()              { return id; }
-    public AgencyJpaEntity getAgency() { return agency; }
-    public String getOrigin()        { return origin; }
-    public String getDestination()   { return destination; }
-    public int getTotalSeats()       { return totalSeats; }
-    public boolean isActive()        { return active; }
-    public void setActive(boolean a) { this.active = a; }
+    public UUID getId() {
+        return id;
+    }
+
+    public AgencyJpaEntity getAgency() {
+        return agency;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public int getTotalSeats() {
+        return totalSeats;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean a) {
+        this.active = a;
+    }
 }

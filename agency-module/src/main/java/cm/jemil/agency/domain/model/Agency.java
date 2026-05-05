@@ -35,12 +35,12 @@ public class Agency {
 
     // ── Constructeur privé — on passe par les factory methods ──
     private Agency(AgencyId id, String name, String city, String contactPhone) {
-        this.id           = id;
-        this.name         = name;
-        this.city         = city;
+        this.id = id;
+        this.name = name;
+        this.city = city;
         this.contactPhone = contactPhone;
-        this.status       = AgencyStatus.ACTIVE;
-        this.routes       = new ArrayList<>();
+        this.status = AgencyStatus.ACTIVE;
+        this.routes = new ArrayList<>();
     }
 
     /**
@@ -65,8 +65,7 @@ public class Agency {
      * une Agency depuis la base de données. Elle ne génère pas d'événements.
      */
     public static Agency reconstitute(
-            AgencyId id, String name, String city, String contactPhone,
-            AgencyStatus status, List<Route> routes) {
+            AgencyId id, String name, String city, String contactPhone, AgencyStatus status, List<Route> routes) {
         Agency agency = new Agency(id, name, city, contactPhone);
         agency.status = status;
         agency.routes.addAll(routes);
@@ -76,8 +75,7 @@ public class Agency {
     /** Ajoute une route à cette agence. */
     public Route addRoute(String origin, String destination, int totalSeats) {
         if (this.status == AgencyStatus.SUSPENDED) {
-            throw new AgencyDomainException(
-                    "L'agence " + name + " est suspendue. Impossible d'ajouter une route.");
+            throw new AgencyDomainException("L'agence " + name + " est suspendue. Impossible d'ajouter une route.");
         }
 
         Route route = Route.create(RouteId.generate(), this.id, origin, destination, totalSeats);
