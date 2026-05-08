@@ -1,5 +1,6 @@
 package cm.jemil.agency.e2e.config;
 
+import cm.jemil.agency.AgencyApplication;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -22,7 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * exactement comme en production. Pas de surprise.
  */
 @CucumberContextConfiguration
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = AgencyApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @ActiveProfiles("test")
 public class CucumberSpringConfiguration {

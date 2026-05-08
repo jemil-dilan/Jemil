@@ -28,8 +28,8 @@ services:
       - "5672:5672"    # port AMQP (utilisé par Spring)
       - "15672:15672"  # interface web de management
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
       RABBITMQ_DEFAULT_VHOST: /
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
@@ -46,13 +46,13 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: agency_db
-      POSTGRES_USER: jemil
-      POSTGRES_PASSWORD: jemil_secret
+      POSTGRES_DB: ${AGENCY_DB:-agency_db}
+      POSTGRES_USER: ${DB_USER:-jemil}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-jemil_secret}
     volumes:
       - postgres_agency_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U jemil -d agency_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-jemil} -d ${AGENCY_DB:-agency_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -64,13 +64,13 @@ services:
     ports:
       - "5433:5432"
     environment:
-      POSTGRES_DB: booking_db
-      POSTGRES_USER: jemil
-      POSTGRES_PASSWORD: jemil_secret
+      POSTGRES_DB: ${BOOKING_DB:-booking_db}
+      POSTGRES_USER: ${DB_USER:-jemil}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-jemil_secret}
     volumes:
       - postgres_booking_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U jemil -d booking_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-jemil} -d ${BOOKING_DB:-booking_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -82,13 +82,13 @@ services:
     ports:
       - "5434:5432"
     environment:
-      POSTGRES_DB: payment_db
-      POSTGRES_USER: jemil
-      POSTGRES_PASSWORD: jemil_secret
+      POSTGRES_DB: ${PAYMENT_DB:-payment_db}
+      POSTGRES_USER: ${DB_USER:-jemil}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-jemil_secret}
     volumes:
       - postgres_payment_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U jemil -d payment_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-jemil} -d ${PAYMENT_DB:-payment_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -100,13 +100,13 @@ services:
     ports:
       - "5435:5432"
     environment:
-      POSTGRES_DB: ticketing_db
-      POSTGRES_USER: jemil
-      POSTGRES_PASSWORD: jemil_secret
+      POSTGRES_DB: ${TICKETING_DB:-ticketing_db}
+      POSTGRES_USER: ${DB_USER:-jemil}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-jemil_secret}
     volumes:
       - postgres_ticketing_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U jemil -d ticketing_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-jemil} -d ${TICKETING_DB:-ticketing_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -118,13 +118,13 @@ services:
     ports:
       - "5436:5432"
     environment:
-      POSTGRES_DB: notification_db
-      POSTGRES_USER: jemil
-      POSTGRES_PASSWORD: jemil_secret
+      POSTGRES_DB: ${NOTIFICATION_DB:-notification_db}
+      POSTGRES_USER: ${DB_USER:-jemil}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-jemil_secret}
     volumes:
       - postgres_notification_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U jemil -d notification_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-jemil} -d ${NOTIFICATION_DB:-notification_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -140,11 +140,17 @@ services:
       - "9000:9000"
     environment:
       SONAR_JDBC_URL: jdbc:postgresql://postgres-sonar:5432/sonar
-      SONAR_JDBC_USERNAME: sonar
-      SONAR_JDBC_PASSWORD: sonar
+      SONAR_JDBC_USERNAME: ${SONAR_DB_USER:-sonar}
+      SONAR_JDBC_PASSWORD: ${SONAR_DB_PASSWORD:-sonar}
     volumes:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_logs:/opt/sonarqube/logs
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/api/system/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
     depends_on:
       postgres-sonar:
         condition: service_healthy
@@ -154,13 +160,13 @@ services:
     image: postgres:15-alpine
     container_name: jemil-postgres-sonar
     environment:
-      POSTGRES_DB: sonar
-      POSTGRES_USER: sonar
-      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: ${SONAR_DB:-sonar}
+      POSTGRES_USER: ${SONAR_DB_USER:-sonar}
+      POSTGRES_PASSWORD: ${SONAR_DB_PASSWORD:-sonar}
     volumes:
       - postgres_sonar_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sonar -d sonar"]
+      test: ["CMD-SHELL", "pg_isready -U ${SONAR_DB_USER:-sonar} -d ${SONAR_DB:-sonar}"]
       interval: 10s
       timeout: 5s
       retries: 5

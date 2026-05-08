@@ -16,24 +16,30 @@ plugins {
     id("net.ltgt.errorprone")
 }
 
-// ── Java 21 pour tous les modules ────────────────────────────
+// ── Java 25 pour tous les modules ────────────────────────────
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
 // ── Dépendances communes à tous les modules ───────────────────
 dependencies {
+    // Lombok — disponible dans tous les modules Java sans polluer le runtime
+    compileOnly("org.projectlombok:lombok:${Versions.lombok}")
+    annotationProcessor("org.projectlombok:lombok:${Versions.lombok}")
+    testCompileOnly("org.projectlombok:lombok:${Versions.lombok}")
+    testAnnotationProcessor("org.projectlombok:lombok:${Versions.lombok}")
+
     // Error Prone — analyse statique à la compilation
-    errorprone("com.google.errorprone:error_prone_core:2.26.1")
+    errorprone("com.google.errorprone:error_prone_core:${Versions.errorProne}")
 
     // Tests communs à tous les modules
-    testImplementation(platform("org.testcontainers:testcontainers-bom:1.19.7"))
+    testImplementation(platform("org.testcontainers:testcontainers-bom:${Versions.testcontainers}"))
     testImplementation("org.testcontainers:testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.assertj:assertj-core:3.25.3")
-    testImplementation("org.mockito:mockito-core:5.11.0")
+    testImplementation("org.assertj:assertj-core:${Versions.assertj}")
+    testImplementation("org.mockito:mockito-core:${Versions.mockito}")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -43,7 +49,7 @@ dependencies {
 spotless {
     java {
         // Palantir Java Format : plus souple que Google Style, très utilisé en entreprise
-        palantirJavaFormat("2.39.0")
+        palantirJavaFormat(Versions.palantirFormat)
         removeUnusedImports()           // supprime les imports inutilisés
         trimTrailingWhitespace()        // supprime les espaces en fin de ligne
         endWithNewline()                // ligne vide en fin de fichier
@@ -58,7 +64,7 @@ spotless {
 tasks.withType<JavaCompile>().configureEach {
     options.errorprone {
         disableWarningsInGeneratedCode = true
-        // Ces checks font ÉCHOUER la compilation si violés
+        // Ces checks errorPronePluginfont ÉCHOUER la compilation si violés
         error(
             "UnusedVariable",           // variable déclarée mais jamais utilisée
             "UnnecessaryParentheses",   // parenthèses inutiles
@@ -75,7 +81,7 @@ tasks.withType<JavaCompile>().configureEach {
 
 // ── Checkstyle — conventions de code ─────────────────────────
 checkstyle {
-    toolVersion    = "10.14.2"
+    toolVersion    = Versions.checkstyle
     configFile     = rootProject.file("config/checkstyle/checkstyle.xml")
     isIgnoreFailures = false           // fait échouer le build si violation
 }

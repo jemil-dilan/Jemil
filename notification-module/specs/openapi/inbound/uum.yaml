@@ -1,0 +1,997 @@
+---
+openapi: "3.0.3"
+info:
+  title: "UUM REST API"
+  description: "API Documentation"
+  license:
+    name: "License of API"
+    url: "https://"
+  version: "2025-W28"
+servers:
+- url: "https"
+- url: "http"
+tags:
+- name: "User"
+  description: "Everything about the users"
+paths:
+  /user:
+    post:
+      tags:
+      - "User"
+      summary: "add a new user"
+      description: "add a new user"
+      operationId: "createUser"
+      security:
+      - oAuth:
+        - "user:create"
+      requestBody:
+        description: "User object that need to be add"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserDTO"
+      responses:
+        "201":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreationResponseDTO"
+        "409":
+          description: "UUM-3001"
+    get:
+      tags:
+      - "User"
+      summary: "Fetch all users"
+      description: "Fetch all users"
+      operationId: "getAllUsers"
+      security:
+      - oAuth:
+        - "user:read:all"
+      parameters:
+      - name: "fieldsToExtractCode"
+        in: "query"
+        required: true
+        schema:
+          type: "string"
+          description: "specify the fields that will be present the response"
+      - name: "roleId"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+          format: "uuid"
+          description: "specific role id to fetch users"
+      - name: "page"
+        in: "query"
+        required: false
+        schema:
+          type: "integer"
+        description: "the page number to retrieve"
+      - name: "limit"
+        in: "query"
+        required: false
+        schema:
+          type: "integer"
+        description: "The number of elements per page"
+      - name: "paginationEnabled"
+        in: "query"
+        required: false
+        schema:
+          type: "boolean"
+          default: false
+        description: "Enable pagination or not"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserPaginationDTO"
+  /user/{username}/validation/{code}:
+    post:
+      tags:
+      - "User"
+      summary: "validate user by username with the code"
+      description: "validate user by username with the code"
+      operationId: "validateUser"
+      security:
+      - oAuth:
+        - "user:read"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "username of user to be validate"
+        required: true
+        schema:
+          type: "string"
+      - name: "code"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+        description: "specify the code of validation"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                type: "string"
+                nullable: false
+                description: "state of role"
+                enum:
+                - "CodeOK"
+                - "CodeWrong"
+                - "CodeExpired"
+  /user/is-already-registered/{username}:
+    get:
+      tags:
+      - "User"
+      summary: "check if a user with the corresponding username already exists."
+      description: "check if a user with the corresponding username already exists."
+      operationId: "checkExistUser"
+      security:
+      - oAuth:
+        - "user:read"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "User username to be check"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "204":
+          description: "successful operation"
+        "404":
+          description: "UUM-4002"
+  /user/generate-and-send-new-confirmation-code/{username}:
+    get:
+      tags:
+      - "User"
+      summary: "Request a new confirmation code"
+      description: "Request a new confirmation code"
+      operationId: "Request a new confirmation code"
+      security:
+      - oAuth:
+        - "user:read"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "User username to be check"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "204":
+          description: "successful operation"
+        "404":
+          description: "UUM-4002"
+  /user/{username}:
+    get:
+      tags:
+      - "User"
+      summary: "Finds user by username"
+      description: "Finds user by username"
+      operationId: "getUserByUsername"
+      security:
+      - oAuth:
+        - "user:read"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "User's username to be fetch"
+        required: true
+        schema:
+          type: "string"
+      - name: "fieldsToExtractCode"
+        in: "query"
+        required: true
+        schema:
+          type: "string"
+        description: "specify the fields that will be present the response"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UumUserDTO"
+        "404":
+          description: "UUM-4002"
+  /user/{id}:
+    delete:
+      tags:
+      - "User"
+      summary: "Delete user by id"
+      description: "Delete user found by provided id"
+      operationId: "deleteUser"
+      security:
+      - oAuth:
+        - "user:delete"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "User id to be fetch"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "UUM-4002"
+    put:
+      tags:
+      - "User"
+      summary: "Update user by id"
+      description: "Update user found by provided id"
+      operationId: "updateUser"
+      security:
+      - oAuth:
+        - "user:update"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "User id to be update"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      requestBody:
+        description: "User object that need to be update"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserDTO"
+      responses:
+        "204":
+          description: "successful operation"
+        "404":
+          description: "UUM-4002"
+  /user/{id}/activate:
+    put:
+      tags:
+      - "User"
+      summary: "Activate user identified by id"
+      description: "Activate user identified by id"
+      operationId: "activateUser"
+      security:
+      - oAuth:
+        - "user:edit"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id of the user to be activate"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "UUM-4002"
+  /user/{id}/deactivate:
+    put:
+      tags:
+      - "User"
+      summary: "Deactivate user identified by id"
+      description: "Deactivate user identified by id"
+      operationId: "deactivateUser"
+      security:
+      - oAuth:
+        - "user:edit"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id of the user to be deactivate"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "UUM-4002"
+  /user/reset-password:
+    put:
+      tags:
+      - "User"
+      summary: "Reset user's password"
+      description: "Reset user's password"
+      operationId: "resetUserPassword"
+      security:
+      - oAuth:
+        - "user:edit"
+      requestBody:
+        description: "User's structure to reset password"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordDTO"
+      responses:
+        "204":
+          description: "successful operation"
+        "404":
+          description: "UUM-4002"
+  /user/{id}/role:
+    get:
+      tags:
+      - "User"
+      summary: "Fetch all roles by user"
+      description: "Fetch all roles by user"
+      operationId: "fetchRolesByUserId"
+      security:
+      - oAuth:
+        - "user:read"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "User id to be fetch"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      - name: "fieldsToExtractCode"
+        in: "query"
+        required: true
+        schema:
+          type: "string"
+        description: "specify the fields that will be present the response"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/RoleDTO"
+        "404":
+          description: "UUM-4002"
+    post:
+      tags:
+      - "User"
+      summary: "Add roles to a user"
+      description: "Add roles to a user"
+      operationId: "addRolesToUser"
+      security:
+      - oAuth:
+        - "user:edit"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id of the user to assign the role"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      requestBody:
+        description: "The list of Roles to add"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssignRoleToUserDTO"
+      responses:
+        "204":
+          description: "successful operation"
+        "404":
+          description: "UUM-4001 | UUM-4002"
+  /user/{id}/role/{roleId}:
+    delete:
+      tags:
+      - "User"
+      summary: "Remove roles to a user"
+      description: "Remove roles  to a user"
+      operationId: "removeRolesFromUser"
+      security:
+      - oAuth:
+        - "user:edit"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id of the user to remove the role"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      - name: "roleId"
+        in: "path"
+        description: "id of the role to remove"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      responses:
+        "204":
+          description: "successful operation"
+        "404":
+          description: "UUM-4001 | UUM-4002"
+  /client/{clientName}/role:
+    get:
+      tags:
+      - "Client"
+      summary: "Fetch roles by clientName"
+      description: "Fetch roles by clientName"
+      operationId: "fetchRolesByClientName"
+      security:
+      - oAuth:
+        - "client:read"
+      parameters:
+      - name: "clientName"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      - name: "fieldsToExtractCode"
+        in: "query"
+        required: true
+        schema:
+          type: "string"
+        description: "specify the fields that will be present the response"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/RoleDTO"
+        "404":
+          description: "UUM-4003"
+  /role:
+    get:
+      tags:
+      - "Role"
+      summary: "Fetch all roles"
+      description: "Fetch all roles"
+      operationId: "getAllRoles"
+      security:
+      - oAuth:
+        - "role:read:all"
+      parameters:
+      - name: "fieldsToExtractCode"
+        in: "query"
+        required: true
+        schema:
+          type: "string"
+          description: "specify the fields that will be present the response"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/RoleDTO"
+  /login:
+    post:
+      tags:
+      - "Authentication"
+      summary: "Process the login"
+      description: "Process the login and return the token"
+      operationId: "login"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/LoginDTO"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponseDTO"
+        "401":
+          description: "Authentication failed"
+  /user/{id}/picture:
+    patch:
+      tags:
+      - "User"
+      summary: "Change the user picture"
+      description: "Find the user by id and change its picture"
+      operationId: "changePicture"
+      parameters:
+      - name: "id"
+        description: "The user's id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      security:
+      - oAuth:
+        - "user:edit"
+      requestBody:
+        description: "The object user's picture to change"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserPictureEditDTO"
+      responses:
+        "204":
+          description: "Successful Operation"
+        "404":
+          description: "User with the given id could not be found."
+  /user/change-my-password:
+    put:
+      tags:
+      - "User"
+      summary: "Change current user's password from actual password"
+      description: "Change current user's password from actual password"
+      operationId: "changeCurrentUserPassword"
+      security:
+      - oAuth:
+        - "user:edit"
+      requestBody:
+        description: "User's structure to chance password"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordDTO"
+      responses:
+        "204":
+          description: "successful operation"
+        "404":
+          description: "UUM-4002"
+  /user/{id}/block:
+    put:
+      tags:
+      - "User"
+      summary: "block an existing user"
+      description: "block an existing user"
+      operationId: "blockUser"
+      security:
+      - oAuth:
+        - "user:block"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id user to block"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      - name: "blockingReason"
+        in: "query"
+        description: "The reason why the user was blocked"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "204":
+          description: "successful operation"
+        "404":
+          description: "UUM-4002"
+  /user/{id}/unblock:
+    put:
+      tags:
+      - "User "
+      summary: "unblock an existing user account"
+      description: "unblock an existing user account"
+      operationId: "unblockUser"
+      security:
+      - oAuth:
+        - "user:unblock"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "id user account to unblock"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      responses:
+        "204":
+          description: "successful operation"
+        "404":
+          description: "UUM-4002"
+components:
+  securitySchemes:
+    oAuth:
+      type: "oauth2"
+      description: "This API uses OAuth 2 with the Authorization Code grant flow."
+      flows:
+        authorizationCode:
+          authorizationUrl: "https://auth.oauth.lao-sarl.cm"
+          tokenUrl: "https://token.oauth.lao-sarl.cm"
+          scopes:
+            user:create: "create a user"
+            user:edit: "Add User to role"
+            user:read: "Fetch the User"
+            user:delete: "Delete user"
+  schemas:
+    EmailAddressDTO:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          description: "value of the email address"
+    PhoneNumberDTO:
+      type: "object"
+      properties:
+        countryCode:
+          type: "string"
+          description: "the international code for the country"
+          example: "237 for Cameroon"
+        number:
+          type: "string"
+          description: "the phone number"
+          example: 653492410
+    CivilityDTO:
+      type: "string"
+      enum:
+      - "MISTER"
+      - "MADAM"
+    UumUserDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          description: "identifier"
+          format: "uuid"
+        civility:
+          $ref: "#/components/schemas/CivilityDTO"
+        firstname:
+          type: "string"
+          description: "firstname of user"
+        lastname:
+          type: "string"
+          description: "lastname of user"
+        phoneNumber:
+          $ref: "#/components/schemas/PhoneNumberDTO"
+        username:
+          type: "string"
+          description: "username's user"
+        password:
+          type: "string"
+          description: "password's user"
+        email:
+          $ref: "#/components/schemas/EmailAddressDTO"
+        enabled:
+          type: "boolean"
+          description: "active user"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleDTO"
+        registration:
+          $ref: "#/components/schemas/RegistrationDTO"
+        profile:
+          type: "string"
+          description: "user's information"
+        picture:
+          type: "string"
+          description: "the user's profile picture"
+          format: "uuid"
+        roleIds:
+          type: "array"
+          items:
+            type: "string"
+            format: "uuid"
+        isBlocked:
+          type: "boolean"
+          description: "specifies if the user is blocked or not"
+        createdAt:
+          type: "string"
+          format: "date"
+          description: "creation's date"
+        lastLoginSuccessAt:
+          type: "string"
+          format: "date-time"
+          description: "the date of the last successful login"
+        reference:
+          type: "string"
+          description: "the reference of user"
+    CreateUserDTO:
+      type: "object"
+      required:
+      - "username"
+      properties:
+        civility:
+          $ref: "#/components/schemas/CivilityDTO"
+        firstname:
+          type: "string"
+        lastname:
+          type: "string"
+        phoneNumber:
+          $ref: "#/components/schemas/PhoneNumberDTO"
+        username:
+          type: "string"
+        password:
+          type: "string"
+        email:
+          $ref: "#/components/schemas/EmailAddressDTO"
+        enabled:
+          type: "boolean"
+        rolesNames:
+          type: "array"
+          items:
+            type: "string"
+          description: "Name of the roles the new user will receive"
+    UpdateUserDTO:
+      type: "object"
+      required:
+      - "civility"
+      - "firstname"
+      - "lastname"
+      - "phoneNumber"
+      - "email"
+      properties:
+        civility:
+          $ref: "#/components/schemas/CivilityDTO"
+        firstname:
+          type: "string"
+        lastname:
+          type: "string"
+        phoneNumber:
+          $ref: "#/components/schemas/PhoneNumberDTO"
+        email:
+          $ref: "#/components/schemas/EmailAddressDTO"
+    RoleDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          description: "identifier"
+          format: "uuid"
+        name:
+          type: "string"
+          description: "name's role"
+        description:
+          type: "string"
+          description: "description of role"
+    RegistrationDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          description: "identifier"
+          format: "uuid"
+        createdAt:
+          type: "string"
+          format: "date"
+          description: "creation's date"
+        state:
+          $ref: "#/components/schemas/StateDTO"
+        scheme:
+          $ref: "#/components/schemas/SchemeDTO"
+    StateDTO:
+      type: "string"
+      nullable: false
+      description: "state of role"
+      enum:
+      - "RUNNING"
+      - "CONFIRMED"
+      - "CANCELED"
+    SchemeDTO:
+      type: "string"
+      nullable: false
+      description: "state of role"
+      enum:
+      - "MANUAL_BY_ADMIN"
+      - "SMS"
+      - "NO_VALIDATION"
+    ResetPasswordDTO:
+      type: "object"
+      required:
+      - "userId"
+      - "newPassword"
+      properties:
+        userId:
+          type: "string"
+          format: "uuid"
+          description: "User's id to update its password"
+        newPassword:
+          type: "string"
+    AssignRoleToUserDTO:
+      type: "object"
+      properties:
+        roleIds:
+          type: "array"
+          items:
+            type: "string"
+            format: "uuid"
+            description: "represents the list of role identifiers that it wants to\
+              \ assign to a user"
+        roleNames:
+          type: "array"
+          items:
+            type: "string"
+            description: "represents the list of role names it wants to assign to\
+              \ a user"
+    LoginDTO:
+      type: "object"
+      required:
+      - "username"
+      - "password"
+      properties:
+        username:
+          type: "string"
+        password:
+          type: "string"
+    LoginResponseDTO:
+      type: "object"
+      required:
+      - "redirectUrl"
+      properties:
+        redirectUrl:
+          type: "string"
+    UserPictureEditDTO:
+      type: "object"
+      properties:
+        value:
+          type: "string"
+          format: "uuid"
+    ChangePasswordDTO:
+      type: "object"
+      required:
+      - "newPassword"
+      - "currentPassword"
+      properties:
+        newPassword:
+          type: "string"
+        currentPassword:
+          type: "string"
+    CreationResponseDTO:
+      type: "object"
+      required:
+      - "id"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+    DomainEventType:
+      type: "string"
+      enum:
+      - "USER_CREATED"
+      - "USER_UPDATED"
+      - "USER_ACTIVATED"
+      - "USER_DEACTIVATED"
+      - "USER_ROLES_ADDED"
+      - "USER_ROLES_REMOVED"
+    UserCreatedEvent:
+      type: "object"
+      required:
+      - "id"
+      - "username"
+      - "enabled"
+      properties:
+        id:
+          type: "string"
+          description: "identifier"
+          format: "uuid"
+        civility:
+          $ref: "#/components/schemas/CivilityDTO"
+        firstname:
+          type: "string"
+          description: "firstname of user"
+        lastname:
+          type: "string"
+          description: "lastname of user"
+        phoneNumber:
+          $ref: "#/components/schemas/PhoneNumberDTO"
+        username:
+          type: "string"
+          description: "username's user"
+        email:
+          $ref: "#/components/schemas/EmailAddressDTO"
+        enabled:
+          type: "boolean"
+          description: "active user"
+        profile:
+          type: "string"
+          description: "user's information as json"
+        picture:
+          type: "string"
+          description: "the user's profile picture"
+          format: "uuid"
+        isBlocked:
+          type: "boolean"
+          description: "specifies if the user is blocked or not"
+        createdAt:
+          type: "string"
+          format: "date-time"
+          description: "specify the user's creation date"
+        reference:
+          type: "string"
+          description: "the reference of user"
+    UserUpdatedEvent:
+      type: "object"
+      required:
+      - "id"
+      - "firstname"
+      - "lastname"
+      - "phoneNumber"
+      - "email"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        picture:
+          type: "string"
+          format: "uuid"
+        civility:
+          $ref: "#/components/schemas/CivilityDTO"
+        firstname:
+          type: "string"
+          description: "firstname of user"
+        lastname:
+          type: "string"
+        phoneNumber:
+          $ref: "#/components/schemas/PhoneNumberDTO"
+        email:
+          $ref: "#/components/schemas/EmailAddressDTO"
+    UserActivatedEvent:
+      type: "object"
+      required:
+      - "id"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+    UserDeactivatedEvent:
+      type: "object"
+      required:
+      - "id"
+      properties:
+        id:
+          type: "string"
+          description: "identifier"
+          format: "uuid"
+    UserRolesAddedEvent:
+      type: "object"
+      required:
+      - "id"
+      - "newRolesIds"
+      properties:
+        userId:
+          type: "string"
+          description: "identifier"
+          format: "uuid"
+        newRoleIds:
+          type: "array"
+          items:
+            type: "string"
+            format: "uuid"
+    UserRolesRemovedEvent:
+      type: "object"
+      required:
+      - "id"
+      - "removedRolesIds"
+      properties:
+        userId:
+          type: "string"
+          description: "identifier"
+          format: "uuid"
+        removedRolesIds:
+          type: "array"
+          items:
+            type: "string"
+            format: "uuid"
+    UserPaginationDTO:
+      type: "object"
+      properties:
+        users:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UumUserDTO"
+        numberOfUsers:
+          type: "integer"
+          format: "int64"
+        limit:
+          type: "integer"

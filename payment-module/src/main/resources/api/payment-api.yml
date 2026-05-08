@@ -1,0 +1,108 @@
+openapi: 3.0.3
+info:
+  title: JEMIL Payment API
+  description: API de gestion des paiements JEMIL Transport
+  version: 1.0.0
+  contact:
+    name: JEMIL Team
+    email: contact@jemil.cm
+
+servers:
+  - url: http://localhost:8083
+    description: Serveur de développement local
+
+paths:
+  /api/payments:
+    post:
+      summary: Initier un paiement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+      responses:
+        '201':
+          description: Paiement initié avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        '400':
+          description: Requête invalide
+
+  /api/payments/{id}:
+    get:
+      summary: Obtenir un paiement par ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paiement trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        '404':
+          description: Paiement non trouvé
+
+  /api/payments/{id}/confirm:
+    post:
+      summary: Confirmer un paiement
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paiement confirmé
+        '404':
+          description: Paiement non trouvé
+
+components:
+  schemas:
+    PaymentRequest:
+      type: object
+      required:
+        - bookingId
+        - amount
+        - method
+      properties:
+        bookingId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: double
+        method:
+          type: string
+          enum: [MOMO, STRIPE, CASH]
+
+    PaymentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        bookingId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: double
+        method:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, COMPLETED, FAILED]
+        transactionId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time

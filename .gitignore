@@ -25,6 +25,8 @@ out/
 .env
 .env.local
 .env.*.local
+# Mais autoriser le template d'exemple
+!.env.example
 
 # ── Logs ──────────────────────────────────────────────────
 *.log

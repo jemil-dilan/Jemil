@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: jemil-ticketing-service
+
+  # ── Base de données ────────────────────────────────────────
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5435}/${DB_NAME:ticketing_db}
+    username: ${DB_USER:jemil}
+    password: ${DB_PASSWORD:jemil_secret}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+
+  # ── JPA ──────────────────────────────────────────────────
+  jpa:
+    hibernate:
+      ddl-auto: validate        # Liquibase gère le schéma — Hibernate ne touche pas
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        default_schema: public
+
+  # ── Liquibase ────────────────────────────────────────────
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+
+  # ── RabbitMQ ─────────────────────────────────────────────
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: /
+
+# ── Actuator (health checks) ─────────────────────────────
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# ── Logging structuré JSON ────────────────────────────────
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  level:
+    cm.jemil: DEBUG
+    org.springframework: INFO
+    org.hibernate.SQL: WARN
+
+# ── OpenAPI / Swagger UI ──────────────────────────────────
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+# ── Server Port ────────────────────────────────────────────
+server:
+  port: 8084

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="1" author="jemil-team">
+        <createTable tableName="bookings">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="route_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="passenger_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="passenger_phone" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="seat_number" type="varchar(10)"/>
+            <column name="status" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp"/>
+        </createTable>
+
+        <createIndex indexName="idx_bookings_route_id" tableName="bookings">
+            <column name="route_id"/>
+        </createIndex>
+        <createIndex indexName="idx_bookings_status" tableName="bookings">
+            <column name="status"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

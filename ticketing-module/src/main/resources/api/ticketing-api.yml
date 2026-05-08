@@ -1,0 +1,106 @@
+openapi: 3.0.3
+info:
+  title: JEMIL Ticketing API
+  description: API de gestion des tickets et QR codes JEMIL Transport
+  version: 1.0.0
+  contact:
+    name: JEMIL Team
+    email: contact@jemil.cm
+
+servers:
+  - url: http://localhost:8084
+    description: Serveur de développement local
+
+paths:
+  /api/tickets:
+    post:
+      summary: Générer un ticket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketRequest'
+      responses:
+        '201':
+          description: Ticket généré avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketResponse'
+        '400':
+          description: Requête invalide
+
+  /api/tickets/{id}/validate:
+    post:
+      summary: Valider un ticket (embarquement)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ticket validé avec succès
+        '400':
+          description: Ticket invalide ou déjà utilisé
+        '404':
+          description: Ticket non trouvé
+
+  /api/tickets/qr/{qrCode}:
+    get:
+      summary: Obtenir un ticket par QR code
+      parameters:
+        - name: qrCode
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ticket trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketResponse'
+        '404':
+          description: Ticket non trouvé
+
+components:
+  schemas:
+    TicketRequest:
+      type: object
+      required:
+        - bookingId
+        - passengerName
+      properties:
+        bookingId:
+          type: string
+          format: uuid
+        passengerName:
+          type: string
+        seatNumber:
+          type: string
+
+    TicketResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        bookingId:
+          type: string
+          format: uuid
+        qrCode:
+          type: string
+        passengerName:
+          type: string
+        seatNumber:
+          type: string
+        status:
+          type: string
+          enum: [ACTIVE, USED, CANCELLED]
+        generatedAt:
+          type: string
+          format: date-time

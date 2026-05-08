@@ -29,6 +29,9 @@ public interface AgencyRepository {
     /** Trouve les agences d'une ville donnée. */
     List<Agency> findByCity(String city);
 
+    /** Vérifie si une agence existe déjà pour ce nom et cette ville. */
+    boolean existsByNameAndCity(String name, String city);
+
     /** Vérifie qu'une agence existe. */
     boolean existsById(AgencyId agencyId);
 }

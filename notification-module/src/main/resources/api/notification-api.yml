@@ -1,0 +1,88 @@
+openapi: 3.0.3
+info:
+  title: JEMIL Notification API
+  description: API de gestion des notifications JEMIL Transport
+  version: 1.0.0
+  contact:
+    name: JEMIL Team
+    email: contact@jemil.cm
+
+servers:
+  - url: http://localhost:8085
+    description: Serveur de développement local
+
+paths:
+  /api/notifications/send:
+    post:
+      summary: Envoyer une notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRequest'
+      responses:
+        '202':
+          description: Notification acceptée pour envoi
+        '400':
+          description: Requête invalide
+
+  /api/notifications/{id}:
+    get:
+      summary: Obtenir le statut d'une notification
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Notification trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponse'
+        '404':
+          description: Notification non trouvée
+
+components:
+  schemas:
+    NotificationRequest:
+      type: object
+      required:
+        - recipient
+        - type
+        - subject
+        - content
+      properties:
+        recipient:
+          type: string
+          description: Numéro de téléphone ou email du destinataire
+        type:
+          type: string
+          enum: [SMS, EMAIL, PUSH]
+        subject:
+          type: string
+        content:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+
+    NotificationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        recipient:
+          type: string
+        type:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, SENT, FAILED]
+        sentAt:
+          type: string
+          format: date-time

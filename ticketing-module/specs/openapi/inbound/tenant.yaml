@@ -1,0 +1,180 @@
+---
+openapi: "3.0.3"
+info:
+  title: "Tenant Rest API"
+  description: "REST API endpoints for managing Client"
+  version: "2025-W1"
+servers:
+- url: "https"
+- url: "http"
+paths:
+  /client:
+    get:
+      tags:
+      - "Client"
+      summary: "Fetch all Clients"
+      description: "Fetch all Clients"
+      operationId: "fetchAllClients"
+      security:
+      - oAuth:
+        - "client:read:all"
+      parameters:
+      - name: "fieldsToExtractCode"
+        in: "query"
+        required: true
+        schema:
+          type: "string"
+        description: "specify the fields that will be present on the response"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/ClientDTO"
+    post:
+      tags:
+      - "Client"
+      summary: "Create a new client"
+      description: "Create a new client"
+      operationId: "createClient"
+      security:
+      - oAuth:
+        - "client:create"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientDTO"
+      responses:
+        "201":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                type: "string"
+                format: "uuid"
+        "409":
+          description: "TENANT-3000"
+  /scheduler/{name}/activate:
+    put:
+      tags:
+      - "Scheduler"
+      summary: "Activate a scheduler by name"
+      description: "Activate a scheduler by name"
+      operationId: "activateScheduler"
+      security:
+      - oAuth:
+        - "scheduler:edit"
+      parameters:
+      - name: "name"
+        description: "scheduler's name"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+  /scheduler/{name}/deactivate:
+    put:
+      tags:
+      - "Scheduler"
+      summary: "Deactivate a scheduler by name"
+      description: "Deactivate a scheduler by name"
+      operationId: "deactivateScheduler"
+      security:
+      - oAuth:
+        - "scheduler:edit"
+      parameters:
+      - name: "name"
+        description: "scheduler's name"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+  /client/{id}:
+    get:
+      tags:
+      - "Client"
+      summary: "Fetch Client By identifier"
+      description: "Fetch Client By identifier"
+      operationId: "fetchClientById"
+      security:
+      - oAuth:
+        - "client:read"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+      - name: "fieldsToExtractCode"
+        in: "query"
+        required: true
+        schema:
+          type: "string"
+        description: "specify the fields that will be present on the response"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientDTO"
+        "404":
+          description: "TENANT-4000"
+components:
+  securitySchemes:
+    oAuth:
+      type: "oauth2"
+      description: "This API uses OAuth 2 with the Authorization Code grant flow."
+      flows:
+        authorizationCode:
+          authorizationUrl: "https://auth.oauth.lao-sarl.cm"
+          tokenUrl: "https://token.oauth.lao-sarl.cm"
+          scopes:
+            client:read: "Read one client"
+            client:read:all: "Read all Tenants"
+  schemas:
+    ClientDTO:
+      type: "object"
+      required:
+      - "tenant"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        tenant:
+          type: "string"
+        name:
+          type: "string"
+        description:
+          type: "string"
+    DomainEventType:
+      type: "string"
+      enum:
+      - "CLIENT_CREATED"
+    ClientCreatedEvent:
+      type: "object"
+      required:
+      - "id"
+      - "name"
+      - "tenant"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        tenant:
+          type: "string"
+        name:
+          type: "string"
+        description:
+          type: "string"
