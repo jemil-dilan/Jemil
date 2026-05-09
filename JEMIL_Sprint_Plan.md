@@ -2,7 +2,7 @@
 
 > **Projet** : JEMIL Transport Ecosystem — Backend Spring Boot  
 > **Architecture** : Modular Monolith + DDD Hexagonal + Event-Driven (Outbox)  
-> **Stack** : Java 21 · Spring Boot 3.2 · Gradle Kotlin · PostgreSQL · Liquibase · RabbitMQ · ArchUnit · Cucumber  
+> **Stack** : Java 25 · Spring Boot 4.0 · Gradle Kotlin · PostgreSQL · Liquibase · RabbitMQ · ArchUnit · Cucumber  
 > **Équipe** : Solo Backend Developer  
 > **Durée totale estimée** : 11 à 14 semaines  
 > **Objectif** : Premier billet vendu via JEMIL en conditions réelles
@@ -11,15 +11,15 @@
 
 ## 🗺️ Vue d'ensemble des Sprints
 
-| Sprint | Nom | Durée | Objectif principal |
-|--------|-----|-------|--------------------|
-| S0 | Fondation & Architecture | 1,5 sem. | Base technique prête, tout le monde peut coder |
-| S1 | Agency & Route Management | 2 sem. | Les agences et routes sont gérables via API |
-| S2 | Booking Core & Seat Locking | 2 sem. | Réservation fiable avec gestion de disponibilité |
-| S3 | Payment MTN MoMo | 3 sem. | Paiements résilients face aux réseaux africains |
-| S4 | Ticket & Validation Offline | 2 sem. | Billets QR + validation contrôleur sans réseau |
-| S5 | Dashboard Agence | 1,5 sem. | Manager peut piloter son activité via API |
-| S6 | Production Readiness | 2 sem. | MVP prêt pour le pilote terrain |
+| Sprint | Nom                         | Durée    | Objectif principal                               |
+|--------|-----------------------------|----------|--------------------------------------------------|
+| S0     | Fondation & Architecture    | 1,5 sem. | Base technique prête, tout le monde peut coder   |
+| S1     | Agency & Route Management   | 2 sem.   | Les agences et routes sont gérables via API      |
+| S2     | Booking Core & Seat Locking | 2 sem.   | Réservation fiable avec gestion de disponibilité |
+| S3     | Payment MTN MoMo            | 3 sem.   | Paiements résilients face aux réseaux africains  |
+| S4     | Ticket & Validation Offline | 2 sem.   | Billets QR + validation contrôleur sans réseau   |
+| S5     | Dashboard Agence            | 1,5 sem. | Manager peut piloter son activité via API        |
+| S6     | Production Readiness        | 2 sem.   | MVP prêt pour le pilote terrain                  |
 
 ---
 
@@ -47,25 +47,25 @@ Chaque ticket est **Done** quand :
 
 ### 📦 BUILD / SETUP
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
-| S0-01 | `build` | Initialiser le projet Gradle Kotlin multi-module | Structure déjà créée — vérifier que `./gradlew build` passe | 🔴 Critique |
-| S0-02 | `build` | Configurer Docker Compose complet | PostgreSQL ×5 + RabbitMQ + SonarQube · Vérifier `docker compose up -d` | 🔴 Critique |
-| S0-03 | `build` | Valider les conventions Gradle (buildSrc) | `spotlessCheck` + `checkstyleMain` + `errorprone` passent sur agency-module | 🔴 Critique |
-| S0-04 | `build` | Configurer Liquibase master changelog | Un changelog par module · Vérifier migration V1 agency sur DB réelle | 🔴 Critique |
+| ID    | Type    | Tâche                                            | Détail                                                                      | Priorité    |
+|-------|---------|--------------------------------------------------|-----------------------------------------------------------------------------|-------------|
+| S0-01 | `build` | Initialiser le projet Gradle Kotlin multi-module | Structure déjà créée — vérifier que `./gradlew build` passe                 | 🔴 Critique |
+| S0-02 | `build` | Configurer Docker Compose complet                | PostgreSQL ×5 + RabbitMQ + SonarQube · Vérifier `docker compose up -d`      | 🔴 Critique |
+| S0-03 | `build` | Valider les conventions Gradle (buildSrc)        | `spotlessCheck` + `checkstyleMain` + `errorprone` passent sur agency-module | 🔴 Critique |
+| S0-04 | `build` | Configurer Liquibase master changelog            | Un changelog par module · Vérifier migration V1 agency sur DB réelle        | 🔴 Critique |
 
 ---
 
 ### ⚙️ FEAT
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
-| S0-05 | `feat` | JWT Authentication + SecurityConfig | `JwtFilter` · `SecurityConfig` · endpoints `/auth/login` et `/auth/refresh` | 🔴 Critique |
-| S0-06 | `feat` | Gestion des rôles | Enum `UserRole` : `PASSENGER`, `AGENCY_MANAGER`, `CONTROLLER`, `ADMIN` | 🔴 Critique |
-| S0-07 | `feat` | Entité `User` + migration Liquibase | Table `users` avec `role`, `phone`, `email`, `password_hash` | 🔴 Critique |
+| ID    | Type   | Tâche                                   | Détail                                                                                                             | Priorité    |
+|-------|--------|-----------------------------------------|--------------------------------------------------------------------------------------------------------------------|-------------|
+| S0-05 | `feat` | JWT Authentication + SecurityConfig     | `JwtFilter` · `SecurityConfig` · endpoints `/auth/login` et `/auth/refresh`                                        | 🔴 Critique |
+| S0-06 | `feat` | Gestion des rôles                       | Enum `UserRole` : `PASSENGER`, `AGENCY_MANAGER`, `CONTROLLER`, `ADMIN`                                             | 🔴 Critique |
+| S0-07 | `feat` | Entité `User` + migration Liquibase     | Table `users` avec `role`, `phone`, `email`, `password_hash`                                                       | 🔴 Critique |
 | S0-08 | `feat` | Outbox Pattern — infrastructure de base | Table `outbox_events` · `OutboxEvent` entity · `OutboxRepository` · `OutboxScheduler` (`@Scheduled` toutes les 5s) | 🔴 Critique |
-| S0-09 | `feat` | Global Exception Handler | `@RestControllerAdvice` · Codes d'erreur standardisés : `DOMAIN_RULE_VIOLATION`, `NOT_FOUND`, `UNAUTHORIZED` | 🟠 Haute |
-| S0-10 | `feat` | Configuration OpenAPI / Swagger + CORS | Swagger UI accessible sur `/swagger-ui.html` · CORS configuré pour le dev Android | 🟠 Haute |
+| S0-09 | `feat` | Global Exception Handler                | `@RestControllerAdvice` · Codes d'erreur standardisés : `DOMAIN_RULE_VIOLATION`, `NOT_FOUND`, `UNAUTHORIZED`       | 🟠 Haute    |
+| S0-10 | `feat` | Configuration OpenAPI / Swagger + CORS  | Swagger UI accessible sur `/swagger-ui.html` · CORS configuré pour le dev Android                                  | 🟠 Haute    |
 
 ---
 
@@ -81,11 +81,11 @@ Chaque ticket est **Done** quand :
 
 ### 📝 DOCS
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
-| S0-14 | `docs` | ADR-001 : Choix Modular Monolith vs Microservices | Documenter la décision + raison + moment du switch | 🟡 Normale |
-| S0-15 | `docs` | ADR-002 : Choix Liquibase vs Flyway | Documenter pourquoi Liquibase (XML structuré, rollback natif) | 🟡 Normale |
-| S0-16 | `docs` | ADR-003 : Choix Outbox Pattern vs ApplicationEvent direct | Documenter pourquoi Outbox (garantie at-least-once delivery) | 🟡 Normale |
+| ID    | Type   | Tâche                                                     | Détail                                                        | Priorité   |
+|-------|--------|-----------------------------------------------------------|---------------------------------------------------------------|------------|
+| S0-14 | `docs` | ADR-001 : Choix Modular Monolith vs Microservices         | Documenter la décision + raison + moment du switch            | 🟡 Normale |
+| S0-15 | `docs` | ADR-002 : Choix Liquibase vs Flyway                       | Documenter pourquoi Liquibase (XML structuré, rollback natif) | 🟡 Normale |
+| S0-16 | `docs` | ADR-003 : Choix Outbox Pattern vs ApplicationEvent direct | Documenter pourquoi Outbox (garantie at-least-once delivery)  | 🟡 Normale |
 
 ---
 
@@ -116,21 +116,21 @@ Chaque ticket est **Done** quand :
 
 ### 🔧 REFACTOR
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
-| S1-11 | `refactor` | Compléter `AgencyRepositoryAdapter` avec schedules | Mapping `Schedule` domaine ↔ `ScheduleJpaEntity` | 🔴 Critique |
-| S1-12 | `refactor` | Valider spec OpenAPI `agency-api.yml` avec le endpoint search | Ajouter les paramètres de recherche et la réponse `ScheduleResponse` | 🟠 Haute |
+| ID    | Type       | Tâche                                                         | Détail                                                               | Priorité    |
+|-------|------------|---------------------------------------------------------------|----------------------------------------------------------------------|-------------|
+| S1-11 | `refactor` | Compléter `AgencyRepositoryAdapter` avec schedules            | Mapping `Schedule` domaine ↔ `ScheduleJpaEntity`                     | 🔴 Critique |
+| S1-12 | `refactor` | Valider spec OpenAPI `agency-api.yml` avec le endpoint search | Ajouter les paramètres de recherche et la réponse `ScheduleResponse` | 🟠 Haute    |
 
 ---
 
 ### 🧪 TEST
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
-| S1-13 | `test` | Tests unitaires `Agency` + `Route` + `Schedule` | Déjà commencé — compléter les cas limites | 🔴 Critique |
-| S1-14 | `test` | Scénarios Cucumber agency-registration.feature | Déjà créé — vérifier que tous les steps passent avec Testcontainers | 🔴 Critique |
-| S1-15 | `test` | Scénario Cucumber : recherche de routes disponibles | `Quand je recherche "Douala" → "Yaoundé" le "2026-05-15"` | 🟠 Haute |
-| S1-16 | `test` | Test d'intégration : `AgencyRepositoryAdapter` | Vérifier save/find sur PostgreSQL réel via Testcontainers | 🟠 Haute |
+| ID    | Type   | Tâche                                               | Détail                                                              | Priorité    |
+|-------|--------|-----------------------------------------------------|---------------------------------------------------------------------|-------------|
+| S1-13 | `test` | Tests unitaires `Agency` + `Route` + `Schedule`     | Déjà commencé — compléter les cas limites                           | 🔴 Critique |
+| S1-14 | `test` | Scénarios Cucumber agency-registration.feature      | Déjà créé — vérifier que tous les steps passent avec Testcontainers | 🔴 Critique |
+| S1-15 | `test` | Scénario Cucumber : recherche de routes disponibles | `Quand je recherche "Douala" → "Yaoundé" le "2026-05-15"`           | 🟠 Haute    |
+| S1-16 | `test` | Test d'intégration : `AgencyRepositoryAdapter`      | Vérifier save/find sur PostgreSQL réel via Testcontainers           | 🟠 Haute    |
 
 ---
 
@@ -161,22 +161,22 @@ Chaque ticket est **Done** quand :
 
 ### 🔧 REFACTOR
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
-| S2-11 | `refactor` | `booking-module` dépend de `agency-module` | Via `project(":agency-module")` · Vérifier ArchUnit : pas d'accès à l'infrastructure agency | 🔴 Critique |
-| S2-12 | `refactor` | Gestion transactions + locking pessimiste si nécessaire | `@Transactional` + `@Lock(PESSIMISTIC_WRITE)` sur `findByScheduleIdAndSeatNumber` | 🟠 Haute |
+| ID    | Type       | Tâche                                                   | Détail                                                                                      | Priorité    |
+|-------|------------|---------------------------------------------------------|---------------------------------------------------------------------------------------------|-------------|
+| S2-11 | `refactor` | `booking-module` dépend de `agency-module`              | Via `project(":agency-module")` · Vérifier ArchUnit : pas d'accès à l'infrastructure agency | 🔴 Critique |
+| S2-12 | `refactor` | Gestion transactions + locking pessimiste si nécessaire | `@Transactional` + `@Lock(PESSIMISTIC_WRITE)` sur `findByScheduleIdAndSeatNumber`           | 🟠 Haute    |
 
 ---
 
 ### 🧪 TEST
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
-| S2-13 | `test` | Tests unitaires `BookingAggregate` | Toutes les transitions de statut · Cas limites : siège déjà pris, booking expiré | 🔴 Critique |
-| S2-14 | `test` | Test de concurrence — double réservation | 2 threads réservent le même siège simultanément → un seul réussit | 🔴 Critique |
-| S2-15 | `test` | Test expiration automatique | Booking créé avec `expiresAt` dans le passé → scheduler l'expire → siège libéré | 🔴 Critique |
-| S2-16 | `test` | Scénario Cucumber : flow réservation complet | `Quand "Jean Kamga" réserve la place 12 sur "Douala → Yaoundé"` | 🟠 Haute |
-| S2-17 | `test` | Scénario Cucumber : siège indisponible | `Alors la réservation échoue avec "SEAT_UNAVAILABLE"` | 🟠 Haute |
+| ID    | Type   | Tâche                                        | Détail                                                                           | Priorité    |
+|-------|--------|----------------------------------------------|----------------------------------------------------------------------------------|-------------|
+| S2-13 | `test` | Tests unitaires `BookingAggregate`           | Toutes les transitions de statut · Cas limites : siège déjà pris, booking expiré | 🔴 Critique |
+| S2-14 | `test` | Test de concurrence — double réservation     | 2 threads réservent le même siège simultanément → un seul réussit                | 🔴 Critique |
+| S2-15 | `test` | Test expiration automatique                  | Booking créé avec `expiresAt` dans le passé → scheduler l'expire → siège libéré  | 🔴 Critique |
+| S2-16 | `test` | Scénario Cucumber : flow réservation complet | `Quand "Jean Kamga" réserve la place 12 sur "Douala → Yaoundé"`                  | 🟠 Haute    |
+| S2-17 | `test` | Scénario Cucumber : siège indisponible       | `Alors la réservation échoue avec "SEAT_UNAVAILABLE"`                            | 🟠 Haute    |
 
 ---
 
@@ -190,49 +190,49 @@ Chaque ticket est **Done** quand :
 
 ### ⚙️ FEAT
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
-| S3-01 | `feat` | `Payment` Aggregate + `PaymentStatus` enum | `INITIATED` → `PENDING` → `CONFIRMED` · `FAILED` · `REFUNDED` | 🔴 Critique |
-| S3-02 | `feat` | `PaymentAttempt` Entity — log de chaque tentative | `referenceId`, `amount`, `currency`, `momoStatus`, `attemptedAt` | 🔴 Critique |
-| S3-03 | `feat` | Migration Liquibase V1 payment — tables `payments` + `payment_attempts` | Index sur `booking_id`, `reference_id` | 🔴 Critique |
-| S3-04 | `feat` | Intégration MTN MoMo API — `RequestToPay` | `MomoApiClient` (RestTemplate ou WebClient) · Sandbox d'abord · Gestion timeout réseau | 🔴 Critique |
-| S3-05 | `feat` | Idempotency Key — éviter les doublons de paiement | `idempotencyKey` = `bookingId + attemptNumber` · Vérifié avant chaque appel MoMo | 🔴 Critique |
-| S3-06 | `feat` | Correlation ID — traçabilité bout en bout | Header `X-Correlation-ID` propagé dans tous les logs et appels MoMo | 🟠 Haute |
-| S3-07 | `feat` | API `POST /payments/initiate` | Initie le paiement MoMo · Retourne `paymentId` + `status: PENDING` | 🔴 Critique |
-| S3-08 | `feat` | Webhook Controller `POST /payments/webhook/momo` | Reçoit les callbacks MTN · Vérifie la signature · Met à jour le statut | 🔴 Critique |
-| S3-09 | `feat` | Vérification signature webhook MoMo | HMAC-SHA256 sur le payload · Rejeter si signature invalide (HTTP 401) | 🔴 Critique |
-| S3-10 | `feat` | `PaymentConfirmedEvent` via Outbox | Payment confirmé → event → consommé par Ticketing en S4 | 🔴 Critique |
-| S3-11 | `feat` | Job de réconciliation `@Scheduled` | Toutes les 10 min · Vérifie les paiements `PENDING` depuis plus de 5 min · Interroge MoMo API pour le statut | 🟠 Haute |
-| S3-12 | `feat` | Gestion des paiements échoués + retry | Max 3 tentatives · Délai exponentiel · Après 3 échecs → booking `CANCELLED` | 🟠 Haute |
+| ID    | Type   | Tâche                                                                   | Détail                                                                                                       | Priorité    |
+|-------|--------|-------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|-------------|
+| S3-01 | `feat` | `Payment` Aggregate + `PaymentStatus` enum                              | `INITIATED` → `PENDING` → `CONFIRMED` · `FAILED` · `REFUNDED`                                                | 🔴 Critique |
+| S3-02 | `feat` | `PaymentAttempt` Entity — log de chaque tentative                       | `referenceId`, `amount`, `currency`, `momoStatus`, `attemptedAt`                                             | 🔴 Critique |
+| S3-03 | `feat` | Migration Liquibase V1 payment — tables `payments` + `payment_attempts` | Index sur `booking_id`, `reference_id`                                                                       | 🔴 Critique |
+| S3-04 | `feat` | Intégration MTN MoMo API — `RequestToPay`                               | `MomoApiClient` (RestTemplate ou WebClient) · Sandbox d'abord · Gestion timeout réseau                       | 🔴 Critique |
+| S3-05 | `feat` | Idempotency Key — éviter les doublons de paiement                       | `idempotencyKey` = `bookingId + attemptNumber` · Vérifié avant chaque appel MoMo                             | 🔴 Critique |
+| S3-06 | `feat` | Correlation ID — traçabilité bout en bout                               | Header `X-Correlation-ID` propagé dans tous les logs et appels MoMo                                          | 🟠 Haute    |
+| S3-07 | `feat` | API `POST /payments/initiate`                                           | Initie le paiement MoMo · Retourne `paymentId` + `status: PENDING`                                           | 🔴 Critique |
+| S3-08 | `feat` | Webhook Controller `POST /payments/webhook/momo`                        | Reçoit les callbacks MTN · Vérifie la signature · Met à jour le statut                                       | 🔴 Critique |
+| S3-09 | `feat` | Vérification signature webhook MoMo                                     | HMAC-SHA256 sur le payload · Rejeter si signature invalide (HTTP 401)                                        | 🔴 Critique |
+| S3-10 | `feat` | `PaymentConfirmedEvent` via Outbox                                      | Payment confirmé → event → consommé par Ticketing en S4                                                      | 🔴 Critique |
+| S3-11 | `feat` | Job de réconciliation `@Scheduled`                                      | Toutes les 10 min · Vérifie les paiements `PENDING` depuis plus de 5 min · Interroge MoMo API pour le statut | 🟠 Haute    |
+| S3-12 | `feat` | Gestion des paiements échoués + retry                                   | Max 3 tentatives · Délai exponentiel · Après 3 échecs → booking `CANCELLED`                                  | 🟠 Haute    |
 
 ---
 
 ### 🔧 REFACTOR
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
+| ID    | Type       | Tâche                                        | Détail                                                                                               | Priorité    |
+|-------|------------|----------------------------------------------|------------------------------------------------------------------------------------------------------|-------------|
 | S3-13 | `refactor` | Transition `Booking → PAID` via Outbox Event | `PaymentService` publie `PaymentConfirmedEvent` → `BookingService` écoute et appelle `booking.pay()` | 🔴 Critique |
-| S3-14 | `refactor` | Gestion des callbacks MoMo dupliqués | Vérifier si paiement déjà `CONFIRMED` avant de traiter → idempotent | 🔴 Critique |
+| S3-14 | `refactor` | Gestion des callbacks MoMo dupliqués         | Vérifier si paiement déjà `CONFIRMED` avant de traiter → idempotent                                  | 🔴 Critique |
 
 ---
 
 ### 🧪 TEST
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
-| S3-15 | `test` | Tests unitaires `PaymentAggregate` — transitions statuts | Tous les cas : confirm, fail, refund | 🔴 Critique |
-| S3-16 | `test` | Test webhook MoMo — signature valide + invalide | Simuler un callback avec signature correcte et incorrecte | 🔴 Critique |
-| S3-17 | `test` | Test réconciliation — paiement bloqué en PENDING | Simuler un timeout MoMo · Vérifier que la réconciliation le résout | 🔴 Critique |
-| S3-18 | `test` | Test idempotency — même booking payé deux fois | Deuxième appel retourne le même résultat sans double débit | 🔴 Critique |
-| S3-19 | `test` | Scénario Cucumber : flow paiement complet simulé | `Quand "Jean" paie sa réservation via MTN MoMo` · `Alors le booking passe à PAID` | 🟠 Haute |
-| S3-20 | `test` | Scénario Cucumber : paiement timeout | `Quand le réseau MoMo ne répond pas` · `Alors la réconciliation résout le statut` | 🟠 Haute |
+| ID    | Type   | Tâche                                                    | Détail                                                                            | Priorité    |
+|-------|--------|----------------------------------------------------------|-----------------------------------------------------------------------------------|-------------|
+| S3-15 | `test` | Tests unitaires `PaymentAggregate` — transitions statuts | Tous les cas : confirm, fail, refund                                              | 🔴 Critique |
+| S3-16 | `test` | Test webhook MoMo — signature valide + invalide          | Simuler un callback avec signature correcte et incorrecte                         | 🔴 Critique |
+| S3-17 | `test` | Test réconciliation — paiement bloqué en PENDING         | Simuler un timeout MoMo · Vérifier que la réconciliation le résout                | 🔴 Critique |
+| S3-18 | `test` | Test idempotency — même booking payé deux fois           | Deuxième appel retourne le même résultat sans double débit                        | 🔴 Critique |
+| S3-19 | `test` | Scénario Cucumber : flow paiement complet simulé         | `Quand "Jean" paie sa réservation via MTN MoMo` · `Alors le booking passe à PAID` | 🟠 Haute    |
+| S3-20 | `test` | Scénario Cucumber : paiement timeout                     | `Quand le réseau MoMo ne répond pas` · `Alors la réconciliation résout le statut` | 🟠 Haute    |
 
 ---
 
 ### 📝 DOCS
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
+| ID    | Type   | Tâche                                 | Détail                                                          | Priorité   |
+|-------|--------|---------------------------------------|-----------------------------------------------------------------|------------|
 | S3-21 | `docs` | Documentation technique webhooks MoMo | Payload attendu · Signature · Cas d'erreur · Procédure de rejeu | 🟡 Normale |
 
 ---
@@ -247,42 +247,42 @@ Chaque ticket est **Done** quand :
 
 ### ⚙️ FEAT
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
-| S4-01 | `feat` | `Ticket` Entity + `TicketStatus` enum | `ISSUED` · `VALIDATED` · `EXPIRED` · `REFUNDED` | 🔴 Critique |
-| S4-02 | `feat` | Migration Liquibase V1 ticketing — table `tickets` | `booking_id`, `qr_token`, `sms_code`, `status`, `issued_at`, `validated_at` | 🔴 Critique |
-| S4-03 | `feat` | Génération QR Code — JWT signé (ZXing) | Payload : `ticketId`, `bookingId`, `passengerId`, `scheduleId`, `exp` · Signé HMAC-SHA256 | 🔴 Critique |
-| S4-04 | `feat` | Génération code SMS de secours | 6 chiffres aléatoires sécurisés · Hashé en base · Valide 24h | 🔴 Critique |
-| S4-05 | `feat` | Envoi SMS via Africa's Talking | `SmsService` · Template : `"JEMIL - Code: 482910 - Bus Douala>YDE 08h00"` | 🔴 Critique |
-| S4-06 | `feat` | `TicketIssuedEvent` via Outbox | `PaymentConfirmedEvent` consommé → ticket généré → `TicketIssuedEvent` publié | 🔴 Critique |
-| S4-07 | `feat` | API `GET /tickets/{id}/qr` | Retourne l'image QR (PNG base64) · Rôle : `PASSENGER` (propriétaire) | 🔴 Critique |
-| S4-08 | `feat` | API `GET /manifests/download?scheduleId={id}` | Télécharge le manifeste complet du voyage (liste passagers + codes) · Rôle : `CONTROLLER` | 🔴 Critique |
-| S4-09 | `feat` | API `POST /tickets/validate` | Valide un QR ou un code SMS · Rôle : `CONTROLLER` · Fonctionne offline avec manifeste en cache | 🔴 Critique |
-| S4-10 | `feat` | Stratégie offline — validation sans réseau | Manifeste téléchargé → stocké localement (Android) · Validation par code SMS · Sync différée des validations | 🔴 Critique |
-| S4-11 | `feat` | `TicketValidatedEvent` via Outbox | Validation → event → consommé par Dashboard (S5) pour stats temps réel | 🟠 Haute |
-| S4-12 | `feat` | Détection doublon QR — un ticket = une validation | Si token déjà `VALIDATED` → HTTP 409 + message `"Billet déjà utilisé"` | 🔴 Critique |
+| ID    | Type   | Tâche                                              | Détail                                                                                                       | Priorité    |
+|-------|--------|----------------------------------------------------|--------------------------------------------------------------------------------------------------------------|-------------|
+| S4-01 | `feat` | `Ticket` Entity + `TicketStatus` enum              | `ISSUED` · `VALIDATED` · `EXPIRED` · `REFUNDED`                                                              | 🔴 Critique |
+| S4-02 | `feat` | Migration Liquibase V1 ticketing — table `tickets` | `booking_id`, `qr_token`, `sms_code`, `status`, `issued_at`, `validated_at`                                  | 🔴 Critique |
+| S4-03 | `feat` | Génération QR Code — JWT signé (ZXing)             | Payload : `ticketId`, `bookingId`, `passengerId`, `scheduleId`, `exp` · Signé HMAC-SHA256                    | 🔴 Critique |
+| S4-04 | `feat` | Génération code SMS de secours                     | 6 chiffres aléatoires sécurisés · Hashé en base · Valide 24h                                                 | 🔴 Critique |
+| S4-05 | `feat` | Envoi SMS via Africa's Talking                     | `SmsService` · Template : `"JEMIL - Code: 482910 - Bus Douala>YDE 08h00"`                                    | 🔴 Critique |
+| S4-06 | `feat` | `TicketIssuedEvent` via Outbox                     | `PaymentConfirmedEvent` consommé → ticket généré → `TicketIssuedEvent` publié                                | 🔴 Critique |
+| S4-07 | `feat` | API `GET /tickets/{id}/qr`                         | Retourne l'image QR (PNG base64) · Rôle : `PASSENGER` (propriétaire)                                         | 🔴 Critique |
+| S4-08 | `feat` | API `GET /manifests/download?scheduleId={id}`      | Télécharge le manifeste complet du voyage (liste passagers + codes) · Rôle : `CONTROLLER`                    | 🔴 Critique |
+| S4-09 | `feat` | API `POST /tickets/validate`                       | Valide un QR ou un code SMS · Rôle : `CONTROLLER` · Fonctionne offline avec manifeste en cache               | 🔴 Critique |
+| S4-10 | `feat` | Stratégie offline — validation sans réseau         | Manifeste téléchargé → stocké localement (Android) · Validation par code SMS · Sync différée des validations | 🔴 Critique |
+| S4-11 | `feat` | `TicketValidatedEvent` via Outbox                  | Validation → event → consommé par Dashboard (S5) pour stats temps réel                                       | 🟠 Haute    |
+| S4-12 | `feat` | Détection doublon QR — un ticket = une validation  | Si token déjà `VALIDATED` → HTTP 409 + message `"Billet déjà utilisé"`                                       | 🔴 Critique |
 
 ---
 
 ### 🔧 REFACTOR
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
-| S4-13 | `refactor` | Stratégie résolution conflits offline | `first-write-wins` + champ `version` sur la validation · Sync au retour réseau | 🟠 Haute |
-| S4-14 | `refactor` | `ticketing-module` consomme `PaymentConfirmedEvent` | Via Spring ApplicationEvent · Pas d'appel direct au payment-module | 🔴 Critique |
+| ID    | Type       | Tâche                                               | Détail                                                                         | Priorité    |
+|-------|------------|-----------------------------------------------------|--------------------------------------------------------------------------------|-------------|
+| S4-13 | `refactor` | Stratégie résolution conflits offline               | `first-write-wins` + champ `version` sur la validation · Sync au retour réseau | 🟠 Haute    |
+| S4-14 | `refactor` | `ticketing-module` consomme `PaymentConfirmedEvent` | Via Spring ApplicationEvent · Pas d'appel direct au payment-module             | 🔴 Critique |
 
 ---
 
 ### 🧪 TEST
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
-| S4-15 | `test` | Tests unitaires `Ticket` — génération + transitions | QR valide · SMS valide · Doublon détecté | 🔴 Critique |
-| S4-16 | `test` | Test JWT QR — token expiré rejeté | Token avec `exp` dans le passé → HTTP 401 | 🔴 Critique |
-| S4-17 | `test` | Test validation offline simulée | Manifeste téléchargé · Réseau coupé simulé · Validation par SMS · Sync au retour | 🔴 Critique |
-| S4-18 | `test` | Test doublon QR — même ticket validé deux fois | Deuxième validation → HTTP 409 | 🔴 Critique |
-| S4-19 | `test` | Scénario Cucumber : flow ticket complet | `Quand le paiement est confirmé` → `Alors "Jean" reçoit un QR et un SMS` | 🟠 Haute |
-| S4-20 | `test` | Scénario Cucumber : contrôleur valide le billet | `Quand le contrôleur scanne le QR de "Jean"` → `Alors le billet est marqué VALIDATED` | 🟠 Haute |
+| ID    | Type   | Tâche                                               | Détail                                                                                | Priorité    |
+|-------|--------|-----------------------------------------------------|---------------------------------------------------------------------------------------|-------------|
+| S4-15 | `test` | Tests unitaires `Ticket` — génération + transitions | QR valide · SMS valide · Doublon détecté                                              | 🔴 Critique |
+| S4-16 | `test` | Test JWT QR — token expiré rejeté                   | Token avec `exp` dans le passé → HTTP 401                                             | 🔴 Critique |
+| S4-17 | `test` | Test validation offline simulée                     | Manifeste téléchargé · Réseau coupé simulé · Validation par SMS · Sync au retour      | 🔴 Critique |
+| S4-18 | `test` | Test doublon QR — même ticket validé deux fois      | Deuxième validation → HTTP 409                                                        | 🔴 Critique |
+| S4-19 | `test` | Scénario Cucumber : flow ticket complet             | `Quand le paiement est confirmé` → `Alors "Jean" reçoit un QR et un SMS`              | 🟠 Haute    |
+| S4-20 | `test` | Scénario Cucumber : contrôleur valide le billet     | `Quand le contrôleur scanne le QR de "Jean"` → `Alors le billet est marqué VALIDATED` | 🟠 Haute    |
 
 ---
 
@@ -296,14 +296,14 @@ Chaque ticket est **Done** quand :
 
 ### ⚙️ FEAT
 
-| ID | Type | Tâche | Détail | Priorité |
-|----|------|-------|--------|----------|
-| S5-01 | `feat` | API `GET /dashboard/manifests?scheduleId={id}&date={date}` | Liste complète des passagers d'un voyage · Rôle : `AGENCY_MANAGER` | 🔴 Critique |
-| S5-02 | `feat` | API `GET /dashboard/occupancy?routeId={id}&date={date}` | Taux d'occupation en % · Places vendues / places totales | 🔴 Critique |
-| S5-03 | `feat` | API `GET /dashboard/revenue?agencyId={id}&date={date}` | CA journalier en FCFA · Nb billets vendus | 🔴 Critique |
-| S5-04 | `feat` | API `GET /dashboard/manifests/export` | Export JSON ou CSV du manifeste · Header `Accept: text/csv` ou `application/json` | 🟠 Haute |
-| S5-05 | `feat` | Notifications SMS confirmation départ | SMS auto envoyé au passager 30 min avant le départ · `@Scheduled` | 🟠 Haute |
-| S5-06 | `feat` | Read Models optimisés — CQRS léger | Vues SQL dédiées aux queries dashboard · Pas de logique dans les requêtes JPA | 🟡 Normale |
+| ID    | Type   | Tâche                                                      | Détail                                                                            | Priorité    |
+|-------|--------|------------------------------------------------------------|-----------------------------------------------------------------------------------|-------------|
+| S5-01 | `feat` | API `GET /dashboard/manifests?scheduleId={id}&date={date}` | Liste complète des passagers d'un voyage · Rôle : `AGENCY_MANAGER`                | 🔴 Critique |
+| S5-02 | `feat` | API `GET /dashboard/occupancy?routeId={id}&date={date}`    | Taux d'occupation en % · Places vendues / places totales                          | 🔴 Critique |
+| S5-03 | `feat` | API `GET /dashboard/revenue?agencyId={id}&date={date}`     | CA journalier en FCFA · Nb billets vendus                                         | 🔴 Critique |
+| S5-04 | `feat` | API `GET /dashboard/manifests/export`                      | Export JSON ou CSV du manifeste · Header `Accept: text/csv` ou `application/json` | 🟠 Haute    |
+| S5-05 | `feat` | Notifications SMS confirmation départ                      | SMS auto envoyé au passager 30 min avant le départ · `@Scheduled`                 | 🟠 Haute    |
+| S5-06 | `feat` | Read Models optimisés — CQRS léger                         | Vues SQL dédiées aux queries dashboard · Pas de logique dans les requêtes JPA     | 🟡 Normale  |
 
 ---
 
