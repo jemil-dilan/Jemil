@@ -20,17 +20,18 @@ public class OutboxEventPublisherImpl implements OutboxEventPublisher {
 
     @Override
     @Transactional
-    public void publish(DomainEvent domainEvent) {
+    public void publish(DomainEvent domainEvent, UUID aggregateId) {
         try {
-            OutboxEvent event = OutboxEvent.builder()
-                    .id(UUID.randomUUID())
-                    .aggregateType(domainEvent.getClass().getSimpleName()) // Basic implementation
-                    .aggregateId(UUID.randomUUID()) // Should ideally come from domainEvent
-                    .eventType(domainEvent.getClass().getName())
-                    .payload(objectMapper.writeValueAsString(domainEvent))
-                    .status(OutboxEventStatus.PENDING)
-                    .createdAt(LocalDateTime.now(ZoneOffset.UTC))
-                    .build();
+            OutboxEvent event =
+                    OutboxEvent.builder()
+                            .id(UUID.randomUUID())
+                            .aggregateType(domainEvent.getClass().getSimpleName()) // Basic implementation
+                            .aggregateId(aggregateId)
+                            .eventType(domainEvent.getClass().getName())
+                            .payload(objectMapper.writeValueAsString(domainEvent))
+                            .status(OutboxEventStatus.PENDING)
+                            .createdAt(LocalDateTime.now(ZoneOffset.UTC))
+                            .build();
 
             outboxRepository.save(event);
         } catch (JsonProcessingException e) {

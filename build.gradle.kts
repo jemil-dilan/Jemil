@@ -149,11 +149,14 @@ fun registerOpenApiGenerateTask(
                 "interfaceOnly" to "true",
                 "useTags" to "true",
                 "useJakartaEe" to "true",
-                "useJackson3" to "true",
-                "useSpringBoot4" to "true",
+                "useSpringBoot3" to "true",
                 "openApiNullable" to "false",
-                "configPackage" to "$taskModelPackage.config",
-            ).apply { putAll(extraConfigOptions) }
+            ).apply {
+                putAll(extraConfigOptions)
+                if (libraryName == "spring-boot") {
+                    put("configPackage", "$taskModelPackage.config")
+                }
+            }
         typeMappings =
             mapOf(
                 "time" to "java.time.LocalTime",

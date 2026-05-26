@@ -5,4 +5,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
 
+    <include file="db/changelog/migrations/V01__create_users.xml"/>
+    <include file="db/changelog/migrations/V02__create_outbox_events.xml"/>
+
 </databaseChangeLog>
