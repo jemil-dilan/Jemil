@@ -1,10 +1,9 @@
 package cm.jemil.agency.adapter.inbound.rest;
 
-import cm.jemil.auth.adapter.inbound.rest.IdMappers;
-import cm.jemil.auth.application.inbound.usecase.CreateDemoUserCase;
-import cm.jemil.auth.domain.demo.Demo;
-import cm.jemil.auth.domain.demo.view.DemoView;
-import cm.jemil.auth.domain.demo.view.DemoView.DemoView1;
+import cm.jemil.agency.adapter.inbound.rest.IdMappers;
+import cm.jemil.agency.application.inbound.usecase.CreateDemoUserCase;
+import cm.jemil.agency.demo.view.DemoView;
+import cm.jemil.agency.demo.view.DemoView.DemoView1;
 import cm.milou.generated.jemil.agency.adapter.rest.inbound.dto.CreateDemoDTO;
 import cm.milou.generated.jemil.agency.adapter.rest.inbound.dto.CreationResponseDTO;
 import cm.milou.generated.jemil.agency.adapter.rest.inbound.dto.DemoDTO;

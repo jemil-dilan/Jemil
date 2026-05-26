@@ -1,6 +1,6 @@
 package cm.jemil.agency.adapter.inbound.rest;
 
-import cm.jemil.auth.domain.demo.DemoId;
+import cm.jemil.agency.demo.DemoId;
 import org.jspecify.annotations.Nullable;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

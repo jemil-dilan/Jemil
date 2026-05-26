@@ -1,7 +1,7 @@
 package cm.jemil.ticket.application.inbound.usecase;
 
-import cm.jemil.auth.domain.demo.DemoRepository;
-import cm.jemil.auth.domain.demo.view.DemoView;
+import cm.jemil.ticket.demo.DemoRepository;
+import cm.jemil.ticket.demo.view.DemoView;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

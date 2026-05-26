@@ -1,9 +1,9 @@
 package cm.jemil.agency.application;
 
-import cm.jemil.auth.application.inbound.usecase.CreateDemoUserCase;
-import cm.jemil.auth.application.inbound.usecase.GetAllDemoUserCase;
-import cm.jemil.auth.application.inbound.usecase.GetDemoByIdUserCase;
-import cm.jemil.auth.domain.demo.DemoRepository;
+import cm.jemil.agency.application.inbound.usecase.CreateDemoUserCase;
+import cm.jemil.agency.application.inbound.usecase.GetAllDemoUserCase;
+import cm.jemil.agency.application.inbound.usecase.GetDemoByIdUserCase;
+import cm.jemil.agency.demo.DemoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

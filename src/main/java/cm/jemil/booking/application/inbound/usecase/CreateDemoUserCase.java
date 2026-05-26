@@ -1,9 +1,9 @@
 package cm.jemil.booking.application.inbound.usecase;
 
-import cm.jemil.auth.domain.demo.Demo;
-import cm.jemil.auth.domain.demo.DemoId;
-import cm.jemil.auth.domain.demo.DemoName;
-import cm.jemil.auth.domain.demo.DemoRepository;
+import cm.jemil.booking.demo.Demo;
+import cm.jemil.booking.demo.DemoId;
+import cm.jemil.booking.demo.DemoName;
+import cm.jemil.booking.demo.DemoRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;

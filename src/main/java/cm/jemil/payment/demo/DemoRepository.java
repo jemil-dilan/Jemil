@@ -1,8 +1,8 @@
 package cm.jemil.payment.demo;
 
 
-import cm.jemil.auth.domain.demo.Demo;
-import cm.jemil.auth.domain.demo.view.DemoView.DemoView1;
+import cm.jemil.payment.demo.Demo;
+import cm.jemil.payment.demo.view.DemoView.DemoView1;
 
 import java.util.List;
 import java.util.Optional;

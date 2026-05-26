@@ -1,8 +1,8 @@
 package cm.jemil.booking.application.inbound.usecase;
 
-import cm.jemil.auth.adapter.outbond.persistence.jpa.entity.DemoNotFoundException;
-import cm.jemil.auth.domain.demo.DemoRepository;
-import cm.jemil.auth.domain.demo.view.DemoView;
+import cm.jemil.booking.demo.DemoNotFoundException;
+import cm.jemil.booking.demo.DemoRepository;
+import cm.jemil.booking.demo.view.DemoView;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;

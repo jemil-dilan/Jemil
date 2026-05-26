@@ -1,9 +1,9 @@
 package cm.jemil.ticket.adapter.outbond.persistence.jpa.repository.mapper;
 
-import cm.jemil.auth.adapter.outbond.persistence.jpa.entity.DemoJpa;
-import cm.jemil.auth.domain.demo.Demo;
-import cm.jemil.auth.domain.demo.DemoId;
-import cm.jemil.auth.domain.demo.DemoName;
+import cm.jemil.ticket.adapter.outbond.persistence.jpa.entity.DemoJpa;
+import cm.jemil.ticket.demo.Demo;
+import cm.jemil.ticket.demo.DemoId;
+import cm.jemil.ticket.demo.DemoName;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

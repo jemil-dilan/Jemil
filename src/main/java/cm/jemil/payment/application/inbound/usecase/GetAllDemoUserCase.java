@@ -1,7 +1,7 @@
 package cm.jemil.payment.application.inbound.usecase;
 
-import cm.jemil.auth.domain.demo.DemoRepository;
-import cm.jemil.auth.domain.demo.view.DemoView;
+import cm.jemil.payment.demo.DemoRepository;
+import cm.jemil.payment.demo.view.DemoView;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

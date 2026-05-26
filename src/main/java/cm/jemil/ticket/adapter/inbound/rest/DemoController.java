@@ -1,13 +1,13 @@
 package cm.jemil.ticket.adapter.inbound.rest;
 
-import cm.jemil.auth.adapter.inbound.rest.DemoRestMapper;
-import cm.jemil.auth.application.inbound.usecase.CreateDemoUserCase;
-import cm.jemil.auth.application.inbound.usecase.GetAllDemoUserCase;
-import cm.jemil.auth.application.inbound.usecase.GetDemoByIdUserCase;
-import cm.milou.generated.jemil.agency.adapter.rest.inbound.api.DemoApi;
-import cm.milou.generated.jemil.agency.adapter.rest.inbound.dto.CreateDemoDTO;
-import cm.milou.generated.jemil.agency.adapter.rest.inbound.dto.CreationResponseDTO;
-import cm.milou.generated.jemil.agency.adapter.rest.inbound.dto.DemoDTO;
+import cm.jemil.ticket.adapter.inbound.rest.DemoRestMapper;
+import cm.jemil.ticket.application.inbound.usecase.CreateDemoUserCase;
+import cm.jemil.ticket.application.inbound.usecase.GetAllDemoUserCase;
+import cm.jemil.ticket.application.inbound.usecase.GetDemoByIdUserCase;
+import cm.milou.generated.jemil.ticket.adapter.rest.inbound.api.DemoApi;
+import cm.milou.generated.jemil.ticket.adapter.rest.inbound.dto.CreateDemoDTO;
+import cm.milou.generated.jemil.ticket.adapter.rest.inbound.dto.CreationResponseDTO;
+import cm.milou.generated.jemil.ticket.adapter.rest.inbound.dto.DemoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,5 +1,5 @@
 @org.jspecify.annotations.NullMarked
-open module cm.lao.lifekora.bloodbank.main {
+open module cm.jemil.backend {
   requires org.jspecify;
   requires java.sql;
   requires spring.boot;
@@ -21,7 +21,5 @@ open module cm.lao.lifekora.bloodbank.main {
   requires static lombok;
   requires static org.mapstruct;
   requires org.slf4j;
-  requires spring.boot.security;
-    requires spring.boot.persistence;
-    requires org.apache.tomcat.embed.core;
+  requires org.apache.tomcat.embed.core;
 }

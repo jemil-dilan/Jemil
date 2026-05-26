@@ -1,8 +1,7 @@
 package cm.jemil.agency.adapter.outbond.persistence.jpa.repository;
 
-import cm.jemil.auth.adapter.outbond.persistence.jpa.entity.DemoJpa;
-import cm.jemil.auth.domain.demo.view.DemoView;
-import cm.jemil.auth.domain.demo.view.DemoView.DemoView1;
+import cm.jemil.agency.adapter.outbond.persistence.jpa.entity.DemoJpa;
+import cm.jemil.agency.demo.view.DemoView.DemoView1;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,7 +14,7 @@ public interface DemoSpringRepository extends JpaRepository<DemoJpa, UUID> {
 
   @Query(
       """
-          SELECT new cm.jemil.auth.domain.demo.view.DemoView.DemoView1(
+          SELECT new cm.jemil.agency.demo.view.DemoView.DemoView1(
                 t.id,
                  t.name
           )
@@ -26,7 +25,7 @@ public interface DemoSpringRepository extends JpaRepository<DemoJpa, UUID> {
 
   @Query(
       """
-          SELECT new cm.jemil.auth.domain.demo.view.DemoView.DemoView1(
+          SELECT new cm.jemil.agency.demo.view.DemoView.DemoView1(
                 t.id,
                  t.name
           )

@@ -1,9 +1,9 @@
 package cm.jemil.agency.adapter.inbound.rest;
 
-import cm.jemil.auth.adapter.inbound.rest.DemoRestMapper;
-import cm.jemil.auth.application.inbound.usecase.CreateDemoUserCase;
-import cm.jemil.auth.application.inbound.usecase.GetAllDemoUserCase;
-import cm.jemil.auth.application.inbound.usecase.GetDemoByIdUserCase;
+import cm.jemil.agency.adapter.inbound.rest.DemoRestMapper;
+import cm.jemil.agency.application.inbound.usecase.CreateDemoUserCase;
+import cm.jemil.agency.application.inbound.usecase.GetAllDemoUserCase;
+import cm.jemil.agency.application.inbound.usecase.GetDemoByIdUserCase;
 import cm.milou.generated.jemil.agency.adapter.rest.inbound.api.DemoApi;
 import cm.milou.generated.jemil.agency.adapter.rest.inbound.dto.CreateDemoDTO;
 import cm.milou.generated.jemil.agency.adapter.rest.inbound.dto.CreationResponseDTO;

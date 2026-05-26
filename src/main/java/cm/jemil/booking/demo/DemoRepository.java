@@ -1,8 +1,8 @@
 package cm.jemil.booking.demo;
 
 
-import cm.jemil.auth.domain.demo.Demo;
-import cm.jemil.auth.domain.demo.view.DemoView.DemoView1;
+import cm.jemil.booking.demo.Demo;
+import cm.jemil.booking.demo.view.DemoView.DemoView1;
 
 import java.util.List;
 import java.util.Optional;

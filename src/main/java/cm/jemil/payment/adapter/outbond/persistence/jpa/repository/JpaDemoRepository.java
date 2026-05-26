@@ -1,10 +1,10 @@
 package cm.jemil.payment.adapter.outbond.persistence.jpa.repository;
 
-import cm.jemil.auth.adapter.outbond.persistence.jpa.repository.DemoSpringRepository;
-import cm.jemil.auth.adapter.outbond.persistence.jpa.repository.mapper.DemoJpaMapper;
-import cm.jemil.auth.domain.demo.Demo;
-import cm.jemil.auth.domain.demo.DemoRepository;
-import cm.jemil.auth.domain.demo.view.DemoView.DemoView1;
+import cm.jemil.payment.adapter.outbond.persistence.jpa.repository.DemoSpringRepository;
+import cm.jemil.payment.adapter.outbond.persistence.jpa.repository.mapper.DemoJpaMapper;
+import cm.jemil.payment.demo.Demo;
+import cm.jemil.payment.demo.DemoRepository;
+import cm.jemil.payment.demo.view.DemoView.DemoView1;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

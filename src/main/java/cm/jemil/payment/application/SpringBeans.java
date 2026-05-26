@@ -1,9 +1,9 @@
 package cm.jemil.payment.application;
 
-import cm.jemil.auth.application.inbound.usecase.CreateDemoUserCase;
-import cm.jemil.auth.application.inbound.usecase.GetAllDemoUserCase;
-import cm.jemil.auth.application.inbound.usecase.GetDemoByIdUserCase;
-import cm.jemil.auth.domain.demo.DemoRepository;
+import cm.jemil.payment.application.inbound.usecase.CreateDemoUserCase;
+import cm.jemil.payment.application.inbound.usecase.GetAllDemoUserCase;
+import cm.jemil.payment.application.inbound.usecase.GetDemoByIdUserCase;
+import cm.jemil.payment.demo.DemoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

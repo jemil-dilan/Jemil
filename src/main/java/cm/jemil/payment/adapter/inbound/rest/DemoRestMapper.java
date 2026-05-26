@@ -1,13 +1,12 @@
 package cm.jemil.payment.adapter.inbound.rest;
 
-import cm.jemil.auth.adapter.inbound.rest.IdMappers;
-import cm.jemil.auth.application.inbound.usecase.CreateDemoUserCase;
-import cm.jemil.auth.domain.demo.Demo;
-import cm.jemil.auth.domain.demo.view.DemoView;
-import cm.jemil.auth.domain.demo.view.DemoView.DemoView1;
-import cm.milou.generated.jemil.agency.adapter.rest.inbound.dto.CreateDemoDTO;
-import cm.milou.generated.jemil.agency.adapter.rest.inbound.dto.CreationResponseDTO;
-import cm.milou.generated.jemil.agency.adapter.rest.inbound.dto.DemoDTO;
+import cm.jemil.payment.adapter.inbound.rest.IdMappers;
+import cm.jemil.payment.application.inbound.usecase.CreateDemoUserCase;
+import cm.jemil.payment.demo.view.DemoView;
+import cm.jemil.payment.demo.view.DemoView.DemoView1;
+import cm.milou.generated.jemil.payment.adapter.rest.inbound.dto.CreateDemoDTO;
+import cm.milou.generated.jemil.payment.adapter.rest.inbound.dto.CreationResponseDTO;
+import cm.milou.generated.jemil.payment.adapter.rest.inbound.dto.DemoDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

@@ -1,9 +1,9 @@
 package cm.jemil.agency.application.inbound.usecase;
 
-import cm.jemil.auth.domain.demo.Demo;
-import cm.jemil.auth.domain.demo.DemoId;
-import cm.jemil.auth.domain.demo.DemoName;
-import cm.jemil.auth.domain.demo.DemoRepository;
+import cm.jemil.agency.demo.Demo;
+import cm.jemil.agency.demo.DemoId;
+import cm.jemil.agency.demo.DemoName;
+import cm.jemil.agency.demo.DemoRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;

@@ -1,8 +1,8 @@
 package cm.jemil.ticket.demo;
 
 
-import cm.jemil.auth.domain.demo.Demo;
-import cm.jemil.auth.domain.demo.view.DemoView.DemoView1;
+import cm.jemil.ticket.demo.Demo;
+import cm.jemil.ticket.demo.view.DemoView.DemoView1;
 
 import java.util.List;
 import java.util.Optional;

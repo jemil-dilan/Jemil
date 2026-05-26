@@ -1,8 +1,8 @@
 package cm.jemil.ticket.demo;
 
-import cm.jemil.auth.domain.demo.DemoCreatedEvent;
-import cm.jemil.auth.domain.demo.DemoId;
-import cm.jemil.auth.domain.demo.DemoName;
+import cm.jemil.ticket.demo.DemoCreatedEvent;
+import cm.jemil.ticket.demo.DemoId;
+import cm.jemil.ticket.demo.DemoName;
 import lombok.Getter;
 
 import java.util.Objects;
