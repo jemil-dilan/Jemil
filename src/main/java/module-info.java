@@ -18,6 +18,8 @@ open module cm.jemil.backend {
   requires jakarta.validation;
   requires jakarta.annotation;
   requires com.fasterxml.jackson.annotation;
+  requires com.fasterxml.jackson.core;
+  requires com.fasterxml.jackson.databind;
   requires static lombok;
   requires static org.mapstruct;
   requires org.slf4j;

@@ -19,7 +19,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(25))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
@@ -152,6 +152,7 @@ fun registerOpenApiGenerateTask(
                 "useJackson3" to "true",
                 "useSpringBoot4" to "true",
                 "openApiNullable" to "false",
+                "configPackage" to "$taskModelPackage.config",
             ).apply { putAll(extraConfigOptions) }
         typeMappings =
             mapOf(
@@ -171,8 +172,8 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/inbound/agency.yaml",
     outputDirName = "agency",
     libraryName = "spring-boot",
-    taskApiPackage = "cm.milou.generated.jemil.agency.adapter.rest.inbound.api",
-    taskModelPackage = "cm.milou.generated.jemil.agency.adapter.rest.inbound.dto",
+    taskApiPackage = "cm.jemil.generated.agency.adapter.rest.inbound.api",
+    taskModelPackage = "cm.jemil.generated.agency.adapter.rest.inbound.dto",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -184,7 +185,7 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/outbound/domain-events.yaml",
     outputDirName = "agency-events",
     libraryName = "spring-http-interface",
-    taskModelPackage = "cm.lao.generated.jemil.agency.adapter.messaging.outbound.dto",
+    taskModelPackage = "cm.jemil.generated.agency.adapter.messaging.outbound.dto",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -196,8 +197,8 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/inbound/booking.yaml",
     outputDirName = "booking",
     libraryName = "spring-boot",
-    taskApiPackage = "cm.milou.generated.jemil.booking.adapter.rest.inbound.api",
-    taskModelPackage = "cm.milou.generated.jemil.booking.adapter.rest.inbound.dto",
+    taskApiPackage = "cm.jemil.generated.booking.adapter.rest.inbound.api",
+    taskModelPackage = "cm.jemil.generated.booking.adapter.rest.inbound.dto",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -209,7 +210,7 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/outbound/booking-domain-events.yaml",
     outputDirName = "booking-events",
     libraryName = "spring-http-interface",
-    taskModelPackage = "cm.lao.generated.jemil.booking.adapter.messaging.outbound.dto",
+    taskModelPackage = "cm.jemil.generated.booking.adapter.messaging.outbound.dto",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -220,8 +221,8 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/inbound/payment.yaml",
     outputDirName = "payment",
     libraryName = "spring-boot",
-    taskApiPackage = "cm.milou.generated.jemil.payment.adapter.rest.inbound.api",
-    taskModelPackage = "cm.milou.generated.jemil.payment.adapter.rest.inbound.dto",
+    taskApiPackage = "cm.jemil.generated.payment.adapter.rest.inbound.api",
+    taskModelPackage = "cm.jemil.generated.payment.adapter.rest.inbound.dto",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -233,7 +234,32 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/outbound/payment-domain-events.yaml",
     outputDirName = "payment-events",
     libraryName = "spring-http-interface",
-    taskModelPackage = "cm.lao.generated.jemil.payment.adapter.messaging.outbound.dto",
+    taskModelPackage = "cm.jemil.generated.payment.adapter.messaging.outbound.dto",
+    extraConfigOptions =
+        mapOf(
+            "skipDefaultInterface" to "true",
+        ),
+)
+
+registerOpenApiGenerateTask(
+    taskName = "ticketOpenApiGenerate",
+    specFile = "$rootDir/specs/openapi/inbound/ticket.yaml",
+    outputDirName = "ticket",
+    libraryName = "spring-boot",
+    taskApiPackage = "cm.jemil.generated.ticket.adapter.rest.inbound.api",
+    taskModelPackage = "cm.jemil.generated.ticket.adapter.rest.inbound.dto",
+    extraConfigOptions =
+        mapOf(
+            "skipDefaultInterface" to "true",
+        ),
+)
+
+registerOpenApiGenerateTask(
+    taskName = "ticketDomainEventsOpenApiGenerate",
+    specFile = "$rootDir/specs/openapi/outbound/domain-events.yaml",
+    outputDirName = "ticket-events",
+    libraryName = "spring-http-interface",
+    taskModelPackage = "cm.jemil.generated.ticket.adapter.messaging.outbound.dto",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -248,6 +274,8 @@ tasks.compileJava.get().dependsOn(
     tasks["bookingDomainEventsOpenApiGenerate"],
     tasks["paymentOpenApiGenerate"],
     tasks["paymentDomainEventsOpenApiGenerate"],
+    tasks["ticketOpenApiGenerate"],
+    tasks["ticketDomainEventsOpenApiGenerate"],
 )
 
 // Inclure le code OpenAPI généré dans les sources Java
@@ -274,6 +302,14 @@ sourceSets.main.get().java.srcDirs(
         .asFile.path,
     layout.buildDirectory
         .dir("generated/sources/openapi/payment-events/src/main/java")
+        .get()
+        .asFile.path,
+    layout.buildDirectory
+        .dir("generated/sources/openapi/ticket/src/main/java")
+        .get()
+        .asFile.path,
+    layout.buildDirectory
+        .dir("generated/sources/openapi/ticket-events/src/main/java")
         .get()
         .asFile.path,
 )
