@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 public record PageData<T>(long total, List<T> elements) {
 
-  public Stream<T> stream() {
-    return elements.stream();
-  }
+    public Stream<T> stream() {
+        return elements.stream();
+    }
 }

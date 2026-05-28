@@ -1,33 +1,31 @@
 package cm.jemil.agency.adapter.outbond.persistence.jpa.repository;
 
-import cm.jemil.agency.adapter.outbond.persistence.jpa.repository.DemoSpringRepository;
 import cm.jemil.agency.adapter.outbond.persistence.jpa.repository.mapper.DemoJpaMapper;
 import cm.jemil.agency.demo.Demo;
 import cm.jemil.agency.demo.DemoRepository;
 import cm.jemil.agency.demo.view.DemoView.DemoView1;
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JpaDemoRepository implements DemoRepository {
-  private final DemoSpringRepository demoSpringRepository;
-  private final DemoJpaMapper demoJpaMapper;
+    private final DemoSpringRepository demoSpringRepository;
+    private final DemoJpaMapper demoJpaMapper;
 
-  @Override
-  public void save(Demo value) {
-    demoSpringRepository.save(demoJpaMapper.fromDomain(value));
-  }
+    @Override
+    public void save(Demo value) {
+        demoSpringRepository.save(demoJpaMapper.fromDomain(value));
+    }
 
-  @Override
-  public List<DemoView1> loadAllView1() {
-    return demoSpringRepository.findAllAsView1();
-  }
+    @Override
+    public List<DemoView1> loadAllView1() {
+        return demoSpringRepository.findAllAsView1();
+    }
 
-  @Override
-  public Optional<DemoView1> loadDemoByIdView1(UUID demoID) {
-    return demoSpringRepository.findByIdAsView1(demoID);
-  }
+    @Override
+    public Optional<DemoView1> loadDemoByIdView1(UUID demoID) {
+        return demoSpringRepository.findByIdAsView1(demoID);
+    }
 }

@@ -2,18 +2,17 @@ package cm.jemil.ticket.adapter.outbond.persistence.jpa.repository;
 
 import cm.jemil.ticket.adapter.outbond.persistence.jpa.entity.DemoJpa;
 import cm.jemil.ticket.demo.view.DemoView.DemoView1;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
 public interface DemoSpringRepository extends JpaRepository<DemoJpa, UUID> {
 
-  @Query(
-      """
+    @Query(
+            """
           SELECT new cm.jemil.ticket.demo.view.DemoView.DemoView1(
                 t.id,
                  t.name
@@ -21,15 +20,15 @@ public interface DemoSpringRepository extends JpaRepository<DemoJpa, UUID> {
           FROM DemoJpa t
           WHERE t.id = :demoID
       """)
-  Optional<DemoView1> findByIdAsView1(@Param("demoID") UUID demoID);
+    Optional<DemoView1> findByIdAsView1(@Param("demoID") UUID demoID);
 
-  @Query(
-      """
+    @Query(
+            """
           SELECT new cm.jemil.ticket.demo.view.DemoView.DemoView1(
                 t.id,
                  t.name
           )
           FROM DemoJpa t
       """)
-  List<DemoView1> findAllAsView1();
+    List<DemoView1> findAllAsView1();
 }

@@ -3,14 +3,13 @@ package cm.jemil.shared.exception.handler;
 import cm.jemil.shared.exception.BusinessRuleException;
 import cm.jemil.shared.exception.DomainException;
 import cm.jemil.shared.exception.NotFoundException;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

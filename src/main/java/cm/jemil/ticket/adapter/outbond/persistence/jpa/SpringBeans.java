@@ -11,13 +11,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @EntityScan(basePackages = {"cm.jemil.ticket.adapter.outbound.persistence.jpa.entity"})
-@EnableJpaRepositories(
-    basePackages = {"cm.jemil.ticket.adapter.outbound.persistence.jpa.repository"})
+@EnableJpaRepositories(basePackages = {"cm.jemil.ticket.adapter.outbound.persistence.jpa.repository"})
 public class SpringBeans {
 
-  @Bean
-  public DemoRepository demoRepository(
-      DemoSpringRepository demoSpringRepository, DemoJpaMapper demoJpaMapper) {
-    return new JpaDemoRepository(demoSpringRepository, demoJpaMapper);
-  }
+    @Bean
+    public DemoRepository demoRepository(DemoSpringRepository demoSpringRepository, DemoJpaMapper demoJpaMapper) {
+        return new JpaDemoRepository(demoSpringRepository, demoJpaMapper);
+    }
 }

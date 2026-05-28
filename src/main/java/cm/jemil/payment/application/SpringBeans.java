@@ -12,20 +12,18 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class SpringBeans {
 
-  @Bean
-  public CreateDemoUserCase createDemoUserCase(
-      DemoRepository demoRepository) {
-    return new CreateDemoUserCase(demoRepository);
-  }
+    @Bean
+    public CreateDemoUserCase createDemoUserCase(DemoRepository demoRepository) {
+        return new CreateDemoUserCase(demoRepository);
+    }
 
-  @Bean
-  public GetAllDemoUserCase getAllDemoUserCase(DemoRepository demoRepository) {
-    return new GetAllDemoUserCase(demoRepository);
-  }
+    @Bean
+    public GetAllDemoUserCase getAllDemoUserCase(DemoRepository demoRepository) {
+        return new GetAllDemoUserCase(demoRepository);
+    }
 
-  @Bean
-  public GetDemoByIdUserCase getAlGetDemoByIdUserCase(DemoRepository demoRepository) {
-    return new GetDemoByIdUserCase(demoRepository);
-  }
-
+    @Bean
+    public GetDemoByIdUserCase getAlGetDemoByIdUserCase(DemoRepository demoRepository) {
+        return new GetDemoByIdUserCase(demoRepository);
+    }
 }

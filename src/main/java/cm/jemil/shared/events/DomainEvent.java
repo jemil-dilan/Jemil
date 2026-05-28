@@ -1,4 +1,3 @@
 package cm.jemil.shared.events;
 
-public interface DomainEvent {
-}
+public interface DomainEvent {}
