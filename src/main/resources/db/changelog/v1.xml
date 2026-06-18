@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+	<changeSet id="JEMIL-3" author="jemil-cli">
+		<!-- Outbox Pattern -->
+		<createTable tableName="outbox_events">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="aggregate_type" type="varchar(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="aggregate_id" type="varchar(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="event_type" type="varchar(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="payload" type="TEXT">
+				<constraints nullable="false" />
+			</column>
+			<column name="created_at" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="status" type="varchar(20)">
+				<constraints nullable="false" />
+			</column>
+			<column name="processed_at" type="TIMESTAMP" />
+		</createTable>
+
+		<!-- Agency Domain -->
+		<createTable tableName="agencies">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="status" type="varchar(20)">
+				<constraints nullable="false" />
+			</column>
+			<column name="city" type="varchar(100)" />
+			<column name="district" type="varchar(100)" />
+			<column name="country_code" type="varchar(10)" />
+			<column name="phone_number" type="varchar(20)" />
+		</createTable>
+
+		<createTable tableName="routes">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="agency_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_routes_agency" referencedTableName="agencies"
+					referencedColumnNames="id" />
+			</column>
+			<column name="departure" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="arrival" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="price" type="DECIMAL(19, 2)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="schedules">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="route_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_schedules_route" referencedTableName="routes"
+					referencedColumnNames="id" />
+			</column>
+			<column name="departure_time" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="total_seats" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="available_seats" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="version" type="BIGINT" defaultValueNumeric="0">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+	</changeSet>
+
+</databaseChangeLog>
