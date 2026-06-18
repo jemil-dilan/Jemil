@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+	<changeSet id="JEMIL-2" author="jemil-dilan">
+
+		<createTable tableName="t_auth_demo">
+			<column name="c_id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="c_name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="t_agency_demo">
+			<column name="c_id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="c_name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="t_booking_demo">
+			<column name="c_id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="c_name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="t_payment_demo">
+			<column name="c_id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="c_name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="t_ticket_demo">
+			<column name="c_id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="c_name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createIndex indexName="idx_auth_demo_name"
+			tableName="t_auth_demo">
+			<column name="c_name" />
+		</createIndex>
+
+		<createIndex indexName="idx_agency_demo_name"
+			tableName="t_agency_demo">
+			<column name="c_name" />
+		</createIndex>
+
+		<createIndex indexName="idx_booking_demo_name"
+			tableName="t_booking_demo">
+			<column name="c_name" />
+		</createIndex>
+
+		<createIndex indexName="idx_payment_demo_name"
+			tableName="t_payment_demo">
+			<column name="c_name" />
+		</createIndex>
+
+		<createIndex indexName="idx_ticket_demo_name"
+			tableName="t_ticket_demo">
+			<column name="c_name" />
+		</createIndex>
+
+	</changeSet>
+
+</databaseChangeLog>
+

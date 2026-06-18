@@ -1,8 +1,8 @@
 package cm.jemil.ticket.application.inbound.usecase;
 
-import cm.jemil.ticket.demo.DemoNotFoundException;
-import cm.jemil.ticket.demo.DemoRepository;
-import cm.jemil.ticket.demo.view.DemoView;
+import cm.jemil.ticket.domain.demo.DemoNotFoundException;
+import cm.jemil.ticket.domain.demo.DemoRepository;
+import cm.jemil.ticket.domain.demo.view.DemoView;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 

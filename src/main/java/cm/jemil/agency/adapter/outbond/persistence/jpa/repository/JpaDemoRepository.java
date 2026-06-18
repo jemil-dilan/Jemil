@@ -1,9 +1,9 @@
 package cm.jemil.agency.adapter.outbond.persistence.jpa.repository;
 
-import cm.jemil.agency.adapter.outbond.persistence.jpa.repository.mapper.DemoJpaMapper;
-import cm.jemil.agency.demo.Demo;
-import cm.jemil.agency.demo.DemoRepository;
-import cm.jemil.agency.demo.view.DemoView.DemoView1;
+import cm.jemil.agency.adapter.outbond.persistence.jpa.repository.mapper.AgencyDemoJpaMapper;
+import cm.jemil.agency.domain.demo.Demo;
+import cm.jemil.agency.domain.demo.DemoRepository;
+import cm.jemil.agency.domain.demo.view.DemoView.DemoView1;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JpaDemoRepository implements DemoRepository {
-    private final DemoSpringRepository demoSpringRepository;
-    private final DemoJpaMapper demoJpaMapper;
+    private final AgencyDemoSpringRepository demoSpringRepository;
+    private final AgencyDemoJpaMapper demoJpaMapper;
 
     @Override
     public void save(Demo value) {

@@ -25,7 +25,7 @@ public class DemoController implements DemoApi {
     private final CreateDemoUserCase createDemoUserCase;
     private final GetAllDemoUserCase getAllDemoUserCase;
     private final GetDemoByIdUserCase getDemoByIdUseCase;
-    private final DemoRestMapper demoRestMapper;
+    private final BookingDemoRestMapper demoRestMapper;
 
     @Override
     public ResponseEntity<List<DemoDTO>> fetchAllDemo(String fieldsToExtractCode) {

@@ -1,6 +1,6 @@
 package cm.jemil.booking.adapter.outbond.persistence.jpa.repository;
 
-import cm.jemil.booking.adapter.outbond.persistence.jpa.repository.mapper.DemoJpaMapper;
+import cm.jemil.booking.adapter.outbond.persistence.jpa.repository.mapper.BookingDemoJpaMapper;
 import cm.jemil.booking.demo.Demo;
 import cm.jemil.booking.demo.DemoRepository;
 import cm.jemil.booking.demo.view.DemoView.DemoView1;
@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JpaDemoRepository implements DemoRepository {
-    private final DemoSpringRepository demoSpringRepository;
-    private final DemoJpaMapper demoJpaMapper;
+    private final BookingDemoSpringRepository demoSpringRepository;
+    private final BookingDemoJpaMapper demoJpaMapper;
 
     @Override
     public void save(Demo value) {

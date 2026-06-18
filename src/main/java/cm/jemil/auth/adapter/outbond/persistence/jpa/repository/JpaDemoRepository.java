@@ -1,6 +1,6 @@
 package cm.jemil.auth.adapter.outbond.persistence.jpa.repository;
 
-import cm.jemil.auth.adapter.outbond.persistence.jpa.repository.mapper.DemoJpaMapper;
+import cm.jemil.auth.adapter.outbond.persistence.jpa.repository.mapper.AuthDemoJpaMapper;
 import cm.jemil.auth.domain.demo.Demo;
 import cm.jemil.auth.domain.demo.DemoRepository;
 import cm.jemil.auth.domain.demo.view.DemoView.DemoView1;
@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JpaDemoRepository implements DemoRepository {
-    private final DemoSpringRepository demoSpringRepository;
-    private final DemoJpaMapper demoJpaMapper;
+    private final AuthDemoSpringRepository demoSpringRepository;
+    private final AuthDemoJpaMapper demoJpaMapper;
 
     @Override
     public void save(Demo value) {

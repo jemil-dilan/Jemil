@@ -1,8 +1,8 @@
 package cm.jemil.payment.adapter.outbond.persistence.jpa;
 
-import cm.jemil.payment.adapter.outbond.persistence.jpa.repository.DemoSpringRepository;
 import cm.jemil.payment.adapter.outbond.persistence.jpa.repository.JpaDemoRepository;
-import cm.jemil.payment.adapter.outbond.persistence.jpa.repository.mapper.DemoJpaMapper;
+import cm.jemil.payment.adapter.outbond.persistence.jpa.repository.PaymentDemoSpringRepository;
+import cm.jemil.payment.adapter.outbond.persistence.jpa.repository.mapper.PaymentDemoJpaMapper;
 import cm.jemil.payment.demo.DemoRepository;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +15,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class SpringBeans {
 
     @Bean("paymentDemoRepository")
-    public DemoRepository demoRepository(DemoSpringRepository demoSpringRepository, DemoJpaMapper demoJpaMapper) {
+    public DemoRepository demoRepository(
+            PaymentDemoSpringRepository demoSpringRepository, PaymentDemoJpaMapper demoJpaMapper) {
         return new JpaDemoRepository(demoSpringRepository, demoJpaMapper);
     }
 }
