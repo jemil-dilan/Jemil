@@ -1,8 +1,8 @@
 package cm.jemil.agency.application.inbound.usecase;
 
-import cm.jemil.agency.demo.DemoNotFoundException;
-import cm.jemil.agency.demo.DemoRepository;
-import cm.jemil.agency.demo.view.DemoView;
+import cm.jemil.agency.domain.demo.DemoRepository;
+import cm.jemil.agency.domain.demo.view.DemoView;
+import cm.jemil.agency.domain.exception.DemoNotFoundException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 

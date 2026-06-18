@@ -14,6 +14,7 @@ class HexagonalArchitectureTest {
     private static final String BOOKING = "cm.jemil.booking..";
     private static final String PAYMENT = "cm.jemil.payment..";
     private static final String TICKET = "cm.jemil.ticket..";
+    private static final String TRIP = "cm.jemil.trip..";
     private static final String SHARED = "cm.jemil.shared..";
 
     @ArchTest
@@ -22,7 +23,7 @@ class HexagonalArchitectureTest {
             .resideInAPackage(AUTH)
             .should()
             .dependOnClassesThat()
-            .resideInAnyPackage(AGENCY, BOOKING, PAYMENT, TICKET);
+            .resideInAnyPackage(AGENCY, BOOKING, PAYMENT, TICKET, TRIP);
 
     @ArchTest
     static final ArchRule AGENCY_MUST_NOT_DEPEND_ON_SIBLING_MODULES = noClasses()
@@ -30,7 +31,7 @@ class HexagonalArchitectureTest {
             .resideInAPackage(AGENCY)
             .should()
             .dependOnClassesThat()
-            .resideInAnyPackage(AUTH, BOOKING, PAYMENT, TICKET);
+            .resideInAnyPackage(AUTH, BOOKING, PAYMENT, TICKET, TRIP);
 
     @ArchTest
     static final ArchRule BOOKING_MUST_NOT_DEPEND_ON_SIBLING_MODULES = noClasses()
@@ -38,7 +39,7 @@ class HexagonalArchitectureTest {
             .resideInAPackage(BOOKING)
             .should()
             .dependOnClassesThat()
-            .resideInAnyPackage(AUTH, AGENCY, PAYMENT, TICKET);
+            .resideInAnyPackage(AUTH, AGENCY, PAYMENT, TICKET, TRIP);
 
     @ArchTest
     static final ArchRule PAYMENT_MUST_NOT_DEPEND_ON_SIBLING_MODULES = noClasses()
@@ -46,7 +47,7 @@ class HexagonalArchitectureTest {
             .resideInAPackage(PAYMENT)
             .should()
             .dependOnClassesThat()
-            .resideInAnyPackage(AUTH, AGENCY, BOOKING, TICKET);
+            .resideInAnyPackage(AUTH, AGENCY, BOOKING, TICKET, TRIP);
 
     @ArchTest
     static final ArchRule TICKET_MUST_NOT_DEPEND_ON_SIBLING_MODULES = noClasses()
@@ -54,7 +55,15 @@ class HexagonalArchitectureTest {
             .resideInAPackage(TICKET)
             .should()
             .dependOnClassesThat()
-            .resideInAnyPackage(AUTH, AGENCY, BOOKING, PAYMENT);
+            .resideInAnyPackage(AUTH, AGENCY, BOOKING, PAYMENT, TRIP);
+
+    @ArchTest
+    static final ArchRule TRIP_MUST_NOT_DEPEND_ON_SIBLING_MODULES = noClasses()
+            .that()
+            .resideInAPackage(TRIP)
+            .should()
+            .dependOnClassesThat()
+            .resideInAnyPackage(AUTH, AGENCY, BOOKING, PAYMENT, TICKET);
 
     @ArchTest
     static final ArchRule APPLICATION_MUST_NOT_DEPEND_ON_ADAPTER_PACKAGES = noClasses()
@@ -70,5 +79,5 @@ class HexagonalArchitectureTest {
             .resideInAPackage(SHARED)
             .should()
             .dependOnClassesThat()
-            .resideInAnyPackage(AUTH, AGENCY, BOOKING, PAYMENT, TICKET);
+            .resideInAnyPackage(AUTH, AGENCY, BOOKING, PAYMENT, TICKET, TRIP);
 }

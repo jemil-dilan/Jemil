@@ -106,10 +106,8 @@ paths:
     post:
       tags:
         - "Agency"
-      summary: "Enregistrer une nouvelle agence"
-      description: "|
-        Enregistre une agence de transport comme partenaire JEMIL.
-        L'agence est créée avec le statut ACTIVE par défaut."
+      summary: "Create a new agency"
+      description: "Create a new Agency"
       operationId: "registerAgency"
       requestBody:
         required: true
@@ -123,7 +121,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AgencyDTO'
+                $ref: '#/components/schemas/CreationResponseDTO'
         '400':
           description: Données invalides ou règle métier violée
           content:
@@ -290,13 +288,17 @@ components:
           type: "string"
           minLength: "2"
           maxLength: "100"
-          description: "Nom commercial de l'agence"
+          description: "Agency name"
           example: "Global Voyages"
         address:
           $ref: "#/components/schemas/AddressDTO"
         phoneNumber:
           $ref: "#/components/schemas/PhoneNumberDTO"
-
+        licenseNumber:
+          type: "string"
+          description: "Agency license number delivered by authorities"
+        commissionRate:
+          type: "number"
     AddRouteDTO:
       type: "object"
       required:

@@ -62,6 +62,7 @@ dependencies {
 
     // ── OpenAPI / Docs ──────────────────────────────────────────
     implementation(libs.springdoc.openapi)
+    implementation("org.apache.tomcat.embed:tomcat-embed-el")
 
     // ── Observability ────────────────────────────────────────────
     implementation(libs.logstash.logback.encoder)
@@ -148,7 +149,7 @@ tasks.withType<Checkstyle>().configureEach {
 // ── Tests ────────────────────────────────────────────────────
 tasks.withType<Test> {
     useJUnitPlatform()
-    jvmArgs("-XX:+EnableDynamicAgentLoading")
+    jvmArgs("-XX:+EnableDynamicAgentLoading", "--add-reads", "org.hibernate.validator=ALL-UNNAMED")
     testLogging {
         events("passed", "skipped", "failed")
     }
