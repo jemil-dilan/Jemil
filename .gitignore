@@ -44,3 +44,8 @@ secrets/
 # ── Code généré OpenAPI ───────────────────────────────────
 # (généré à chaque build — ne pas committer)
 **/build/generated/
+
+.env.example
+.gradle-user-home/
+.agents/
+.codex/

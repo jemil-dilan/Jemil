@@ -3,7 +3,7 @@ package cm.jemil.payment.adapter.inbound.rest;
 import cm.jemil.generated.payment.adapter.rest.inbound.dto.CreateDemoDTO;
 import cm.jemil.generated.payment.adapter.rest.inbound.dto.CreationResponseDTO;
 import cm.jemil.generated.payment.adapter.rest.inbound.dto.DemoDTO;
-import cm.jemil.payment.application.inbound.usecase.CreateDemoUserCase;
+import cm.jemil.payment.application.inbound.usecase.CreateDemoUseCase;
 import cm.jemil.payment.demo.view.DemoView;
 import java.util.UUID;
 import org.mapstruct.InjectionStrategy;
@@ -28,7 +28,7 @@ public interface PaymentDemoRestMapper {
     @Mapping(target = "name", source = "demoName")
     DemoDTO fromDomain(DemoView.DemoView1 view);
 
-    CreateDemoUserCase.CreateDemoCommand toCreateDemo(CreateDemoDTO dto);
+    CreateDemoUseCase.CreateDemoCommand toCreateDemo(CreateDemoDTO dto);
 
     default CreationResponseDTO fromDomain(UUID id) {
         var response = new CreationResponseDTO();

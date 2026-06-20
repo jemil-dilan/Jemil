@@ -2,25 +2,76 @@
 openapi: "3.0.3"
 info:
   title: "JEMIL Agency API"
-  description: "API de gestion des agences de transport partenaires JEMIL.
+  description: "API for managing partner transport agencies in the JEMIL platform.
     
-    Ce contrat est la source de vérité entre le backend et les clients
-    (app mobile Android, dashboard web agence, équipe QA).
+    This contract is the single source of truth between the backend and clients 
+    (Android mobile app, agency web dashboard, QA team).
     
-    **Règle** : toute modification de ce fichier nécessite une revue.
-    Le code est généré depuis ce spec — pas l'inverse."
-  version: "2026-W01"
+    **Rule**: Any modification to this file requires review.
+    Code is generated from this spec — not the other way around."
+  version: "2026-W02"
   contact:
     name: "JEMIL Dev Team"
+
 servers:
-- url: "https"
-- url: "http"
+  - url: "http://localhost:8080"
+    description: "Local development"
+  - url: "https://api.jemil.cm"
+    description: "Production"
+
 tags:
 - name: "Demo"
   description: "Demo operations"
+- name: "City"
+  description: "Cities management"
 - name: "Agency"
-  description: "Agencies operations"
+  description: "Agency and Branch operations"
 paths:
+  /cities:
+    get:
+      tags:
+        - "City"
+      summary: "Get all cities"
+      operationId: "getAllCities"
+      parameters:
+        - name: "page"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            default: 0
+        - name: "size"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            default: 20
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponseDTO'
+    post:
+      tags:
+        - "City"
+      summary: "Create a new city"
+      operationId: "createCity"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCityDTO'
+      responses:
+        '201':
+          description: "City created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreationResponseDTO'
+
   /demo:
     get:
       tags:
@@ -106,86 +157,130 @@ paths:
     post:
       tags:
         - "Agency"
-      summary: "Create a new agency"
-      description: "Create a new Agency"
+      summary: "Create a new agency (Legal Entity)"
+      description: "Create a new Agency. Note: Agencies represent the legal entity. Physical locations belong to Branches."
       operationId: "registerAgency"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterAgencyDTO'
+              $ref: '#/components/schemas/CreateAgencyDTO'
       responses:
         '201':
-          description: "successful operation"
+          description: "Successful operation"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreationResponseDTO'
         '400':
-          description: Données invalides ou règle métier violée
+          description: "Bad Request"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
         '409':
-          description: "Une agence avec ce nom existe déjà dans cette ville"
+          description: "An agency with this name already exists"
     get:
       tags:
         - "Agency"
-      summary: "Lister les agences actives"
-      description: "Retourne toutes les agences actives, filtrables par ville."
+      summary: "Get all agencies"
+      description: "Get all agencies. Can be filtered by city."
       operationId: "getAllAgencies"
       parameters:
         - name: "city"
-          in: query
+          in: "query"
           required: false
-          description: "Filtrer par ville (insensible à la casse)"
           schema:
             type: "string"
-            example: "Douala"
+        - name: "page"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            default: 0
+        - name: "size"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            default: 20
       responses:
         '200':
-          description: "successful operation"
+          description: "Successful operation"
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AgencyDTO'
+                $ref: '#/components/schemas/PageResponseDTO'
 
   /agency/{agencyId}:
     get:
       tags:
         - "Agency"
-      summary: "Récupérer une agence par son ID"
+      summary: "Get agency by ID with all its branches"
       operationId: "getAgencyById"
       parameters:
-        - name: agencyId
-          in: path
+        - name: "agencyId"
+          in: "path"
           required: true
           schema:
             type: "string"
             format: "uuid"
       responses:
         '200':
-          description: "successful operation"
+          description: "Successful operation"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AgencyDTO'
         '404':
-          description: Agence non trouvée
+          description: "Agency not found"
+
+  /agency/{agencyId}/branches:
+    post:
+      tags:
+        - "Agency"
+      summary: "Add a physical branch to an agency"
+      description: "Links a physical departure point (e.g., Gare Makepe) to an Agency in a specific City."
+      operationId: "addAgencyBranch"
+      parameters:
+        - name: "agencyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBranchDTO'
+      responses:
+        '201':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgencyBranchDTO'
+        '400':
+          description: "Invalid data provided"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '404':
+          description: "Agency or City not found"
 
   /agency/{agencyId}/routes:
     post:
       tags:
         - "Agency"
-      summary: "Ajouter une route à une agence"
-      operationId: "addRoute"
+      summary: "Add a route to an agency"
+      operationId: "addRouteToAgency"
       parameters:
         - name: "agencyId"
-          in: path
+          in: "path"
           required: true
           schema:
             type: "string"
@@ -196,41 +291,23 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AddRouteDTO'
-            example:
-              origin: "Douala"
-              destination: "Yaoundé"
-              totalSeats: 50
       responses:
         '201':
-          description: "successful operation"
+          description: "Successful operation"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RouteDTO'
         '400':
-          description: "Données invalides"
+          description: "Invalid data provided"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
         '404':
-          description: "Agence non trouvée"
+          description: "Agency or City not found"
+
 components:
-#  securitySchemes:
-#    bearerAuth:
-#      type: "http"
-#      scheme: "bearer"
-#      bearerFormat: "JWT"
-#    oAuth:
-#      type: "oauth2"
-#      description: "This API uses OAuth 2 with the Authorization Code grant flow."
-#      flows:
-#        authorizationCode:
-#          authorizationUrl: "https://auth.oauth.lao-sarl.cm"
-#          tokenUrl: "https://token.oauth.lao-sarl.cm"
-#          scopes:
-#            demo:read:all: "Needed to fetch all Demo objects"
-#            demo:create: "Needed when to create a new Demo object"
   schemas:
     DemoDTO:
       type: "object"
@@ -269,73 +346,177 @@ components:
           type: "string"
           description: "the phone number"
           example: 653492410
+    PageResponseDTO:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            type: "object"
+          description: "The actual data items"
+        totalElements:
+          type: "integer"
+          description: "Total number of items available"
+        totalPages:
+          type: "integer"
+          description: "Total number of pages"
+        size:
+          type: "integer"
+          description: "Number of items per page"
+        number:
+          type: "integer"
+          description: "Current page number (0-based)"
+
     AddressDTO:
       type: "object"
       properties:
         city:
-          type: "string"
-          description: "the city of collector"
+          $ref: "#/components/schemas/CityDTO"
         district:
           type: "string"
           description: "the district of collector"
-    RegisterAgencyDTO:
+    CityDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        name:
+          type: "string"
+          example: "Douala"
+        region:
+          type: "string"
+          example: "Littoral"
+
+    CreateCityDTO:
       type: "object"
       required:
         - "name"
-        - "city"
+        - "region"
       properties:
         name:
           type: "string"
-          minLength: "2"
-          maxLength: "100"
-          description: "Agency name"
-          example: "Global Voyages"
+          example: "Bafoussam"
+        region:
+          type: "string"
+          example: "Littoral"
+    AgencyBranchDTO:
+      type: "object"
+      description: "Represents a physical location/gare for an agency."
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        name:
+          type: "string"
+          example: "Gare Makepe"
         address:
           $ref: "#/components/schemas/AddressDTO"
+        isActive:
+          type: "boolean"
+        longitude:
+          type: "integer"
+          format: "double"
+          example: 9.7458
+        latitude:
+          type: "string"
+          format: "double"
+          example: 4.0482
+        createdAt:
+          type: "string"
+          format: "date-time"
+
+    CreateAgencyDTO:
+      type: "object"
+      required:
+        - "name"
+        - "phoneNumber"
+        - "licenseNumber"
+        - "commissionRate"
+      properties:
+        name:
+          type: "string"
         phoneNumber:
           $ref: "#/components/schemas/PhoneNumberDTO"
         licenseNumber:
           type: "string"
-          description: "Agency license number delivered by authorities"
+          description: "Agency license number delivered by transport authorities (MINT)"
         commissionRate:
           type: "number"
-    AddRouteDTO:
-      type: "object"
-      required:
-      - "origin"
-      - "destination"
-      - "totalSeats"
-      properties:
-        origin:
-          type: "string"
-          description: "Ville de départ"
-          example: "Douala"
-        destination:
-          type: "string"
-          description: "Ville d'arrivée"
-          example: "Yaoundé"
-        totalSeats:
-          type: "integer"
-          minimum: "1"
-          maximum: "100"
-          description: "Nombre total de places dans le véhicule"
+          format: "double"
+          description: "The commission rate in percentage (e.g., 4.0)"
+          example: 4.0
+
     AgencyDTO:
       type: "object"
       properties:
         id:
           type: "string"
           format: "uuid"
-          description: "Identifiant unique de l'agence"
         name:
           type: "string"
-        address:
-          $ref: "#/components/schemas/AddressDTO"
         phoneNumber:
           $ref: "#/components/schemas/PhoneNumberDTO"
         status:
           $ref: "#/components/schemas/StatusDTO"
+        branches:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/AgencyBranchDTO"
         routeCount:
           type: "integer"
+        licenseNumber:
+          type: "string"
+        commissionRate:
+          type: "number"
+          format: "double"
+        createdAt:
+          type: "string"
+          format: "date-time"
+
+    CreateBranchDTO:
+      type: "object"
+      required:
+        - "name"
+        - "address"
+        - "cityId"
+      properties:
+        name:
+          type: "string"
+          description: "Name of the neighborhood or terminal (e.g., Gare Makepe, Station Bonaberi)"
+          example: "Gare Makepe"
+        address:
+          type: "string"
+          description: "Text landmark for the passenger"
+          example: "Carrefour Total Makepe, near the market"
+        cityId:
+          type: "string"
+          format: "uuid"
+          description: "UUID of the city where the branch is located"
+
+    AddRouteDTO:
+      type: "object"
+      required:
+        - "originCityId"
+        - "destinationCityId"
+        - "price"
+        - "totalSeats"
+      properties:
+        originCityId:
+          type: "string"
+          format: "uuid"
+        destinationCityId:
+          type: "string"
+          format: "uuid"
+        price:
+          type: "number"
+          format: "double"
+          minimum: 1000
+          example: 5000
+        totalSeats:
+          type: "integer"
+          minimum: 10
+          maximum: 100
     StatusDTO:
       enum:
         - "ACTIVE"
@@ -350,10 +531,21 @@ components:
         agencyId:
           type: "string"
           format: "uuid"
-        origin:
+        originCityId:
           type: "string"
-        destination:
+          format: "uuid"
+        originCityName:
           type: "string"
+          example: "Douala"
+        destinationCityId:
+          type: "string"
+          format: "uuid"
+        destinationCityName:
+          type: "string"
+          example: "Yaoundé"
+        price:
+          type: "number"
+          format: "double"
         totalSeats:
           type: "integer"
         active:
@@ -368,9 +560,7 @@ components:
           type: "integer"
         error:
           type: "string"
-          description: "Code d'erreur technique"
-          example: "DOMAIN_RULE_VIOLATION"
+          example: "VALIDATION_ERROR"
         message:
           type: "string"
-          description: "Message lisible par un humain"
-          example: "Le nom de l'agence est obligatoire."
+          example: "Agency name is required"
