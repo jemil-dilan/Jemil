@@ -1,234 +1,189 @@
-# JEMIL Backend — Transport Ecosystem
+# JEMIL Backend
 
-Plateforme intelligente de mobilité interurbaine au Cameroun.
+Backend for an interurban transport platform in Cameroon.
 
----
+The current implementation is a **single Spring Boot application** organized as a
+**modular monolith**. The code keeps bounded contexts separated by package so the
+project can grow in one deployable unit first, and only split into services later
+if operational needs justify it.
+
+## Current Shape
+
+```text
+src/main/java/cm/jemil/
+├── agency/       # Implemented reference module
+├── booking/      # Demo/scaffold
+├── payment/      # Demo/scaffold
+├── ticket/       # Demo/scaffold
+├── auth/         # Demo/scaffold
+├── trip/         # Demo/scaffold
+└── shared/       # Cross-cutting primitives and infrastructure
+```
+
+The `agency` package is the production-quality reference slice. The other
+contexts still contain generated/demo code and should be treated as placeholders
+until their real domain model is implemented.
 
 ## Architecture
 
-Ce projet utilise une **architecture hexagonale (Ports & Adapters)** avec un **monolithe modulaire**
-organisé en domaines métier. Chaque module est indépendant et peut être extrait
-en microservice autonome sans modifier le domaine.
+JEMIL uses hexagonal architecture inside each bounded context:
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Clients (REST / Events)              │
-└──────────┬──────────┬──────────┬──────────┬────────────-┘
-           │          │          │          │
-    ┌──────▼──┐ ┌─────▼───┐ ┌───▼─────┐ ┌──▼────────┐
-    │ Agency  │ │ Booking │ │ Payment │ │ Ticketing │
-    │ Module  │ │ Module  │ │ Module  │ │  Module   │
-    └─────────┘ └─────────┘ └─────────┘ └───────────┘
-           │          │          │          │
-    ┌──────▼──────────▼──────────▼──────────▼─────────┐
-    │           Spring ApplicationEvents (phase 1)    │
-    │              → RabbitMQ (phase 2)               │
-    └─────────────────────────────────────────────────┘
-           │
-    ┌──────▼──────────┐
-    │  Notification   │
-    │    Module       │
-    └─────────────────┘
+```text
+cm.jemil.{context}/
+├── domain/                 # Business model, value objects, events, ports
+├── application/            # Use case orchestration
+├── adapter/
+│   ├── inbound/rest/       # REST controllers and DTO mapping
+│   └── outbound/           # Persistence, messaging, external systems
+└── config/                 # Context-specific wiring
 ```
 
-### Structure d'un module (Architecture Hexagonale)
+Important rules:
 
-```
-module-name/
-└── src/main/java/cm/jemil/{module}/
-    ├── domain/                    ← Cœur métier (0 dépendance externe)
-    │   ├── model/                 ← Aggregates, Entities, Value Objects
-    │   ├── port/
-    │   │   ├── in/                ← Use cases (interfaces appelées par les controllers)
-    │   │   └── out/               ← Repositories, Publishers (interfaces impl. par infra)
-    │   ├── event/                 ← Événements domaine (immuables)
-    │   └── exception/             ← Exceptions métier
-    ├── application/
-    │   └── usecase/               ← Orchestration (implémente les ports in)
-    └── infrastructure/
-        ├── persistence/
-        │   ├── entity/            ← Entités JPA (séparées du domaine)
-        │   ├── repository/        ← Spring Data JPA interfaces
-        │   └── adapter/           ← Implémente les ports out du domaine
-        ├── web/
-        │   ├── controller/        ← REST controllers + exception handlers
-        │   └── mapper/            ← Conversion Aggregate ↔ DTO
-        └── messaging/             ← Publishers / Consumers d'événements
-```
+- Domain code must not depend on Spring, JPA, REST DTOs, or generated API code.
+- Controllers call use-case interfaces, not persistence adapters.
+- JPA entities are persistence models, not domain aggregates.
+- Cross-context dependencies should go through `shared` primitives or events,
+  not direct imports from sibling contexts.
 
----
+These boundaries are partially enforced with ArchUnit tests in
+`src/test/java/cm/jemil/architecture`.
 
-## Modules
+## Implemented Functionality
 
-| Module                | Port | Responsabilité                    |
-|-----------------------|------|-----------------------------------|
-| `agency-module`       | 8081 | Agences, routes, horaires         |
-| `booking-module`      | 8082 | Réservations, passagers           |
-| `payment-module`      | 8083 | Paiements MoMo, Stripe            |
-| `ticketing-module`    | 8084 | QR codes, validation embarquement |
-| `notification-module` | 8085 | SMS, email (Africa's Talking)     |
+### Agency
 
----
+- Register an agency.
+- List agencies, optionally filtered by city.
+- Retrieve an agency by id.
+- Add routes with price and total seat count.
+- Persist agencies, routes, schedules, and outbox events with JPA.
+- Publish domain events through an outbox table.
 
-## Prérequis
+### Shared Infrastructure
 
-- Java 25
-- Docker & Docker Compose
-- (Gradle Wrapper inclus — pas besoin d'installer Gradle)
+- Spring Security resource-server setup.
+- PostgreSQL + Liquibase migrations.
+- Outbox persistence and scheduled publication.
+- OpenAPI-generated inbound contracts and DTOs.
+- Common value objects and pagination helpers.
 
----
+## Technology Stack
 
-## Démarrage rapide
+- Java toolchain 25, compiling with `--release 21`.
+- Spring Boot 4.
+- Gradle Kotlin DSL.
+- PostgreSQL.
+- Liquibase.
+- Spring Data JPA.
+- Spring Security OAuth2 Resource Server.
+- MapStruct.
+- OpenAPI Generator.
+- JUnit 5, AssertJ, Mockito, ArchUnit, Testcontainers.
+- Spotless, Checkstyle, Jacoco, Error Prone, SonarQube.
 
-### 1. Lancer l'environnement Docker
+## Local Development
+
+### Prerequisites
+
+- JDK 25.
+- Docker and Docker Compose.
+- Gradle wrapper is included.
+
+### Start dependencies
+
 ```bash
 docker compose up -d
 ```
 
-Cela démarre :
-- RabbitMQ sur `localhost:5672` (UI: `localhost:15672`)
-- PostgreSQL pour chaque module (ports 5432-5436)
-- SonarQube sur `localhost:9000`
+This starts:
 
-### 2. Lancer un module (ex: agency)
-```bash
-./gradlew :agency-module:bootRun
-```
+- PostgreSQL on `localhost:5432`.
+- Keycloak on `localhost:8081`.
+- SonarQube on `localhost:9000`.
 
-### 3. Accéder à la documentation API
-```
-http://localhost:8081/swagger-ui.html
-```
-
----
-
-## Commandes Gradle utiles
+### Run the application
 
 ```bash
-# Compiler tout le projet
+./gradlew bootRun
+```
+
+The application starts on `localhost:8080`.
+
+Swagger UI is available at:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
+OpenAPI JSON is available at:
+
+```text
+http://localhost:8080/api-docs
+```
+
+## Useful Commands
+
+```bash
+# Compile and run all verification tasks
 ./gradlew build
 
-# Lancer tous les tests
-./gradlew testAll
+# Run tests
+./gradlew test
 
-# Lancer les tests d'un module spécifique
-./gradlew :agency-module:test
+# Apply formatting
+./gradlew spotlessApply
 
-# Formatter tout le code (Spotless)
-./gradlew formatAll
+# Check formatting
+./gradlew spotlessCheck
 
-# Vérifier le formatage sans modifier
-./gradlew :agency-module:spotlessCheck
+# Generate Jacoco reports
+./gradlew jacocoTestReport
 
-# Générer le rapport de couverture Jacoco
-./gradlew :agency-module:jacocoTestReport
-# → Rapport HTML : agency-module/build/reports/jacoco/test/html/index.html
-
-# Analyser la qualité avec SonarQube (Docker doit tourner)
+# Run SonarQube analysis after starting docker compose
 ./gradlew sonar
-
-# Vérifier l'architecture hexagonale (ArchUnit)
-./gradlew :agency-module:test --tests "*.HexagonalArchitectureTest"
-
-# Lancer uniquement les tests e2e Cucumber
-./gradlew :agency-module:test --tests "*.CucumberE2ERunner"
 ```
 
----
+## Database
 
-## Outils de qualité inclus
+Liquibase migrations live in:
 
-| Outil                   | Rôle                            | Déclenchement                |
-|-------------------------|---------------------------------|------------------------------|
-| **Spotless + Palantir** | Formatage automatique           | `./gradlew spotlessApply`    |
-| **Error Prone**         | Détection bugs à la compilation | Automatique à chaque `build` |
-| **Checkstyle**          | Conventions de code             | Automatique à chaque `build` |
-| **Jacoco**              | Couverture de code              | Après chaque `test`          |
-| **SonarQube**           | Analyse qualité globale         | `./gradlew sonar`            |
-| **ArchUnit**            | Vérification architecture       | Pendant les `test`           |
-| **Testcontainers**      | Vraie DB en tests               | Pendant les `test`           |
-| **Cucumber**            | Tests e2e en Gherkin            | Pendant les `test`           |
-
----
-
-## Règles d'architecture (imposées par ArchUnit)
-
-Ces règles sont vérifiées **automatiquement** à chaque build :
-
-1. Le **domaine** ne dépend d'aucune infrastructure (pas de Spring, pas de JPA)
-2. Les **controllers** appellent les ports (interfaces), jamais les services directement
-3. Les **adapters** implémentent les ports sortants du domaine
-4. La couche **application** ne connaît pas l'infrastructure
-
----
-
-## Flux d'un événement domaine (monolithe → microservices)
-
-### Phase 1 — Monolithe modulaire (maintenant)
-```
-PassengerBooks → BookingService → BookingCreatedEvent
-                                        ↓
-                               Spring ApplicationEvent
-                                        ↓
-                               PaymentService.onBookingCreated()
+```text
+src/main/resources/db/changelog/
 ```
 
-### Phase 2 — Microservices (plus tard)
-```
-PassengerBooks → BookingService → BookingCreatedEvent
-                                        ↓
-                               RabbitMQ Publisher
-                                        ↓
-                          [booking.created queue]
-                                        ↓
-                               Payment Service Consumer
-```
+The application uses `ddl-auto: validate`, so schema changes must be expressed as
+Liquibase changelogs before the application can start successfully.
 
-**Le domaine et l'application ne changent pas entre les deux phases.**
-Seuls les adapters d'infrastructure changent.
+## OpenAPI
 
----
+Inbound API contracts live in:
 
-## Modules — État d'avancement
-
-- [x] Agency Module — Domaine, Application, Infrastructure, Tests, OpenAPI
-- [ ] Booking Module — En cours
-- [ ] Payment Module — À faire
-- [ ] Ticketing Module — À faire
-- [ ] Notification Module — À faire
-
----
-
-## Conventions de commit
-
-```
-feat(agency): ajouter endpoint de suspension d'agence
-fix(booking): corriger la validation du nombre de places
-test(agency): ajouter scénario Cucumber pour agence suspendue
-refactor(domain): extraire la validation dans des Value Objects
-docs: mettre à jour le README avec les nouvelles commandes
+```text
+specs/openapi/inbound/
 ```
 
----
+Outbound event contracts live in:
 
-## Project Status Report (May 2026)
+```text
+specs/openapi/outbound/
+```
 
-### ✅ Done & Functional
-*   **Architectural Foundation:** Multi-module Gradle structure with shared conventions (`buildSrc`). Strict Hexagonal Architecture and DDD patterns applied.
-*   **Agency Module (Reference Implementation):**
-    *   **Core Domain:** `Agency` Aggregate Root managing status and `Routes`.
-    *   **Persistence:** PostgreSQL integration with Liquibase migrations.
-    *   **API-First:** Contract-first development using OpenAPI.
-    *   **Messaging:** Outbox pattern for `AgencyRegisteredEvent` via RabbitMQ.
-*   **Quality Gates:** Full integration of Spotless, Checkstyle, Error Prone, and Jacoco.
-*   **Testing:** Comprehensive suite including ArchUnit (architectural rules), Cucumber (BDD/E2E), and Testcontainers (integration).
+Generated sources are written under `build/generated/sources/openapi` during
+compilation and are not committed.
 
-### 🚀 The Good (Strengths)
-*   **High Rigor:** Architectural boundaries are enforced by code (ArchUnit), preventing technical debt in the domain layer.
-*   **Scalability:** The project is "Microservices Ready" by design. Moving a module to its own repo would require minimal effort.
-*   **Developer Experience:** Standardized commands for formatting, testing, and quality checks.
+## Evolution Strategy
 
-### ⚠️ Areas for Improvement
-*   **Module Imbalance:** Other modules (`booking`, `payment`, `ticketing`, `notification`) are currently skeletons.
-*   **Inter-Module Strategy:** Need to finalize the pattern for synchronous vs. asynchronous communication between modules as they grow.
-*   **Boilerplate:** The hexagonal layers (Domain ↔ Entity ↔ DTO) add overhead. Ensure MapStruct mappers stay updated to minimize manual work.
+The project should grow proportionally:
+
+1. Keep one deployable Spring Boot application while the product is still taking
+   shape.
+2. Build each context as a clean vertical slice: domain, use cases, adapters,
+   migrations, API contract, and tests.
+3. Promote demo/scaffold packages to real modules only when their domain is
+   implemented.
+4. Split into independent services only when there is a concrete reason:
+   separate scaling, independent release cadence, team ownership, or hard runtime
+   isolation.
+
+Until then, a disciplined modular monolith is the better engineering tradeoff.

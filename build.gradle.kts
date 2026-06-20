@@ -22,17 +22,7 @@ java {
         languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
-
-// Compile to a compatible class file version so tools that don't yet understand
-// the latest class file (e.g. ArchUnit's ASM) can analyze the classes.
-// We keep the toolchain (JDK used for compilation) at Java 25 but emit
-// bytecode compatible with Java 17 by setting `--release` for the Java
-// compiler. Change the release value if you need a different target.
 tasks.withType<JavaCompile>().configureEach {
-    // Use a reasonable target bytecode version that supports modern language
-    // features used in the code (pattern matching in switch requires >= 21)
-    // but is still compatible with ArchUnit's ASM. Java 21 is a good
-    // compromise here.
     options.release.set(21)
 }
 
@@ -136,13 +126,9 @@ checkstyle {
     isIgnoreFailures = false
 }
 
-// Exclude generated sources and build directory from Checkstyle (generated OpenAPI sources
-// are added to the main source set and should not be checked).
 tasks.withType<Checkstyle>().configureEach {
     exclude("**/build/**")
     exclude("**/generated/**")
-    // module-info.java uses module system / annotations that older Checkstyle versions
-    // may not parse correctly; exclude them from checks.
     exclude("**/module-info.java")
 }
 
