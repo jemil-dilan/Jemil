@@ -7,4 +7,8 @@ public interface DomainEvent {
     UUID eventId();
 
     Instant occurredAt();
+
+    String aggregateType();
+
+    String aggregateId();
 }
