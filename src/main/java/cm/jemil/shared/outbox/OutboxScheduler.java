@@ -1,7 +1,12 @@
 package cm.jemil.shared.outbox;
 
+import cm.jemil.shared.events.DomainEvent;
+import cm.jemil.shared.events.DomainEventType;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -17,6 +22,9 @@ public class OutboxScheduler {
     private final OutboxRepository outboxRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final ObjectMapper objectMapper;
+    private final List<DomainEventType> domainEventTypes;
+
+    private static final int MAX_RETRY_SECONDS = 300;
 
     @Scheduled(fixedDelay = 5000)
     @Transactional
@@ -25,23 +33,41 @@ public class OutboxScheduler {
 
         for (OutboxEvent event : pendingEvents) {
             try {
-                // In Phase 1, we just publish locally via Spring ApplicationEvents
-                // We'll need to deserialize the payload if we want to publish the specific event class
-                // For now, let's assume we might need the class type in the OutboxEvent
+                if (event.isExpired(MAX_RETRY_SECONDS)) {
+                    log.warn("Outbox event {} exceeded max retry time, marking as failed", event.getId());
+                    event.markAsFailed();
+                    outboxRepository.save(event);
+                    continue;
+                }
 
-                // Simplified for now: just log and mark as sent
                 log.info("Processing outbox event: {} of type {}", event.getId(), event.getEventType());
-
-                // In a real scenario, we'd deserialize event.payload to its class and publish it
-                // eventPublisher.publishEvent(deserializedEvent);
+                eventPublisher.publishEvent(deserialize(event));
 
                 event.markAsSent();
                 outboxRepository.save(event);
-            } catch (Exception e) {
-                log.error("Failed to process outbox event: {}", event.getId(), e);
+            } catch (JsonProcessingException | IllegalArgumentException e) {
+                log.error("Discarding invalid outbox event: {}", event.getId(), e);
                 event.markAsFailed();
                 outboxRepository.save(event);
+            } catch (Exception e) {
+                log.error("Failed to publish outbox event, leaving it pending for retry: {}", event.getId(), e);
             }
         }
+    }
+
+    private DomainEvent deserialize(OutboxEvent event) throws JsonProcessingException {
+        Class<? extends DomainEvent> eventClass = eventTypes().get(event.getEventType());
+        if (eventClass == null) {
+            throw new IllegalArgumentException("Unsupported outbox event type: " + event.getEventType());
+        }
+        return objectMapper.readValue(event.getPayload(), eventClass);
+    }
+
+    private Map<String, Class<? extends DomainEvent>> eventTypes() {
+        Map<String, Class<? extends DomainEvent>> eventTypes = new HashMap<>();
+        for (DomainEventType eventType : domainEventTypes) {
+            eventTypes.put(eventType.name(), eventType.eventClass());
+        }
+        return eventTypes;
     }
 }

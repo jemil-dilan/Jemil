@@ -2,6 +2,7 @@ package cm.jemil.shared.outbox;
 
 import jakarta.persistence.*;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -54,5 +55,9 @@ public class OutboxEvent {
 
     public void markAsFailed() {
         this.status = OutboxEventStatus.FAILED;
+    }
+
+    public boolean isExpired(int maxRetrySeconds) {
+        return createdAt.isBefore(Instant.now().minus(maxRetrySeconds, ChronoUnit.SECONDS));
     }
 }

@@ -26,8 +26,8 @@ public class JpaOutboxEventPublisher implements OutboxEventPublisher {
 
         OutboxEvent outboxEvent = new OutboxEvent(
                 domainEvent.eventId(),
-                "UNKNOWN", // This should be passed or inferred
-                "UNKNOWN", // This should be passed or inferred
+                domainEvent.aggregateType(),
+                domainEvent.aggregateId(),
                 domainEvent.getClass().getSimpleName(),
                 payload);
 
