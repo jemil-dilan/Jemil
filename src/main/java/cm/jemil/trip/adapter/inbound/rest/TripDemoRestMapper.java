@@ -3,7 +3,7 @@ package cm.jemil.trip.adapter.inbound.rest;
 import cm.jemil.generated.ticket.adapter.rest.inbound.dto.CreateDemoDTO;
 import cm.jemil.generated.ticket.adapter.rest.inbound.dto.CreationResponseDTO;
 import cm.jemil.generated.ticket.adapter.rest.inbound.dto.DemoDTO;
-import cm.jemil.trip.application.inbound.usecase.CreateDemoUserCase;
+import cm.jemil.trip.application.inbound.usecase.CreateDemoUseCase;
 import cm.jemil.trip.demo.view.DemoView;
 import java.util.UUID;
 import org.mapstruct.InjectionStrategy;
@@ -28,7 +28,7 @@ public interface TripDemoRestMapper {
     @Mapping(target = "name", source = "demoName")
     DemoDTO fromDomain(DemoView.DemoView1 view);
 
-    CreateDemoUserCase.CreateDemoCommand toCreateDemo(CreateDemoDTO dto);
+    CreateDemoUseCase.CreateDemoCommand toCreateDemo(CreateDemoDTO dto);
 
     default CreationResponseDTO fromDomain(UUID id) {
         var response = new CreationResponseDTO();
