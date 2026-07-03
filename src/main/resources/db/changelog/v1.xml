@@ -33,20 +33,23 @@
 		</createTable>
 
 		<!-- Agency Domain -->
-		<createTable tableName="agencies">
-			<column name="id" type="UUID">
+		<createTable tableName="t_agency">
+			<column name="c_id" type="UUID">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
-			<column name="name" type="varchar(255)">
+			<column name="c_name" type="varchar(255)">
 				<constraints nullable="false" />
 			</column>
-			<column name="status" type="varchar(20)">
+			<column name="c_status" type="varchar(20)">
 				<constraints nullable="false" />
 			</column>
-			<column name="city" type="varchar(100)" />
-			<column name="district" type="varchar(100)" />
-			<column name="country_code" type="varchar(10)" />
-			<column name="phone_number" type="varchar(20)" />
+			<column name="c_city" type="varchar(100)" />
+			<column name="c_district" type="varchar(100)" />
+			<column name="c_country_code" type="varchar(10)" />
+			<column name="c_phone_number" type="varchar(20)" />
+			<column name="c_license_number" type="varchar(100)" />
+			<column name="c_commission_rate" type="INT" />
+			<column name="c_created_at" type="timestamp" />
 		</createTable>
 
 		<createTable tableName="routes">
