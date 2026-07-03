@@ -1,16 +1,28 @@
 package cm.jemil.agency.application;
 
-import cm.jemil.agency.application.inbound.usecase.CreateDemoUserCase;
-import cm.jemil.agency.application.inbound.usecase.GetAgencyByIdService;
+import cm.jemil.agency.application.inbound.usecase.AddBranchUseCase;
+import cm.jemil.agency.application.inbound.usecase.AddBranchUseCaseImpl;
+import cm.jemil.agency.application.inbound.usecase.AddRouteService;
+import cm.jemil.agency.application.inbound.usecase.AddRouteUseCase;
+import cm.jemil.agency.application.inbound.usecase.CreateCityUseCase;
+import cm.jemil.agency.application.inbound.usecase.CreateCityUseCaseImpl;
+import cm.jemil.agency.application.inbound.usecase.CreateDemoUseCase;
 import cm.jemil.agency.application.inbound.usecase.GetAgencyByIdUseCase;
-import cm.jemil.agency.application.inbound.usecase.GetAllAgenciesService;
+import cm.jemil.agency.application.inbound.usecase.GetAgencyByIdUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.GetAllAgenciesUseCase;
-import cm.jemil.agency.application.inbound.usecase.GetAllDemoUserCase;
-import cm.jemil.agency.application.inbound.usecase.GetDemoByIdUserCase;
-import cm.jemil.agency.application.inbound.usecase.RegisterAgencyService;
+import cm.jemil.agency.application.inbound.usecase.GetAllAgenciesUseCaseImpl;
+import cm.jemil.agency.application.inbound.usecase.GetAllCitiesUseCase;
+import cm.jemil.agency.application.inbound.usecase.GetAllCitiesUseCaseImpl;
+import cm.jemil.agency.application.inbound.usecase.GetAllDemoUseCase;
+import cm.jemil.agency.application.inbound.usecase.GetDemoByIdUseCase;
 import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCase;
+import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCaseImpl;
+import cm.jemil.agency.domain.agency.AgencyRegisteredEvent;
 import cm.jemil.agency.domain.agency.AgencyRepository;
+import cm.jemil.agency.domain.branch.BranchRepository;
+import cm.jemil.agency.domain.city.CityRepository;
 import cm.jemil.agency.domain.demo.DemoRepository;
+import cm.jemil.shared.events.DomainEventType;
 import cm.jemil.shared.outbox.OutboxEventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,31 +36,57 @@ public class SpringBeans {
 
     @Bean("registerAgencyUseCase")
     public RegisterAgencyUseCase registerAgencyUseCase(AgencyRepository agencyRepository) {
-        return new RegisterAgencyService(agencyRepository, outboxEventPublisher);
+        return new RegisterAgencyUseCaseImpl(agencyRepository, outboxEventPublisher);
     }
 
     @Bean("getAgencyByIdUseCase")
     public GetAgencyByIdUseCase getAgencyByIdUseCase(AgencyRepository agencyRepository) {
-        return new GetAgencyByIdService(agencyRepository);
+        return new GetAgencyByIdUseCaseImpl(agencyRepository);
     }
 
     @Bean("getAllAgenciesUseCase")
     public GetAllAgenciesUseCase getAllAgenciesUseCase(AgencyRepository agencyRepository) {
-        return new GetAllAgenciesService(agencyRepository);
+        return new GetAllAgenciesUseCaseImpl(agencyRepository);
     }
 
-    @Bean("agencyCreateDemoUserCase")
-    public CreateDemoUserCase createDemoUserCase(DemoRepository demoRepository) {
-        return new CreateDemoUserCase(demoRepository);
+    @Bean("addRouteUseCase")
+    public AddRouteUseCase addRouteUseCase(AgencyRepository agencyRepository) {
+        return new AddRouteService(agencyRepository);
     }
 
-    @Bean("agencyGetAllDemoUserCase")
-    public GetAllDemoUserCase getAllDemoUserCase(DemoRepository demoRepository) {
-        return new GetAllDemoUserCase(demoRepository);
+    @Bean("agencyRegisteredEventType")
+    public DomainEventType agencyRegisteredEventType() {
+        return DomainEventType.from(AgencyRegisteredEvent.class);
     }
 
-    @Bean("agencyGetDemoByIdUserCase")
-    public GetDemoByIdUserCase getDemoByIdUserCase(DemoRepository demoRepository) {
-        return new GetDemoByIdUserCase(demoRepository);
+    @Bean("agencyCreateDemoUseCase")
+    public CreateDemoUseCase createDemoUseCase(DemoRepository demoRepository) {
+        return new CreateDemoUseCase(demoRepository);
+    }
+
+    @Bean("agencyGetAllDemoUseCase")
+    public GetAllDemoUseCase getAllDemoUseCase(DemoRepository demoRepository) {
+        return new GetAllDemoUseCase(demoRepository);
+    }
+
+    @Bean("agencyGetDemoByIdUseCase")
+    public GetDemoByIdUseCase getDemoByIdUseCase(DemoRepository demoRepository) {
+        return new GetDemoByIdUseCase(demoRepository);
+    }
+
+    @Bean("createCityUseCase")
+    public CreateCityUseCase createCityUseCase(CityRepository cityRepository) {
+        return new CreateCityUseCaseImpl(cityRepository);
+    }
+
+    @Bean("getAllCitiesUseCase")
+    public GetAllCitiesUseCase getAllCitiesUseCase(CityRepository cityRepository) {
+        return new GetAllCitiesUseCaseImpl(cityRepository);
+    }
+
+    @Bean("addBranchUseCase")
+    public AddBranchUseCase addBranchUseCase(
+            AgencyRepository agencyRepository, BranchRepository branchRepository, CityRepository cityRepository) {
+        return new AddBranchUseCaseImpl(agencyRepository, branchRepository, cityRepository);
     }
 }

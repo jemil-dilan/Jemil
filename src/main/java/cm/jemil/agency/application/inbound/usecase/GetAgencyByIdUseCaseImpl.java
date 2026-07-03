@@ -1,17 +1,17 @@
 package cm.jemil.agency.application.inbound.usecase;
 
-import cm.jemil.agency.domain.agency.Agency;
 import cm.jemil.agency.domain.agency.AgencyId;
 import cm.jemil.agency.domain.agency.AgencyRepository;
-import java.util.Optional;
+import cm.jemil.agency.domain.agency.views.AgencyView;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class GetAgencyByIdService implements GetAgencyByIdUseCase {
+public class GetAgencyByIdUseCaseImpl implements GetAgencyByIdUseCase {
     private final AgencyRepository agencyRepository;
 
     @Override
-    public Optional<Agency> execute(AgencyId id) {
-        return agencyRepository.findById(id);
+    public AgencyView.AgencyView1 execute(UUID id) {
+        return agencyRepository.loadByIdAgencyView1(new AgencyId(id));
     }
 }

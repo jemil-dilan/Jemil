@@ -9,4 +9,14 @@ public record AgencyRegisteredEvent(UUID eventId, AgencyId agencyId, String name
     public static AgencyRegisteredEvent of(AgencyId agencyId, String name) {
         return new AgencyRegisteredEvent(UUID.randomUUID(), agencyId, name, Instant.now());
     }
+
+    @Override
+    public String aggregateType() {
+        return "Agency";
+    }
+
+    @Override
+    public String aggregateId() {
+        return agencyId.value().toString();
+    }
 }
