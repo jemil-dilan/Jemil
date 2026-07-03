@@ -1,8 +1,8 @@
 package cm.jemil.auth.application;
 
-import cm.jemil.auth.application.inbound.usecase.CreateDemoUserCase;
-import cm.jemil.auth.application.inbound.usecase.GetAllDemoUserCase;
-import cm.jemil.auth.application.inbound.usecase.GetDemoByIdUserCase;
+import cm.jemil.auth.application.inbound.usecase.CreateDemoUseCase;
+import cm.jemil.auth.application.inbound.usecase.GetAllDemoUseCase;
+import cm.jemil.auth.application.inbound.usecase.GetDemoByIdUseCase;
 import cm.jemil.auth.domain.demo.DemoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,18 +12,18 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class SpringBeans {
 
-    @Bean("authCreateDemoUserCase")
-    public CreateDemoUserCase createDemoUserCase(DemoRepository demoRepository) {
-        return new CreateDemoUserCase(demoRepository);
+    @Bean("authCreateDemoUseCase")
+    public CreateDemoUseCase createDemoUseCase(DemoRepository demoRepository) {
+        return new CreateDemoUseCase(demoRepository);
     }
 
-    @Bean("authGetAllDemoUserCase")
-    public GetAllDemoUserCase getAllDemoUserCase(DemoRepository demoRepository) {
-        return new GetAllDemoUserCase(demoRepository);
+    @Bean("authGetAllDemoUseCase")
+    public GetAllDemoUseCase getAllDemoUseCase(DemoRepository demoRepository) {
+        return new GetAllDemoUseCase(demoRepository);
     }
 
-    @Bean("authGetDemoByIdUserCase")
-    public GetDemoByIdUserCase getAlGetDemoByIdUserCase(DemoRepository demoRepository) {
-        return new GetDemoByIdUserCase(demoRepository);
+    @Bean("authGetDemoByIdUseCase")
+    public GetDemoByIdUseCase getAlGetDemoByIdUseCase(DemoRepository demoRepository) {
+        return new GetDemoByIdUseCase(demoRepository);
     }
 }

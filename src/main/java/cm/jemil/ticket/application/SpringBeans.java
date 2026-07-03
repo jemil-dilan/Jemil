@@ -1,8 +1,8 @@
 package cm.jemil.ticket.application;
 
-import cm.jemil.ticket.application.inbound.usecase.CreateDemoUserCase;
-import cm.jemil.ticket.application.inbound.usecase.GetAllDemoUserCase;
-import cm.jemil.ticket.application.inbound.usecase.GetDemoByIdUserCase;
+import cm.jemil.ticket.application.inbound.usecase.CreateDemoUseCase;
+import cm.jemil.ticket.application.inbound.usecase.GetAllDemoUseCase;
+import cm.jemil.ticket.application.inbound.usecase.GetDemoByIdUseCase;
 import cm.jemil.ticket.domain.demo.DemoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,18 +12,18 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class SpringBeans {
 
-    @Bean("ticketCreateDemoUserCase")
-    public CreateDemoUserCase createDemoUserCase(DemoRepository demoRepository) {
-        return new CreateDemoUserCase(demoRepository);
+    @Bean("ticketCreateDemoUseCase")
+    public CreateDemoUseCase createDemoUseCase(DemoRepository demoRepository) {
+        return new CreateDemoUseCase(demoRepository);
     }
 
-    @Bean("ticketGetAllDemoUserCase")
-    public GetAllDemoUserCase getAllDemoUserCase(DemoRepository demoRepository) {
-        return new GetAllDemoUserCase(demoRepository);
+    @Bean("ticketGetAllDemoUseCase")
+    public GetAllDemoUseCase getAllDemoUseCase(DemoRepository demoRepository) {
+        return new GetAllDemoUseCase(demoRepository);
     }
 
-    @Bean("ticketGetDemoByIdUserCase")
-    public GetDemoByIdUserCase getAlGetDemoByIdUserCase(DemoRepository demoRepository) {
-        return new GetDemoByIdUserCase(demoRepository);
+    @Bean("ticketGetDemoByIdUseCase")
+    public GetDemoByIdUseCase getAlGetDemoByIdUseCase(DemoRepository demoRepository) {
+        return new GetDemoByIdUseCase(demoRepository);
     }
 }

@@ -1,6 +1,6 @@
 package cm.jemil.auth.adapter.inbound.rest;
 
-import cm.jemil.auth.application.inbound.usecase.CreateDemoUserCase;
+import cm.jemil.auth.application.inbound.usecase.CreateDemoUseCase;
 import cm.jemil.auth.domain.demo.view.DemoView;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreateDemoDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreationResponseDTO;
@@ -28,7 +28,7 @@ public interface AuthDemoRestMapper {
     @Mapping(target = "name", source = "demoName")
     DemoDTO fromDomain(DemoView.DemoView1 view);
 
-    CreateDemoUserCase.CreateDemoCommand toCreateDemo(CreateDemoDTO dto);
+    CreateDemoUseCase.CreateDemoCommand toCreateDemo(CreateDemoDTO dto);
 
     default CreationResponseDTO fromDomain(UUID id) {
         var response = new CreationResponseDTO();

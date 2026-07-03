@@ -1,8 +1,8 @@
 package cm.jemil.booking.application;
 
-import cm.jemil.booking.application.inbound.usecase.CreateDemoUserCase;
-import cm.jemil.booking.application.inbound.usecase.GetAllDemoUserCase;
-import cm.jemil.booking.application.inbound.usecase.GetDemoByIdUserCase;
+import cm.jemil.booking.application.inbound.usecase.CreateDemoUseCase;
+import cm.jemil.booking.application.inbound.usecase.GetAllDemoUseCase;
+import cm.jemil.booking.application.inbound.usecase.GetDemoByIdUseCase;
 import cm.jemil.booking.demo.DemoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,18 +12,18 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class SpringBeans {
 
-    @Bean("bookingCreateDemoUserCase")
-    public CreateDemoUserCase createDemoUserCase(DemoRepository demoRepository) {
-        return new CreateDemoUserCase(demoRepository);
+    @Bean("bookingCreateDemoUseCase")
+    public CreateDemoUseCase createDemoUseCase(DemoRepository demoRepository) {
+        return new CreateDemoUseCase(demoRepository);
     }
 
-    @Bean("bookingGetAllDemoUserCase")
-    public GetAllDemoUserCase getAllDemoUserCase(DemoRepository demoRepository) {
-        return new GetAllDemoUserCase(demoRepository);
+    @Bean("bookingGetAllDemoUseCase")
+    public GetAllDemoUseCase getAllDemoUseCase(DemoRepository demoRepository) {
+        return new GetAllDemoUseCase(demoRepository);
     }
 
-    @Bean("bookingGetDemoByIdUserCase")
-    public GetDemoByIdUserCase getAlGetDemoByIdUserCase(DemoRepository demoRepository) {
-        return new GetDemoByIdUserCase(demoRepository);
+    @Bean("bookingGetDemoByIdUseCase")
+    public GetDemoByIdUseCase getAlGetDemoByIdUseCase(DemoRepository demoRepository) {
+        return new GetDemoByIdUseCase(demoRepository);
     }
 }
