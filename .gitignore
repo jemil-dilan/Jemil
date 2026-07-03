@@ -49,3 +49,4 @@ secrets/
 .gradle-user-home/
 .agents/
 .codex/
+gradle/wrapper
