@@ -3,9 +3,9 @@ package cm.jemil.agency.adapter.inbound.rest;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
-import cm.jemil.agency.application.inbound.usecase.CreateDemoUserCase;
-import cm.jemil.agency.application.inbound.usecase.GetAllDemoUserCase;
-import cm.jemil.agency.application.inbound.usecase.GetDemoByIdUserCase;
+import cm.jemil.agency.application.inbound.usecase.CreateDemoUseCase;
+import cm.jemil.agency.application.inbound.usecase.GetAllDemoUseCase;
+import cm.jemil.agency.application.inbound.usecase.GetDemoByIdUseCase;
 import cm.jemil.generated.agency.adapter.rest.inbound.api.DemoApi;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreateDemoDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreationResponseDTO;
@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class DemoController implements DemoApi {
 
-    private final CreateDemoUserCase createDemoUserCase;
-    private final GetAllDemoUserCase getAllDemoUserCase;
-    private final GetDemoByIdUserCase getDemoByIdUseCase;
+    private final CreateDemoUseCase createDemoUseCase;
+    private final GetAllDemoUseCase getAllDemoUseCase;
+    private final GetDemoByIdUseCase getDemoByIdUseCase;
     private final AgencyDemoRestMapper demoRestMapper;
 
     @Override
     public ResponseEntity<List<DemoDTO>> fetchAllDemo(String fieldsToExtractCode) {
-        var result = getAllDemoUserCase.execute().stream()
+        var result = getAllDemoUseCase.execute().stream()
                 .map(demoRestMapper::fromDomain)
                 .toList();
         return ResponseEntity.status(OK).body(result);
@@ -38,13 +38,13 @@ public class DemoController implements DemoApi {
     @Override
     public ResponseEntity<DemoDTO> fetchDemoById(UUID demoId, String fieldsToExtractCode) {
 
-        var response = getDemoByIdUseCase.execute(new GetDemoByIdUserCase.DemoQuery(demoId, fieldsToExtractCode));
+        var response = getDemoByIdUseCase.execute(new GetDemoByIdUseCase.DemoQuery(demoId, fieldsToExtractCode));
         return ResponseEntity.ok(demoRestMapper.fromDomain(response));
     }
 
     @Override
     public ResponseEntity<CreationResponseDTO> createDemo(CreateDemoDTO demoDTO) {
-        var newDemoId = demoRestMapper.fromDomain(createDemoUserCase.execute(demoRestMapper.toCreateDemo(demoDTO)));
+        var newDemoId = demoRestMapper.fromDomain(createDemoUseCase.execute(demoRestMapper.toCreateDemo(demoDTO)));
         return ResponseEntity.status(CREATED).body(newDemoId);
     }
 }

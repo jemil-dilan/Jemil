@@ -1,9 +1,9 @@
 package cm.jemil.agency.application.inbound.usecase;
 
-import cm.jemil.agency.domain.agency.Agency;
-import cm.jemil.agency.domain.agency.AgencyId;
-import java.util.Optional;
+import static cm.jemil.agency.domain.agency.views.AgencyView.*;
+
+import java.util.UUID;
 
 public interface GetAgencyByIdUseCase {
-    Optional<Agency> execute(AgencyId id);
+    AgencyView1 execute(UUID id);
 }
