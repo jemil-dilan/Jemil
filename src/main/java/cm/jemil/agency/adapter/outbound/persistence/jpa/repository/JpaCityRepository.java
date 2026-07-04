@@ -26,11 +26,6 @@ public class JpaCityRepository implements CityRepository {
     }
 
     @Override
-    public Optional<City> findByNameIgnoreCase(String name) {
-        return citySpringRepository.findByNameIgnoreCase(name).map(mapper::toDomain);
-    }
-
-    @Override
     public List<CityView1> findAllView1() {
         return citySpringRepository.findAll().stream().map(mapper::toCityView1).toList();
     }

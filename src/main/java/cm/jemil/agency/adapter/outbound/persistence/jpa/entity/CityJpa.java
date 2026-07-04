@@ -26,6 +26,9 @@ public class CityJpa {
     @Column(name = "c_name")
     private String name;
 
+    @Column(name = "c_region")
+    private String region;
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
