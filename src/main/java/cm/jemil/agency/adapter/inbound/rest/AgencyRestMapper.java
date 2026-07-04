@@ -12,7 +12,6 @@ import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreateAgencyDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreationResponseDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.RouteDTO;
 import java.util.UUID;
-
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -47,7 +46,6 @@ public interface AgencyRestMapper {
     AgencyDTO toDto(AgencyView.AgencyView1 agencyView1);
 
     @BeanMapping(ignoreByDefault = true)
-
     @Mapping(target = "id", source = "id.value")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "address", source = "address")
@@ -75,6 +73,7 @@ public interface AgencyRestMapper {
         dto.setIsActive(branch.active());
         return dto;
     }
+
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "newId", source = "id")
     CreationResponseDTO toCreationResponse(UUID id);

@@ -35,7 +35,7 @@ public class AgencyController implements AgencyApi {
     private final AgencyRestMapper restMapper;
 
     @Override
-    public ResponseEntity<CreationResponseDTO> registerAgency( CreateAgencyDTO registerAgencyDTO) {
+    public ResponseEntity<CreationResponseDTO> registerAgency(CreateAgencyDTO registerAgencyDTO) {
         var id = registerAgencyUseCase.execute(restMapper.toCreationCommand(registerAgencyDTO));
         return ResponseEntity.status(HttpStatus.CREATED).body(restMapper.toCreationResponse(id.value()));
     }
@@ -61,7 +61,7 @@ public class AgencyController implements AgencyApi {
     }
 
     @Override
-    public ResponseEntity<AgencyBranchDTO> addAgencyBranch(UUID agencyId,  CreateBranchDTO createBranchDTO) {
+    public ResponseEntity<AgencyBranchDTO> addAgencyBranch(UUID agencyId, CreateBranchDTO createBranchDTO) {
         var address = createBranchDTO.getAddress();
         var branch =
                 addBranchUseCase.execute(agencyId, createBranchDTO.getName(), address, createBranchDTO.getCityId());
@@ -69,7 +69,7 @@ public class AgencyController implements AgencyApi {
     }
 
     @Override
-    public ResponseEntity<RouteDTO> addRouteToAgency(UUID agencyId,  AddRouteDTO addRouteDTO) {
+    public ResponseEntity<RouteDTO> addRouteToAgency(UUID agencyId, AddRouteDTO addRouteDTO) {
         var route = addRouteUseCase.execute(
                 new AgencyId(agencyId),
                 addRouteDTO.getOriginCityId().toString(),
