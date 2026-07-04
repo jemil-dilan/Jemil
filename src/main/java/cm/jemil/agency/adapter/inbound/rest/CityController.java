@@ -23,8 +23,8 @@ public class CityController implements CityApi {
 
     @Override
     public ResponseEntity<CreationResponseDTO> createCity(@Valid CreateCityDTO createCityDTO) {
-        var id = createCityUseCase.execute(createCityDTO.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).body(restMapper.toCreationResponse(id.value()));
+        var response = createCityUseCase.execute(restMapper.toDomain(createCityDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(restMapper.toCreationResponse(response.value()));
     }
 
     @Override

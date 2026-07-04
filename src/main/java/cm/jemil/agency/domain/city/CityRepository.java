@@ -10,7 +10,5 @@ public interface CityRepository {
 
     Optional<City> findById(UUID id);
 
-    Optional<City> findByNameIgnoreCase(String name);
-
     List<CityView1> findAllView1();
 }
