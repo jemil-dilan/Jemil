@@ -15,7 +15,8 @@ public record CreatedAt(LocalDateTime value) implements Comparable<CreatedAt> {
     }
 
     private static boolean isInTheFuture(LocalDateTime value) {
-        return LocalDateTime.now().isBefore(value);
+        // Allow up to 5 seconds of system clock drift/skew
+        return LocalDateTime.now().plusSeconds(5).isBefore(value);
     }
 
     @Override
