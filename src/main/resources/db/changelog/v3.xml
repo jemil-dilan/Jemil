@@ -13,6 +13,7 @@
 			<column name="c_name" type="VARCHAR(100)">
 				<constraints nullable="false" />
 			</column>
+			<column name="c_region" type="VARCHAR(100)" />
 		</createTable>
 
 		<createTable tableName="t_agency_branch">

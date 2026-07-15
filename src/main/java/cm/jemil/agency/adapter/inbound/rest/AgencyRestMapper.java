@@ -34,6 +34,7 @@ public interface AgencyRestMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id.value")
+    @Mapping(target = "name", source = "name")
     @Mapping(target = "phoneNumber.countryCode", source = "phoneNumber.countryCode")
     @Mapping(target = "phoneNumber.number", source = "phoneNumber.number")
     @Mapping(target = "status", source = "status")

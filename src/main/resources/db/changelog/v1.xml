@@ -48,18 +48,18 @@
 			<column name="c_country_code" type="varchar(10)" />
 			<column name="c_phone_number" type="varchar(20)" />
 			<column name="c_license_number" type="varchar(100)" />
-			<column name="c_commission_rate" type="INT" />
+			<column name="c_commission_rate" type="DOUBLE PRECISION" />
 			<column name="c_created_at" type="timestamp" />
 		</createTable>
 
-		<createTable tableName="routes">
+		<createTable tableName="t_routes">
 			<column name="id" type="UUID">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
-			<column name="agency_id" type="UUID">
+			<column name="c_agency_id" type="UUID">
 				<constraints nullable="false"
-					foreignKeyName="fk_routes_agency" referencedTableName="agencies"
-					referencedColumnNames="id" />
+					foreignKeyName="fk_routes_agency" referencedTableName="t_agency"
+					referencedColumnNames="c_id" />
 			</column>
 			<column name="departure" type="varchar(255)">
 				<constraints nullable="false" />
@@ -67,7 +67,7 @@
 			<column name="arrival" type="varchar(255)">
 				<constraints nullable="false" />
 			</column>
-			<column name="price" type="DECIMAL(19, 2)">
+			<column name="price" type="DOUBLE PRECISION">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
@@ -78,7 +78,7 @@
 			</column>
 			<column name="route_id" type="UUID">
 				<constraints nullable="false"
-					foreignKeyName="fk_schedules_route" referencedTableName="routes"
+					foreignKeyName="fk_schedules_route" referencedTableName="t_routes"
 					referencedColumnNames="id" />
 			</column>
 			<column name="departure_time" type="TIMESTAMP">

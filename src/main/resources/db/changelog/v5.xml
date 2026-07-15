@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+	<changeSet id="JEMIL-S0-AUTH" author="jemil-cli">
+		<createTable tableName="t_user">
+			<column name="c_id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="c_email" type="varchar(255)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="c_password_hash" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_phone_number" type="varchar(20)" />
+			<column name="c_active" type="boolean"
+				defaultValueBoolean="true">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_created_at" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<!-- Join table for user roles (many-to-many relationship) -->
+		<createTable tableName="user_roles">
+			<column name="user_id" type="UUID">
+				<constraints nullable="false" />
+			</column>
+			<column name="role" type="varchar(20)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<addForeignKeyConstraint
+			baseTableName="user_roles" baseColumnNames="user_id"
+			constraintName="fk_user_roles_user" deferrable="true"
+			referencedTableName="t_user" referencedColumnNames="c_id" />
+
+		<addPrimaryKey tableName="user_roles"
+			columnNames="user_id, role" constraintName="pk_user_roles" />
+
+		<rollback>
+			<dropTable tableName="user_roles" />
+			<dropTable tableName="t_user" />
+		</rollback>
+	</changeSet>
+
+</databaseChangeLog>

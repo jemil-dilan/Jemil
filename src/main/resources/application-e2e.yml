@@ -1,0 +1,37 @@
+---
+spring:
+  datasource:
+    url: "jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:jemil_e2e}"
+    username: "${DB_USER:jemil}"
+    password: "${DB_PASSWORD:jemil_secret}"
+  jpa:
+    hibernate:
+      ddl-auto: "validate"
+    show-sql: false
+  liquibase:
+    enabled: true
+    change-log: "classpath:/db/changelog/db.changelog-master.xml"
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "${KEYCLOAK_ISSUER_URI:http://localhost:8081/realms/jemil}"
+          jwk-set-uri: "${KEYCLOAK_JWK_URI:http://localhost:8081/realms/jemil/protocol/openid-connect/certs}"
+server:
+  port: "${SERVER_PORT:0}"
+cors:
+  allowed-origins: "*"
+jwt:
+  secret: "${JWT_SECRET:test-secret-key-that-is-at-least-32-bytes-long-for-hmac}"
+  access-token-expiration: "${JWT_ACCESS_EXPIRATION:3600000}"
+  refresh-token-expiration: "${JWT_REFRESH_EXPIRATION:604800000}"
+jemil:
+  e2e:
+    security-enabled: false
+    use-embedded-db: false
+logging:
+  level:
+    root: "INFO"
+    cm.jemil: "DEBUG"
+    org.springframework: "INFO"
+    org.hibernate: "INFO"

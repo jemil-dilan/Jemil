@@ -1,0 +1,223 @@
+---
+openapi: "3.0.3"
+info:
+  title: "JEMIL Authentication API"
+  description: "API for user authentication and authorization in the JEMIL platform.
+    
+    This contract is the single source of truth between the backend and clients
+    (Android mobile app, web dashboard, QA team).
+    
+    **Rule**: Any modification to this file requires review.
+    Code is generated from this spec — not the other way around."
+  version: "2026-W27"
+  contact:
+    name: "JEMIL Dev Team"
+
+servers:
+  - url: "http://localhost:8080"
+    description: "Local development"
+  - url: "https://api.jemil.cm"
+    description: "Production"
+
+tags:
+  - name: "Authentication"
+    description: "User authentication operations"
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - "Authentication"
+      summary: "Register a new user"
+      description: "Register a new user with email, password, and roles"
+      operationId: "registerUser"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: "User registered successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          description: "Invalid data provided"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '409':
+          description: "Email already registered"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+
+  /auth/login:
+    post:
+      tags:
+        - "Authentication"
+      summary: "Authenticate a user and get access tokens"
+      description: "Authenticate with email and password to receive JWT access and refresh tokens"
+      operationId: "login"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: "Login successful"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: "Invalid email or password"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+
+  /auth/refresh:
+    post:
+      tags:
+        - "Authentication"
+      summary: "Refresh access token"
+      description: "Use a valid refresh token to obtain a new access token"
+      operationId: "refreshToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: "Token refreshed successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: "Invalid or expired refresh token"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+
+components:
+  schemas:
+    RegisterRequest:
+      type: "object"
+      required:
+        - "email"
+        - "password"
+        - "roles"
+      properties:
+        email:
+          type: "string"
+          format: "email"
+          description: "User's email address"
+          example: "user@example.com"
+        password:
+          type: "string"
+          format: "password"
+          description: "User's password (will be hashed)"
+          minLength: 8
+        phoneNumber:
+          type: "string"
+          description: "User's phone number"
+          example: "+237653492410"
+        roles:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/UserRole'
+          description: "Set of roles assigned to the user"
+          minItems: 1
+
+    RegisterResponse:
+      type: "object"
+      properties:
+        userId:
+          type: "string"
+          format: "uuid"
+          description: "ID of the newly registered user"
+
+    LoginRequest:
+      type: "object"
+      required:
+        - "email"
+        - "password"
+      properties:
+        email:
+          type: "string"
+          format: "email"
+          description: "User's email address"
+          example: "user@example.com"
+        password:
+          type: "string"
+          format: "password"
+          description: "User's password"
+
+    LoginResponse:
+      type: "object"
+      required:
+        - "accessToken"
+        - "refreshToken"
+        - "userId"
+        - "roles"
+      properties:
+        accessToken:
+          type: "string"
+          description: "JWT access token for authenticated requests"
+        refreshToken:
+          type: "string"
+          description: "JWT refresh token for obtaining new access tokens"
+        userId:
+          type: "string"
+          format: "uuid"
+          description: "ID of the authenticated user"
+        roles:
+          type: "array"
+          items:
+            type: "string"
+          description: "List of roles assigned to the user"
+
+    RefreshTokenRequest:
+      type: "object"
+      required:
+        - "refreshToken"
+      properties:
+        refreshToken:
+          type: "string"
+          description: "Valid refresh token"
+
+    UserRole:
+      type: "string"
+      enum:
+        - "PASSENGER"
+        - "AGENCY_MANAGER"
+        - "CONTROLLER"
+        - "ADMIN"
+      description: "User role in the JEMIL system"
+
+    ErrorDTO:
+      type: "object"
+      properties:
+        timestamp:
+          type: "string"
+          format: "date-time"
+        status:
+          type: "integer"
+        error:
+          type: "string"
+          example: "VALIDATION_ERROR"
+        message:
+          type: "string"
+          example: "Email is required"

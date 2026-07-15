@@ -90,4 +90,14 @@ class HexagonalArchitectureTest {
             .resideInAnyPackage(
                     "org.springframework..", "jakarta.persistence..", "jakarta.servlet..", "org.hibernate..")
             .as("Domain layer must not depend on framework annotations (Spring, JPA, etc.)");
+
+    @ArchTest
+    static final ArchRule AUTH_DOMAIN_MUST_NOT_DEPEND_ON_FRAMEWORK = noClasses()
+            .that()
+            .resideInAPackage("cm.jemil.auth.domain..")
+            .should()
+            .dependOnClassesThat()
+            .resideInAnyPackage(
+                    "org.springframework..", "jakarta.persistence..", "jakarta.servlet..", "org.hibernate..")
+            .as("Auth domain layer must not depend on framework annotations (Spring, JPA, etc.)");
 }

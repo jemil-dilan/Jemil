@@ -1,16 +1,26 @@
-# Error Codes
+# Error Codes — JEMIL Backend
 
-| Type                        | HTTP Code | Business Code                | Description                                 |
-|-----------------------------|-----------|------------------------------|---------------------------------------------|
-| `UnauthorizedException`     | `401`     | `LIFEKORA_BLOODBANK-401-001` | USER SHOULD BE AUTHOR OF COLLECTOR          |
-|                             |           |                              |                                             |
-| `ForbiddenException`        | `403`     | `LIFEKORA_BLOODBANK-403-001` | User Is Not Author Of Collector             |
-|                             |           |                              |                                             |
-| `ResourceNotFoundException` | `404`     | `LIFEKORA_BLOODBANK-404-001` | DEMO NOT FOUND                              |
-|                             |           | `LIFEKORA_BLOODBANK-404-002` | USER NOT FOUND                              |
-|                             |           | `LIFEKORA_BLOODBANK-404-003` | COLLECTOR NOT FOUND                         |
-|                             |           |                              |                                             |
-|                             |           |                              |                                             |
-| `ConflictException`         | `409`     | `LIFEKORA_BLOODBANK-409-001` | A COLLECTOR WITH THIS NUMBER ALREADY EXISTS |
-|                             |           | `LIFEKORA_BLOODBANK-409-002` | A Collector With This Email Already Exists  |
-|                             |           | `LIFEKORA_BLOODBANK-409-003` | The User Already Has A Collector            |
+| Type              | HTTP Code | Business Code    | Description                                |
+|-------------------|-----------|------------------|--------------------------------------------|
+| `DomainException` | `400`     | `AGENCY_400_001` | Invalid agency state                       |
+| `DomainException` | `400`     | `AGENCY_400_002` | Not enough seats available                 |
+| `DomainException` | `400`     | `AGENCY_400_003` | Agency name is required                    |
+| `DomainException` | `400`     | `AGENCY_400_004` | Address is required                        |
+| `DomainException` | `400`     | `AGENCY_400_005` | Phone number is required                   |
+| `DomainException` | `400`     | `AGENCY_400_006` | Route cities are required                  |
+| `DomainException` | `400`     | `AGENCY_400_007` | Route price must be positive               |
+| `DomainException` | `400`     | `AGENCY_400_008` | Seat count must be positive                |
+| `DomainException` | `400`     | `AUTH_400_001`   | Email is required                          |
+| `DomainException` | `400`     | `AUTH_400_002`   | Password is required                       |
+| `DomainException` | `400`     | `CITY_400_001`   | City name is required                      |
+| `DomainException` | `400`     | `BRANCH_400_001` | Branch name is required                    |
+| `DomainException` | `400`     | `BRANCH_400_002` | Branch name already exists for this agency |
+| `DomainException` | `400`     | `BRANCH_400_003` | Branch address is required                 |
+| `DomainException` | `401`     | `AUTH_401_001`   | Invalid email or password                  |
+| `DomainException` | `401`     | `AUTH_401_002`   | Invalid or expired token                   |
+| `DomainException` | `403`     | `AUTH_403_001`   | Insufficient permissions                   |
+| `DomainException` | `404`     | `AGENCY_404_001` | Agency not found                           |
+| `DomainException` | `404`     | `AGENCY_404_002` | Demo not found                             |
+| `DomainException` | `404`     | `CITY_404_001`   | City not found                             |
+| `DomainException` | `404`     | `BRANCH_404_001` | Branch not found                           |
+| `DomainException` | `409`     | `AUTH_409_001`   | Email already registered                   |
