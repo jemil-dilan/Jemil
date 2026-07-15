@@ -19,11 +19,8 @@ version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
-}
-tasks.withType<JavaCompile>().configureEach {
-    options.release.set(21)
 }
 
 dependencies {
