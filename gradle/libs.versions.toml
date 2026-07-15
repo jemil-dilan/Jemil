@@ -47,6 +47,7 @@ rest-assured                 = "5.5.0"
 testcontainers               = "1.20.0"
 assertj                      = "3.27.0"
 mockito                      = "5.14.0"
+awaitility                  = "4.2.2"
 
 # ============================================================
 [libraries]
@@ -100,6 +101,7 @@ rest-assured              = { module = "io.rest-assured:rest-assured",          
 rest-assured-json-path    = { module = "io.rest-assured:json-path",                 version.ref = "rest-assured" }
 assertj-core              = { module = "org.assertj:assertj-core",                  version.ref = "assertj" }
 mockito-core              = { module = "org.mockito:mockito-core",                  version.ref = "mockito" }
+awaitility               = { module = "org.awaitility:awaitility",                version.ref = "awaitility" }
 
 # ── Testcontainers ───────────────────────────────────────────
 testcontainers-bom        = { module = "org.testcontainers:testcontainers-bom",     version.ref = "testcontainers" }

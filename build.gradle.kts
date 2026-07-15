@@ -65,7 +65,11 @@ dependencies {
     testImplementation(libs.spring.boot.starter.test) {
         exclude(group = "org.mockito")
     }
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation(libs.archunit.junit5)
+    testCompileOnly(libs.lombok)
+    testAnnotationProcessor(libs.lombok)
+    testAnnotationProcessor(libs.mapstruct.processor)
     implementation(libs.spring.boot.starter.oauth2.resource.server)
     testImplementation(libs.cucumber.java)
     testImplementation(libs.cucumber.spring)
@@ -74,6 +78,7 @@ dependencies {
     testImplementation(libs.rest.assured.json.path)
     testImplementation(libs.assertj.core)
     testImplementation(libs.mockito.core)
+    testImplementation(libs.awaitility)
     testImplementation(libs.testcontainers.junit)
     testImplementation(libs.testcontainers.postgresql)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -317,6 +322,21 @@ registerOpenApiGenerateTask(
         ),
 )
 
+// Auth OpenAPI Generation
+registerOpenApiGenerateTask(
+    taskName = "authOpenApiGenerate",
+    specFile = "$rootDir/specs/openapi/inbound/auth.yaml",
+    outputDirName = "auth",
+    libraryName = "spring-boot",
+    taskApiPackage = "cm.jemil.generated.auth.adapter.rest.inbound.api",
+    taskModelPackage = "cm.jemil.generated.auth.adapter.rest.inbound.dto",
+    taskConfigPackage = "cm.jemil.generated.auth.adapter.rest.inbound.config",
+    extraConfigOptions =
+        mapOf(
+            "skipDefaultInterface" to "true",
+        ),
+)
+
 tasks.compileJava.get().dependsOn(
     tasks["agencyOpenApiGenerate"],
     tasks["agencyDomainEventsOpenApiGenerate"],
@@ -326,6 +346,7 @@ tasks.compileJava.get().dependsOn(
     tasks["paymentDomainEventsOpenApiGenerate"],
     tasks["ticketOpenApiGenerate"],
     tasks["ticketDomainEventsOpenApiGenerate"],
+    tasks["authOpenApiGenerate"],
 )
 
 // Inclure le code OpenAPI généré dans les sources Java
@@ -360,6 +381,10 @@ sourceSets.main.get().java.srcDirs(
         .asFile.path,
     layout.buildDirectory
         .dir("generated/sources/openapi/ticket-events/src/main/java")
+        .get()
+        .asFile.path,
+    layout.buildDirectory
+        .dir("generated/sources/openapi/auth/src/main/java")
         .get()
         .asFile.path,
 )

@@ -1,130 +1,65 @@
 ---
 openapi: "3.0.3"
 info:
-  title: "LIFEKORA-BLOODBANK"
-  description: "REST API endpoints for LIFEKORA BLOODBANK"
-  version: "2025-W52"
+  title: "JEMIL Transport Backend"
+  description: "Payment Domain Events for JEMIL Transport System"
+  version: "2026-W27"
 servers:
-- url: "https"
-- url: "http"
+  - url: "https"
+  - url: "http"
 tags:
-- name: "LIFEKORA-BLOODBANK"
-  description: "Demo operations"
+  - name: "JEMIL"
+    description: "Payment domain operations"
 paths: {}
 components:
   schemas:
     DomainEventType:
       type: "string"
       enum:
-      - "DEMO_CREATED"
-      - "COLLECTOR_VALIDATED"
-      - "COLLECTOR_DELETED"
-      - "COLLECTOR_REVOKED"
-      - "COLLECTOR_REJECTED"
+        - "PAYMENT_INITIATED"
+        - "PAYMENT_COMPLETED"
+        - "PAYMENT_FAILED"
+        - "PAYMENT_REFUNDED"
+        - "DEMO_CREATED"
+    PaymentInitiatedEventDTO:
+      type: "object"
+      properties:
+        eventId:
+          type: "string"
+          format: "uuid"
+        paymentId:
+          type: "string"
+          format: "uuid"
+        bookingId:
+          type: "string"
+          format: "uuid"
+        amount:
+          type: "number"
+          format: "double"
+        currency:
+          type: "string"
+        occurredAt:
+          type: "string"
+          format: "date-time"
+    PaymentCompletedEventDTO:
+      type: "object"
+      properties:
+        eventId:
+          type: "string"
+          format: "uuid"
+        paymentId:
+          type: "string"
+          format: "uuid"
+        transactionId:
+          type: "string"
+        completedAt:
+          type: "string"
+          format: "date-time"
     DemoCreatedEventDTO:
       type: "object"
       properties:
         demoId:
           type: "string"
           format: "uuid"
-        DemoName:
+        demoName:
           type: "string"
-    CollectorCreatedEventDTO:
-      type: "object"
-      properties:
-        userId:
-          type: "string"
-          format: "uuid"
-        hasCollector:
-          type: "boolean"
-        collectorId:
-          type: "string"
-          format: "uuid"
-        validatedBy:
-          type: "string"
-          format: "uuid"
-        type:
-          $ref: "#/components/schemas/CollectorTypeDTO"
-        collectorName:
-          type: "string"
-          description: "the official name of collector"
-        phoneNumber:
-          $ref: "#/components/schemas/PhoneNumberDTO"
-        address:
-          $ref: "#/components/schemas/AddressDTO"
-        email:
-          type: "string"
-          description: "the email of collector"
-        monthlyCollectionCapacity:
-          type: "integer"
-          description: "monthly collection capacity"
-          format: "int64"
-        storageCapacity:
-          type: "integer"
-          description: "storage capacity of collector"
-          format: "int64"
-        serviceOffered:
-          $ref: "#/components/schemas/ServiceOfferedDTO"
-        documents:
-          items:
-            type: "string"
-            format: "uuid"
-            description: "the id of official document of collector"
-    CollectorDeletedEventDTO:
-      type: "object"
-      properties:
-        collectorId:
-          type: "string"
-          format: "uuid"
-    CollectorInvalidationEventDTO:
-      type: "object"
-      properties:
-        collectorId:
-          type: "string"
-          format: "uuid"
-        authorId:
-          type: "string"
-          format: "uuid"
-        invalidatedBy:
-          type: "string"
-          format: "uuid"
-        collectorStatus:
-          $ref: "#/components/schemas/CollectorStatusDTO"
-    ServiceOfferedDTO:
-      enum:
-      - "BLOOD_COLLECTION"
-      - "PLASMAPHERESIS"
-      - "BLOOD_PLATELET_COLLECTION"
-      - "BLOOD_TREATMENT"
-      - "BIOLOGICAL_TESTS"
-      - "DISTRIBUTION_TO_OTHER_ESTABLISHMENTS"
-    CollectorTypeDTO:
-      enum:
-      - "CLINIC"
-      - "HOSPITAL"
-      - "TRANSFUSION_CENTER"
-      - "RESEARCH_INSTITUTE"
-    PhoneNumberDTO:
-      type: "object"
-      properties:
-        countryCode:
-          type: "string"
-          description: "the international code for the country"
-          example: "237 for Cameroon"
-        number:
-          type: "string"
-          description: "the phone number"
-          example: 653492410
-    CollectorStatusDTO:
-      enum:
-      - "PENDING"
-      - "REJECTED"
-    AddressDTO:
-      type: "object"
-      properties:
-        city:
-          type: "string"
-          description: "the city of collector"
-        district:
-          type: "string"
-          description: "the district of collector"

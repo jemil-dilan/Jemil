@@ -42,6 +42,10 @@ logging:
     cm.jemil: "DEBUG"
     org.springframework: "INFO"
     org.hibernate.SQL: "WARN"
+jwt:
+  secret: "${JWT_SECRET:jemil-default-secret-key-change-in-production-32chars}"
+  access-token-expiration: "${JWT_ACCESS_EXPIRATION:900000}"
+  refresh-token-expiration: "${JWT_REFRESH_EXPIRATION:604800000}"
 springdoc:
   api-docs:
     path: "/api-docs"

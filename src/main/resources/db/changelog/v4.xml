@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+	<changeSet id="JEMIL-S0" author="jemil-cli">
+		<!-- Many-to-Many join table for Agency <-> Route -->
+		<createTable tableName="agency_routes">
+			<column name="agency_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_agency_routes_agency"
+					referencedTableName="t_agency" referencedColumnNames="c_id" />
+			</column>
+			<column name="route_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_agency_routes_route"
+					referencedTableName="t_routes" referencedColumnNames="id" />
+			</column>
+		</createTable>
+
+		<addPrimaryKey tableName="agency_routes"
+			columnNames="agency_id, route_id" constraintName="pk_agency_routes" />
+
+		<rollback>
+			<dropTable tableName="agency_routes" />
+		</rollback>
+	</changeSet>
+
+</databaseChangeLog>

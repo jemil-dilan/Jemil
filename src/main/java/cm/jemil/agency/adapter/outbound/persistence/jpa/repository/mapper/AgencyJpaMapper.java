@@ -52,6 +52,14 @@ public interface AgencyJpaMapper {
     AgencyBranchJpa toJpa(AgencyBranch branch);
 
     @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "address", source = "address")
+    @Mapping(target = "active", source = "active")
+    @Mapping(target = "cityId", source = "city.id")
+    AgencyBranch toDomain(AgencyBranchJpa entity);
+
+    @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id.value", source = "id")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "phoneNumber.countryCode", source = "phoneCountryCode")

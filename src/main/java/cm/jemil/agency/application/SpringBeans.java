@@ -7,16 +7,24 @@ import cm.jemil.agency.application.inbound.usecase.AddRouteUseCase;
 import cm.jemil.agency.application.inbound.usecase.CreateCityUseCase;
 import cm.jemil.agency.application.inbound.usecase.CreateCityUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.CreateDemoUseCase;
+import cm.jemil.agency.application.inbound.usecase.DeleteBranchUseCase;
+import cm.jemil.agency.application.inbound.usecase.DeleteBranchUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.GetAgencyByIdUseCase;
 import cm.jemil.agency.application.inbound.usecase.GetAgencyByIdUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.GetAllAgenciesUseCase;
 import cm.jemil.agency.application.inbound.usecase.GetAllAgenciesUseCaseImpl;
+import cm.jemil.agency.application.inbound.usecase.GetAllBranchesByAgencyUseCase;
+import cm.jemil.agency.application.inbound.usecase.GetAllBranchesByAgencyUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.GetAllCitiesUseCase;
 import cm.jemil.agency.application.inbound.usecase.GetAllCitiesUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.GetAllDemoUseCase;
+import cm.jemil.agency.application.inbound.usecase.GetBranchByIdUseCase;
+import cm.jemil.agency.application.inbound.usecase.GetBranchByIdUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.GetDemoByIdUseCase;
 import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCase;
 import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCaseImpl;
+import cm.jemil.agency.application.inbound.usecase.UpdateBranchUseCase;
+import cm.jemil.agency.application.inbound.usecase.UpdateBranchUseCaseImpl;
 import cm.jemil.agency.domain.agency.AgencyRegisteredEvent;
 import cm.jemil.agency.domain.agency.AgencyRepository;
 import cm.jemil.agency.domain.branch.BranchRepository;
@@ -88,5 +96,25 @@ public class SpringBeans {
     public AddBranchUseCase addBranchUseCase(
             AgencyRepository agencyRepository, BranchRepository branchRepository, CityRepository cityRepository) {
         return new AddBranchUseCaseImpl(agencyRepository, branchRepository, cityRepository);
+    }
+
+    @Bean("getBranchByIdUseCase")
+    public GetBranchByIdUseCase getBranchByIdUseCase(BranchRepository branchRepository) {
+        return new GetBranchByIdUseCaseImpl(branchRepository);
+    }
+
+    @Bean("getAllBranchesByAgencyUseCase")
+    public GetAllBranchesByAgencyUseCase getAllBranchesByAgencyUseCase(BranchRepository branchRepository) {
+        return new GetAllBranchesByAgencyUseCaseImpl(branchRepository);
+    }
+
+    @Bean("deleteBranchUseCase")
+    public DeleteBranchUseCase deleteBranchUseCase(BranchRepository branchRepository) {
+        return new DeleteBranchUseCaseImpl(branchRepository);
+    }
+
+    @Bean("updateBranchUseCase")
+    public UpdateBranchUseCase updateBranchUseCase(BranchRepository branchRepository) {
+        return new UpdateBranchUseCaseImpl(branchRepository);
     }
 }

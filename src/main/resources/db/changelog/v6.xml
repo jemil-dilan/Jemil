@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+	<changeSet id="JEMIL-S0-TABLES" author="jemil-cli">
+		<!-- Booking table -->
+		<createTable tableName="t_booking">
+			<column name="c_id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="c_passenger_id" type="UUID">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_route_id" type="UUID">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_agency_id" type="UUID">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_schedule_id" type="UUID">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_seats" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_total_price" type="DOUBLE PRECISION">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_status" type="varchar(20)">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_created_at" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_expires_at" type="TIMESTAMP" />
+			<column name="c_confirmed_at" type="TIMESTAMP" />
+			<column name="c_version" type="BIGINT" defaultValueNumeric="0">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<!-- Payment table -->
+		<createTable tableName="t_payment">
+			<column name="c_id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="c_booking_id" type="UUID">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_amount" type="DOUBLE PRECISION">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_currency" type="varchar(3)">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_payment_method" type="varchar(20)">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_status" type="varchar(20)">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_transaction_id" type="varchar(100)" />
+			<column name="c_gateway_response" type="TEXT" />
+			<column name="c_created_at" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_completed_at" type="TIMESTAMP" />
+		</createTable>
+
+		<!-- Payment Attempt table -->
+		<createTable tableName="t_payment_attempt">
+			<column name="c_id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="c_payment_id" type="UUID">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_attempt_number" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_amount" type="DOUBLE PRECISION">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_status" type="varchar(20)">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_failure_reason" type="TEXT" />
+			<column name="c_gateway_response" type="TEXT" />
+			<column name="c_created_at" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<!-- Ticket table -->
+		<createTable tableName="t_ticket">
+			<column name="c_id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="c_booking_id" type="UUID">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_passenger_id" type="UUID">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_route_id" type="UUID">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_ticket_number" type="varchar(50)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="c_qr_code" type="TEXT" />
+			<column name="c_status" type="varchar(20)">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_issued_at" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_valid_until" type="TIMESTAMP" />
+			<column name="c_validated_at" type="TIMESTAMP" />
+			<column name="c_validated_by" type="UUID" />
+		</createTable>
+
+		<!-- Validation Record table -->
+		<createTable tableName="t_validation_record">
+			<column name="c_id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="c_ticket_id" type="UUID">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_validator_id" type="UUID">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_validation_type" type="varchar(20)">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_validation_method" type="varchar(20)">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_device_info" type="varchar(255)" />
+			<column name="c_location_latitude" type="DOUBLE PRECISION" />
+			<column name="c_location_longitude" type="DOUBLE PRECISION" />
+			<column name="c_validated_at" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_notes" type="TEXT" />
+		</createTable>
+
+		<!-- Audit Logs table -->
+		<createTable tableName="audit_logs">
+			<column name="c_id" type="BIGSERIAL">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="c_user_id" type="UUID" />
+			<column name="c_action" type="varchar(50)">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_entity_type" type="varchar(50)">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_entity_id" type="varchar(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_old_values" type="TEXT" />
+			<column name="c_new_values" type="TEXT" />
+			<column name="c_ip_address" type="varchar(50)" />
+			<column name="c_user_agent" type="varchar(255)" />
+			<column name="c_timestamp" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="c_status" type="varchar(20)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<!-- Foreign Keys for t_booking -->
+		<addForeignKeyConstraint
+			baseTableName="t_booking" baseColumnNames="c_passenger_id"
+			constraintName="fk_booking_passenger" deferrable="true"
+			referencedTableName="t_user" referencedColumnNames="c_id" />
+
+		<addForeignKeyConstraint
+			baseTableName="t_booking" baseColumnNames="c_route_id"
+			constraintName="fk_booking_route" deferrable="true"
+			referencedTableName="t_routes" referencedColumnNames="id" />
+
+		<addForeignKeyConstraint
+			baseTableName="t_booking" baseColumnNames="c_agency_id"
+			constraintName="fk_booking_agency" deferrable="true"
+			referencedTableName="t_agency" referencedColumnNames="c_id" />
+
+		<addForeignKeyConstraint
+			baseTableName="t_booking" baseColumnNames="c_schedule_id"
+			constraintName="fk_booking_schedule" deferrable="true"
+			referencedTableName="schedules" referencedColumnNames="id" />
+
+		<!-- Foreign Keys for t_payment -->
+		<addForeignKeyConstraint
+			baseTableName="t_payment" baseColumnNames="c_booking_id"
+			constraintName="fk_payment_booking" deferrable="true"
+			referencedTableName="t_booking" referencedColumnNames="c_id" />
+
+		<!-- Foreign Keys for t_payment_attempt -->
+		<addForeignKeyConstraint
+			baseTableName="t_payment_attempt" baseColumnNames="c_payment_id"
+			constraintName="fk_payment_attempt_payment" deferrable="true"
+			referencedTableName="t_payment" referencedColumnNames="c_id" />
+
+		<!-- Foreign Keys for t_ticket -->
+		<addForeignKeyConstraint
+			baseTableName="t_ticket" baseColumnNames="c_booking_id"
+			constraintName="fk_ticket_booking" deferrable="true"
+			referencedTableName="t_booking" referencedColumnNames="c_id" />
+
+		<addForeignKeyConstraint
+			baseTableName="t_ticket" baseColumnNames="c_passenger_id"
+			constraintName="fk_ticket_passenger" deferrable="true"
+			referencedTableName="t_user" referencedColumnNames="c_id" />
+
+		<addForeignKeyConstraint
+			baseTableName="t_ticket" baseColumnNames="c_route_id"
+			constraintName="fk_ticket_route" deferrable="true"
+			referencedTableName="t_routes" referencedColumnNames="id" />
+
+		<!-- Foreign Keys for t_validation_record -->
+		<addForeignKeyConstraint
+			baseTableName="t_validation_record" baseColumnNames="c_ticket_id"
+			constraintName="fk_validation_record_ticket" deferrable="true"
+			referencedTableName="t_ticket" referencedColumnNames="c_id" />
+
+		<addForeignKeyConstraint
+			baseTableName="t_validation_record" baseColumnNames="c_validator_id"
+			constraintName="fk_validation_record_validator" deferrable="true"
+			referencedTableName="t_user" referencedColumnNames="c_id" />
+
+		<!-- Indexes -->
+		<createIndex tableName="t_booking"
+			indexName="idx_booking_passenger">
+			<column name="c_passenger_id" />
+		</createIndex>
+		<createIndex tableName="t_booking"
+			indexName="idx_booking_status">
+			<column name="c_status" />
+		</createIndex>
+		<createIndex tableName="t_booking"
+			indexName="idx_booking_expires_at">
+			<column name="c_expires_at" />
+		</createIndex>
+
+		<createIndex tableName="t_payment"
+			indexName="idx_payment_booking">
+			<column name="c_booking_id" />
+		</createIndex>
+		<createIndex tableName="t_payment"
+			indexName="idx_payment_status">
+			<column name="c_status" />
+		</createIndex>
+		<createIndex tableName="t_payment"
+			indexName="idx_payment_transaction">
+			<column name="c_transaction_id" />
+		</createIndex>
+
+		<createIndex tableName="t_ticket"
+			indexName="idx_ticket_booking">
+			<column name="c_booking_id" />
+		</createIndex>
+		<createIndex tableName="t_ticket"
+			indexName="idx_ticket_number">
+			<column name="c_ticket_number" />
+		</createIndex>
+		<createIndex tableName="t_ticket"
+			indexName="idx_ticket_status">
+			<column name="c_status" />
+		</createIndex>
+
+		<createIndex tableName="t_validation_record"
+			indexName="idx_validation_ticket">
+			<column name="c_ticket_id" />
+		</createIndex>
+		<createIndex tableName="t_validation_record"
+			indexName="idx_validation_validator">
+			<column name="c_validator_id" />
+		</createIndex>
+
+		<createIndex tableName="audit_logs"
+			indexName="idx_audit_user">
+			<column name="c_user_id" />
+		</createIndex>
+		<createIndex tableName="audit_logs"
+			indexName="idx_audit_entity">
+			<column name="c_entity_type" />
+			<column name="c_entity_id" />
+		</createIndex>
+		<createIndex tableName="audit_logs"
+			indexName="idx_audit_timestamp">
+			<column name="c_timestamp" />
+		</createIndex>
+
+		<rollback>
+			<dropTable tableName="audit_logs" />
+			<dropTable tableName="t_validation_record" />
+			<dropTable tableName="t_ticket" />
+			<dropTable tableName="t_payment_attempt" />
+			<dropTable tableName="t_payment" />
+			<dropTable tableName="t_booking" />
+		</rollback>
+	</changeSet>
+
+</databaseChangeLog>

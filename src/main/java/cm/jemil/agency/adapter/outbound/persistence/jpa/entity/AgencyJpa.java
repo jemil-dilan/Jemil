@@ -45,7 +45,7 @@ public class AgencyJpa {
     @Column(name = "c_phone_number")
     private String phoneNumber;
 
-    @Column(name = "c_licencse_number")
+    @Column(name = "c_license_number")
     private String licenseNumber;
 
     @Column(name = "c_commission_rate")

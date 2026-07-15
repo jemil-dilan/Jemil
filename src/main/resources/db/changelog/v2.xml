@@ -6,7 +6,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
 
 	<changeSet id="JEMIL-4" author="jemil-cli">
-		<addColumn tableName="routes">
+		<addColumn tableName="t_routes">
 			<column name="total_seats" type="INT" defaultValueNumeric="0">
 				<constraints nullable="false" />
 			</column>
