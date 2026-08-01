@@ -2,8 +2,6 @@ package cm.jemil.shared.outbox;
 
 import cm.jemil.shared.events.DomainEvent;
 import cm.jemil.shared.events.DomainEventType;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +11,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @Component
 @RequiredArgsConstructor
@@ -45,7 +45,7 @@ public class OutboxScheduler {
 
                 event.markAsSent();
                 outboxRepository.save(event);
-            } catch (JsonProcessingException | IllegalArgumentException e) {
+            } catch (JacksonException | IllegalArgumentException e) {
                 log.error("Discarding invalid outbox event: {}", event.getId(), e);
                 event.markAsFailed();
                 outboxRepository.save(event);
@@ -55,7 +55,7 @@ public class OutboxScheduler {
         }
     }
 
-    private DomainEvent deserialize(OutboxEvent event) throws JsonProcessingException {
+    private DomainEvent deserialize(OutboxEvent event) throws JacksonException {
         Class<? extends DomainEvent> eventClass = eventTypes().get(event.getEventType());
         if (eventClass == null) {
             throw new IllegalArgumentException("Unsupported outbox event type: " + event.getEventType());

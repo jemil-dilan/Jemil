@@ -15,8 +15,6 @@ import cm.jemil.shared.outbox.OutboxEventPublisher;
 import cm.jemil.shared.outbox.OutboxEventStatus;
 import cm.jemil.shared.outbox.OutboxRepository;
 import cm.jemil.shared.outbox.OutboxScheduler;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -29,6 +27,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.context.ApplicationEventPublisher;
+import tools.jackson.databind.ObjectMapper;
 
 class OutboxSchedulerIntegrationTest {
 
@@ -54,7 +53,6 @@ class OutboxSchedulerIntegrationTest {
         mocks = MockitoAnnotations.openMocks(this);
 
         objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
 
         outboxEventPublisher = new JpaOutboxEventPublisher(outboxRepository, objectMapper);
 

@@ -12,9 +12,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookingDemoSpringRepository extends JpaRepository<DemoJpa, UUID> {
 
-    @Query("SELECT new cm.jemil.booking.demo.view.DemoView$DemoView1(d.id, d.name) FROM DemoJpa d")
+    @Query("SELECT new cm.jemil.booking.demo.view.DemoView$DemoView1(d.id, d.name) FROM BookingDemoJpa d")
     List<DemoView1> findAllAsView1();
 
-    @Query("SELECT new cm.jemil.booking.demo.view.DemoView$DemoView1(d.id, d.name) FROM DemoJpa d WHERE d.id = :id")
+    @Query(
+            "SELECT new cm.jemil.booking.demo.view.DemoView$DemoView1(d.id, d.name) FROM BookingDemoJpa d WHERE d.id = :id")
     Optional<DemoView1> findByIdAsView1(UUID id);
 }

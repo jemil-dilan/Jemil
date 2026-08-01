@@ -1,5 +1,6 @@
 package cm.jemil.agency.adapter.outbound.persistence.jpa.repository;
 
+import cm.jemil.agency.adapter.outbound.persistence.jpa.entity.AgencyJpa;
 import cm.jemil.agency.adapter.outbound.persistence.jpa.repository.mapper.AgencyJpaMapper;
 import cm.jemil.agency.domain.agency.Agency;
 import cm.jemil.agency.domain.agency.AgencyId;
@@ -20,7 +21,11 @@ public class JpaAgencyRepository implements AgencyRepository {
 
     @Override
     public void insert(Agency agency) {
-        agencySpringRepository.save(mapper.toJpa(agency));
+        AgencyJpa entity = mapper.toJpa(agency);
+        if (entity.getRoutes() != null) {
+            entity.getRoutes().forEach(route -> route.setAgency(entity));
+        }
+        agencySpringRepository.save(entity);
     }
 
     @Override
@@ -41,13 +46,16 @@ public class JpaAgencyRepository implements AgencyRepository {
 
     @Override
     public List<AgencyView1> getAllAgencyView1() {
-        return agencySpringRepository.findAll().stream()
+        return agencySpringRepository.findAllWithBranches().stream()
                 .map(mapper::toAgencyView1)
                 .toList();
     }
 
     @Override
     public List<AgencyView1> getAllAgencyView1(String cityFilter) {
+        if (cityFilter == null || cityFilter.isBlank()) {
+            return getAllAgencyView1();
+        }
         return agencySpringRepository.findAllWithBranchesByCity(cityFilter).stream()
                 .map(mapper::toAgencyView1)
                 .toList();
@@ -65,6 +73,9 @@ public class JpaAgencyRepository implements AgencyRepository {
 
     @Override
     public List<AgencyView1> getAllAgencyView1(String cityFilter, int page, int size) {
+        if (cityFilter == null || cityFilter.isBlank()) {
+            return getAllAgencyView1();
+        }
         return agencySpringRepository.findAllWithBranchesByCity(cityFilter, PageRequest.of(page, size)).stream()
                 .map(mapper::toAgencyView1)
                 .toList();

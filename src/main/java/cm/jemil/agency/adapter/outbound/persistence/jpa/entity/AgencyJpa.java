@@ -7,9 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -61,16 +58,17 @@ public class AgencyJpa {
     @OneToMany(mappedBy = "agency", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AgencyBranchJpa> branches = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "agency_routes",
-            joinColumns = @JoinColumn(name = "agency_id"),
-            inverseJoinColumns = @JoinColumn(name = "route_id"))
+    @OneToMany(mappedBy = "agency", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RouteJpa> routes = new HashSet<>();
 
     public void addBranch(AgencyBranchJpa branch) {
         branches.add(branch);
         branch.setAgency(this);
+    }
+
+    public void addRoute(RouteJpa route) {
+        routes.add(route);
+        route.setAgency(this);
     }
 
     @Override
