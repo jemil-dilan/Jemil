@@ -14,6 +14,7 @@ import cm.jemil.agency.domain.agency.Schedule;
 import cm.jemil.agency.domain.agency.ScheduleId;
 import cm.jemil.shared.utils.PhoneNumber;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ class AgencyJpaMapperTest {
         jpa.setPhoneCountryCode("237");
         jpa.setPhoneNumber("653492410");
         jpa.setStatus(AgencyStatus.ACTIVE);
-        jpa.setCreatedAt(LocalDateTime.now());
+        jpa.setCreatedAt(LocalDateTime.now(ZoneOffset.UTC));
 
         var agency = mapper.toAgencyView1(jpa);
 
@@ -91,12 +92,12 @@ class AgencyJpaMapperTest {
 
     @Test
     void shouldMapNullRouteToNull() {
-        assertThat(mapper.toAgencyView1((RouteJpa) null)).isNull();
+        assertThat(mapper.toDomain((RouteJpa) null)).isNull();
     }
 
     @Test
     void shouldMapNullScheduleToNull() {
-        assertThat(mapper.toAgencyView1((ScheduleJpa) null)).isNull();
+        assertThat(mapper.toDomain((ScheduleJpa) null)).isNull();
     }
 
     @Test

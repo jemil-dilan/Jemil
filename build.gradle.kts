@@ -62,6 +62,8 @@ dependencies {
     testImplementation(libs.spring.boot.starter.test) {
         exclude(group = "org.mockito")
     }
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-restclient")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation(libs.archunit.junit5)
     testCompileOnly(libs.lombok)
@@ -79,6 +81,7 @@ dependencies {
     testImplementation(libs.testcontainers.junit)
     testImplementation(libs.testcontainers.postgresql)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.junit.platform:junit-platform-suite")
 }
 
 // ── Spotless ─────────────────────────────────────────────────

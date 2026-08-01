@@ -1,10 +1,17 @@
 package cm.jemil.agency.adapter.outbound.persistence.jpa.entity;
 
-import jakarta.persistence.*;
-import java.util.HashSet;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +31,10 @@ public class RouteJpa {
     @Id
     private UUID id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "c_agency_id", nullable = false)
+    private AgencyJpa agency;
+
     @Column(nullable = false)
     private String departure;
 
@@ -36,12 +47,9 @@ public class RouteJpa {
     @Column(nullable = false)
     private int totalSeats;
 
-    @ManyToMany(mappedBy = "routes")
-    private Set<AgencyJpa> agencies = new HashSet<>();
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "route_id")
-    private List<ScheduleJpa> schedules;
+    private List<ScheduleJpa> schedules = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

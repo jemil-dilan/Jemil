@@ -15,6 +15,7 @@ import cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1;
 import cm.jemil.agency.domain.branch.AgencyBranch;
 import cm.jemil.agency.domain.branch.BranchId;
 import cm.jemil.agency.domain.city.CityId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.mapstruct.BeanMapping;
@@ -39,7 +40,7 @@ public interface AgencyJpaMapper {
     @Mapping(target = "status", source = "status")
     @Mapping(target = "createdAt", source = "createdAt.value")
     @Mapping(target = "branches", ignore = true)
-    @Mapping(target = "routes", ignore = true)
+    @Mapping(target = "routes", source = "routes")
     AgencyJpa toJpa(Agency agency);
 
     @BeanMapping(ignoreByDefault = true)
@@ -82,24 +83,36 @@ public interface AgencyJpaMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "name", source = "name")
     @Mapping(target = "phoneNumber.countryCode", source = "phoneCountryCode")
     @Mapping(target = "phoneNumber.number", source = "phoneNumber")
     @Mapping(target = "commissionRate", source = "commissionRate")
     @Mapping(target = "licenseNumber", source = "licenseNumber")
     @Mapping(target = "status", source = "status")
     @Mapping(target = "createdAt.value", source = "createdAt")
+    @Mapping(target = "branches", source = "branches")
+    @Mapping(target = "routes", source = "routes")
     Agency toDomain(AgencyJpa entity);
 
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id.value")
+    @Mapping(target = "departure", source = "departure")
+    @Mapping(target = "arrival", source = "arrival")
+    @Mapping(target = "price", source = "price")
+    @Mapping(target = "totalSeats", source = "totalSeats")
+    @Mapping(target = "schedules", source = "schedules")
+    @Mapping(target = "agency", ignore = true)
     RouteJpa toJpa(Route route);
 
-    default Route toAgencyView1(RouteJpa entity) {
+    default Route toDomain(RouteJpa entity) {
         if (entity == null) {
             return null;
         }
 
         List<Schedule> schedules = entity.getSchedules() == null
-                ? List.of()
-                : entity.getSchedules().stream().map(this::toAgencyView1).toList();
+                ? new ArrayList<>()
+                : new ArrayList<>(
+                        entity.getSchedules().stream().map(this::toDomain).toList());
 
         return new Route(
                 mapToRouteId(entity.getId()),
@@ -114,7 +127,7 @@ public interface AgencyJpaMapper {
     ScheduleJpa toJpa(Schedule schedule);
 
     @Mapping(target = "id", source = "id")
-    Schedule toAgencyView1(ScheduleJpa entity);
+    Schedule toDomain(ScheduleJpa entity);
 
     default UUID map(AgencyId id) {
         return id != null ? id.value() : null;

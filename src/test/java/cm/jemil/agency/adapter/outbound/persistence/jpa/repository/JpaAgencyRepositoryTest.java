@@ -94,18 +94,18 @@ class JpaAgencyRepositoryTest {
                 agencyAgg2.getLicenseNumber(),
                 agencyAgg2.getCommissionRate(),
                 agencyAgg2.getCreatedAt());
-        when(jpaRepository.findAll()).thenReturn(List.of(jpaEntity));
+        when(jpaRepository.findAllWithBranches()).thenReturn(List.of(jpaEntity));
         when(mapper.toAgencyView1(jpaEntity)).thenReturn(agency2);
 
         var result = repository.getAllAgencyView1();
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).name()).isEqualTo("Test");
+        assertThat(result.getFirst().name()).isEqualTo("Test");
     }
 
     @Test
     void shouldReturnEmptyListWhenNoneFound() {
-        when(jpaRepository.findAll()).thenReturn(List.of());
+        when(jpaRepository.findAllWithBranches()).thenReturn(List.of());
 
         var result = repository.getAllAgencyView1();
 

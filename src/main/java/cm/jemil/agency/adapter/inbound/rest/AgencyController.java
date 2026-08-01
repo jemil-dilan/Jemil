@@ -9,6 +9,7 @@ import cm.jemil.agency.application.inbound.usecase.GetBranchByIdUseCase;
 import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCase;
 import cm.jemil.agency.domain.agency.AgencyId;
 import cm.jemil.agency.domain.agency.views.AgencyView;
+import cm.jemil.agency.domain.exception.AgencyErrorCode;
 import cm.jemil.generated.agency.adapter.rest.inbound.api.AgencyApi;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.AddRouteDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.AgencyBranchDTO;
@@ -40,8 +41,8 @@ public class AgencyController implements AgencyApi {
 
     @Override
     public ResponseEntity<CreationResponseDTO> registerAgency(CreateAgencyDTO registerAgencyDTO) {
-        var id = registerAgencyUseCase.execute(restMapper.toCreationCommand(registerAgencyDTO));
-        return ResponseEntity.status(HttpStatus.CREATED).body(restMapper.toCreationResponse(id.value()));
+        var response = registerAgencyUseCase.execute(restMapper.toCreationCommand(registerAgencyDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(restMapper.toCreationResponse(response.value()));
     }
 
     @Override
@@ -66,10 +67,9 @@ public class AgencyController implements AgencyApi {
 
     @Override
     public ResponseEntity<AgencyBranchDTO> addAgencyBranch(UUID agencyId, CreateBranchDTO createBranchDTO) {
-        var address = createBranchDTO.getAddress();
-        var branch =
-                addBranchUseCase.execute(agencyId, createBranchDTO.getName(), address, createBranchDTO.getCityId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(restMapper.toDto(branch));
+        var response = addBranchUseCase.execute(
+                agencyId, createBranchDTO.getName(), createBranchDTO.getAddress(), createBranchDTO.getCityId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(restMapper.toDto(response));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class AgencyController implements AgencyApi {
         var branch = getBranchByIdUseCase
                 .execute(new cm.jemil.agency.domain.branch.BranchId(branchId))
                 .orElseThrow(() -> new cm.jemil.shared.exception.DomainException(
-                        cm.jemil.agency.domain.exception.AgencyErrorCode.BRANCH_404_001));
+                        AgencyErrorCode.BRANCH_404_001));
         return ResponseEntity.ok(restMapper.toDto(branch));
     }
 
