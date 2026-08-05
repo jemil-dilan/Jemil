@@ -1,4 +1,5 @@
 import com.diffplug.spotless.extra.wtp.EclipseWtpFormatterStep
+import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.register
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
@@ -62,6 +63,8 @@ dependencies {
     testImplementation(libs.spring.boot.starter.test) {
         exclude(group = "org.mockito")
     }
+    testImplementation(libs.cucumber.java8)
+
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.springframework.boot:spring-boot-restclient")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
@@ -157,6 +160,66 @@ tasks.jacocoTestReport {
 
 tasks.test {
     finalizedBy(tasks.jacocoTestReport)
+}
+
+interface InjectedExecOps {
+    @get:Inject
+    val execOps: ExecOperations
+}
+
+tasks.register("e2eTest") {
+    group = "verification"
+    description = "Runs Cucumber E2E Tests"
+    dependsOn("assemble", "testClasses")
+
+    val injected = project.objects.newInstance<InjectedExecOps>()
+
+    doLast {
+        val destFile =
+            layout.buildDirectory
+                .file("jacoco/e2eTests.exec")
+                .get()
+                .asFile
+        destFile.parentFile.mkdirs()
+
+        // Resolve JaCoCo agent JAR (actual nested jar inside the distribution)
+        val agentDist = configurations.getByName("jacocoAgent").resolve().first()
+        val agentJar =
+            zipTree(agentDist)
+                .matching { include("**/jacocoagent.jar") }
+                .singleFile
+
+        val agentArg =
+            "-javaagent:${agentJar.absolutePath}=destfile=${destFile.absolutePath},append=true"
+
+        val toolchains = project.extensions.getByType(JavaToolchainService::class.java)
+        val launcher = toolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(25)) }
+        val javaExecPath =
+            launcher
+                .get()
+                .executablePath.asFile.absolutePath
+
+        injected.execOps.javaexec {
+            executable = javaExecPath
+            mainClass = "io.cucumber.core.cli.Main"
+            classpath = sourceSets.test.get().runtimeClasspath
+            jvmArgs = listOf("--enable-preview", agentArg)
+            args =
+                listOf(
+                    "--plugin",
+                    "html:build/cucumber-reports/html/index.html",
+                    "--plugin",
+                    "json:build/cucumber-reports/json/cucumber.json",
+                    "--plugin",
+                    "junit:build/cucumber-reports/json/cucumber.xml",
+                    "--tags",
+                    "not @Disabled and not @pending",
+                    "--glue",
+                    "cm.jemil.e2e",
+                    "src/test/resources/cm/jemil/e2e/features",
+                )
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------

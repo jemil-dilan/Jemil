@@ -5,7 +5,8 @@ Feature: Agency Registration
   So that agencies can be onboarded onto the platform
 
   Background:
-    Given a valid agency payload with name "Global Voyages" and phone "237653492410"
+    Given I am connected as user id "admin-1" with the roles "ADMIN"
+    And a valid agency payload with name "Global Voyages" and phone "237653492410"
 
   Scenario: Register a new agency successfully
     When I register the agency as an admin
@@ -29,8 +30,13 @@ Feature: Agency Registration
   Scenario: Reject registration with invalid phone number
     Given an invalid agency payload with phone "12345678901"
     When I register the agency as an admin
-    Then the response status is 400
-    And the response has validation errors
+    Then the last request failed with the http status "BAD_REQUEST" and error code "AGENCY_400_005"
+
+  Scenario: Reject registration when not authenticated
+    Given I am not authenticated
+    And a valid agency payload with name "No Auth Voyages" and phone "237611111111"
+    When I register the agency as an admin
+    Then the response status is 401
 
   Scenario: Add a route to an existing agency
     Given a valid agency payload with name "Express Lines" and phone "237612345678"

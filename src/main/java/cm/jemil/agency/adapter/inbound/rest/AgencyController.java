@@ -94,8 +94,7 @@ public class AgencyController implements AgencyApi {
     public ResponseEntity<AgencyBranchDTO> getBranchById(UUID branchId) {
         var branch = getBranchByIdUseCase
                 .execute(new cm.jemil.agency.domain.branch.BranchId(branchId))
-                .orElseThrow(() -> new cm.jemil.shared.exception.DomainException(
-                        AgencyErrorCode.BRANCH_404_001));
+                .orElseThrow(() -> new cm.jemil.shared.exception.DomainException(AgencyErrorCode.BRANCH_404_001));
         return ResponseEntity.ok(restMapper.toDto(branch));
     }
 
