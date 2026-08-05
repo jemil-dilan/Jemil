@@ -1,4 +1,4 @@
-package cm.jemil.agency.e2e.step;
+package cm.jemil.e2e.step;
 
 import java.util.UUID;
 import lombok.Data;
@@ -13,6 +13,4 @@ public class ScenarioContext {
     private UUID createdAgencyId;
     private UUID createdRouteId;
     private String requestBody;
-    private int responseStatus;
-    private String responseBody;
 }

@@ -93,6 +93,7 @@ archunit-junit5     = { module = "com.tngtech.archunit:archunit-junit5", version
 
 # ── Cucumber ─────────────────────────────────────────────────
 cucumber-java           = { module = "io.cucumber:cucumber-java",                   version.ref = "cucumber" }
+cucumber-java8          = { module = "io.cucumber:cucumber-java8",                  version.ref = "cucumber" }
 cucumber-spring         = { module = "io.cucumber:cucumber-spring",                 version.ref = "cucumber" }
 cucumber-junit-platform = { module = "io.cucumber:cucumber-junit-platform-engine",  version.ref = "cucumber" }
 

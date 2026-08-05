@@ -5,7 +5,8 @@ Feature: Route Search
   So that I can find buses between my origin and destination
 
   Background:
-    Given a valid agency payload with name "Global Voyages" and phone "237653492410"
+    Given I am connected as user id "admin-1" with the roles "ADMIN"
+    And a valid agency payload with name "Global Voyages" and phone "237653492410"
     When I register the agency as an admin
 
   Scenario: Search agencies by origin city
