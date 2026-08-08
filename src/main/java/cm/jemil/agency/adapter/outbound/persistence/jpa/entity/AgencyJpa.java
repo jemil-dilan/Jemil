@@ -33,26 +33,26 @@ public class AgencyJpa {
     @Column(name = "c_id")
     private UUID id;
 
-    @Column(name = "c_name")
+    @Column(name = "c_name", nullable = false)
     private String name;
 
-    @Column(name = "c_country_code")
+    @Column(name = "c_country_code", nullable = false)
     private String phoneCountryCode;
 
-    @Column(name = "c_phone_number")
+    @Column(name = "c_phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "c_license_number")
+    @Column(name = "c_license_number", nullable = false)
     private String licenseNumber;
 
-    @Column(name = "c_commission_rate")
+    @Column(name = "c_commission_rate", nullable = false)
     private double commissionRate;
 
-    @Column(name = "c_status")
+    @Column(name = "c_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private AgencyStatus status;
 
-    @Column(name = "c_created_at")
+    @Column(name = "c_created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "agency", cascade = CascadeType.ALL, orphanRemoval = true)

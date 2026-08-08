@@ -43,7 +43,7 @@ springdoc                    = "3.0.2"
 
 # Testing
 cucumber                     = "7.18.0"
-rest-assured                 = "5.5.0"
+rest-assured                 = "6.0.0"
 testcontainers               = "1.20.0"
 assertj                      = "3.27.0"
 mockito                      = "5.14.0"

@@ -49,6 +49,12 @@ public class GlobalExceptionHandler {
                 .body(buildErrorBody(ex, HttpStatus.BAD_REQUEST.value(), "MALFORMED_REQUEST"));
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(buildErrorBody(ex, HttpStatus.BAD_REQUEST.value(), "VALIDATION_ERROR"));
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)

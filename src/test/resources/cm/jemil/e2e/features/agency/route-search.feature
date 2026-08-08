@@ -18,7 +18,6 @@ Feature: Route Search
     Then the response status is 200
     And the response contains at least 0 agency
 
-  @pending
   Scenario: Search routes by origin and destination
     Given agencies with routes exist
     When I search routes from "Douala" to "Yaoundé"

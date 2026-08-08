@@ -1,7 +1,9 @@
 package cm.jemil.agency.application.inbound.usecase;
 
 import cm.jemil.agency.domain.branch.AgencyBranch;
+import cm.jemil.agency.domain.branch.BranchAddress;
 import cm.jemil.agency.domain.branch.BranchId;
+import cm.jemil.agency.domain.branch.BranchName;
 import cm.jemil.agency.domain.branch.BranchRepository;
 import cm.jemil.agency.domain.exception.AgencyErrorCode;
 import cm.jemil.shared.exception.DomainException;
@@ -19,6 +21,6 @@ public class UpdateBranchUseCaseImpl implements UpdateBranchUseCase {
                 .orElseThrow(() -> new DomainException(AgencyErrorCode.BRANCH_404_001));
 
         // Create a new branch with updated values, preserving the city
-        return AgencyBranch.of(name, address, existingBranch.getCityId());
+        return AgencyBranch.of(new BranchName(name), new BranchAddress(address), existingBranch.getCityId());
     }
 }

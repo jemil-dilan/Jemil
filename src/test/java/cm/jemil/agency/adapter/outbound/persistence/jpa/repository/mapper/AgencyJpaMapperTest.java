@@ -7,12 +7,21 @@ import cm.jemil.agency.adapter.outbound.persistence.jpa.entity.RouteJpa;
 import cm.jemil.agency.adapter.outbound.persistence.jpa.entity.ScheduleJpa;
 import cm.jemil.agency.domain.agency.Agency;
 import cm.jemil.agency.domain.agency.AgencyId;
+import cm.jemil.agency.domain.agency.AgencyName;
 import cm.jemil.agency.domain.agency.AgencyStatus;
+import cm.jemil.agency.domain.agency.AvailableSeats;
+import cm.jemil.agency.domain.agency.Arrival;
+import cm.jemil.agency.domain.agency.CommissionRate;
+import cm.jemil.agency.domain.agency.Departure;
+import cm.jemil.agency.domain.agency.LicenceNumber;
 import cm.jemil.agency.domain.agency.Route;
 import cm.jemil.agency.domain.agency.RouteId;
+import cm.jemil.agency.domain.agency.RoutePrice;
 import cm.jemil.agency.domain.agency.Schedule;
 import cm.jemil.agency.domain.agency.ScheduleId;
+import cm.jemil.agency.domain.agency.TotalSeats;
 import cm.jemil.shared.utils.PhoneNumber;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -25,7 +34,11 @@ class AgencyJpaMapperTest {
 
     @Test
     void shouldMapDomainToJpa() {
-        var agency = Agency.of("Global Voyages", new PhoneNumber("237", "653492410"), "sjoiaj", 3.0);
+        var agency = Agency.of(
+                new AgencyName("Global Voyages"),
+                new PhoneNumber("237", "653492410"),
+                new LicenceNumber("sjoiaj"),
+                new CommissionRate(3.0));
 
         var entity = mapper.toJpa(agency);
 
@@ -34,6 +47,7 @@ class AgencyJpaMapperTest {
         assertThat(entity.getName()).isEqualTo("Global Voyages");
         assertThat(entity.getPhoneCountryCode()).isEqualTo("237");
         assertThat(entity.getPhoneNumber()).isEqualTo("653492410");
+        assertThat(entity.getCommissionRate()).isEqualTo(3.0);
         assertThat(entity.getStatus()).isEqualTo(AgencyStatus.ACTIVE);
     }
 
@@ -59,7 +73,12 @@ class AgencyJpaMapperTest {
     @Test
     void shouldMapRouteToJpa() {
         var routeId = RouteId.generate();
-        var route = new Route(routeId, "Douala", "Yaoundé", 5000, new ArrayList<>());
+        var route = new Route(
+                routeId,
+                new Departure("Douala"),
+                new Arrival("Yaoundé"),
+                new RoutePrice(BigDecimal.valueOf(5000)),
+                new ArrayList<>());
 
         var entity = mapper.toJpa(route);
 
@@ -74,7 +93,7 @@ class AgencyJpaMapperTest {
     void shouldMapScheduleToJpa() {
         var scheduleId = ScheduleId.generate();
         var departureTime = LocalDateTime.of(2026, 6, 15, 8, 0);
-        var schedule = new Schedule(scheduleId, departureTime, 50, 50);
+        var schedule = new Schedule(scheduleId, departureTime, new TotalSeats(50), new AvailableSeats(50));
 
         var entity = mapper.toJpa(schedule);
 
@@ -83,6 +102,21 @@ class AgencyJpaMapperTest {
         assertThat(entity.getDepartureTime()).isEqualTo(departureTime);
         assertThat(entity.getTotalSeats()).isEqualTo(50);
         assertThat(entity.getAvailableSeats()).isEqualTo(50);
+    }
+
+    @Test
+    void shouldMapJpaToSchedule() {
+        var jpa = new ScheduleJpa();
+        jpa.setId(UUID.randomUUID());
+        jpa.setDepartureTime(LocalDateTime.of(2026, 6, 15, 8, 0));
+        jpa.setTotalSeats(50);
+        jpa.setAvailableSeats(50);
+
+        var schedule = mapper.toDomain(jpa);
+
+        assertThat(schedule).isNotNull();
+        assertThat(schedule.getTotalSeats().value()).isEqualTo(50);
+        assertThat(schedule.getAvailableSeats().value()).isEqualTo(50);
     }
 
     @Test

@@ -28,10 +28,10 @@ public class AgencyBranchJpa {
     @Column(name = "c_id")
     private UUID id;
 
-    @Column(name = "c_name")
+    @Column(name = "c_name", nullable = false)
     private String name;
 
-    @Column(name = "c_address")
+    @Column(name = "c_address", nullable = false)
     private String address;
 
     @Column(name = "c_is_active")

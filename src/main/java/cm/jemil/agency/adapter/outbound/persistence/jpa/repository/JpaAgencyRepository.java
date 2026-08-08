@@ -6,6 +6,7 @@ import cm.jemil.agency.domain.agency.Agency;
 import cm.jemil.agency.domain.agency.AgencyId;
 import cm.jemil.agency.domain.agency.AgencyRepository;
 import cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1;
+import cm.jemil.agency.domain.agency.views.RouteSearchView;
 import cm.jemil.agency.domain.exception.AgencyErrorCode;
 import cm.jemil.shared.exception.DomainException;
 import java.util.List;
@@ -87,5 +88,12 @@ public class JpaAgencyRepository implements AgencyRepository {
             return agencySpringRepository.count();
         }
         return agencySpringRepository.countByBranchCityName(cityFilter);
+    }
+
+    @Override
+    public List<RouteSearchView> searchRoutes(String origin, String destination) {
+        return agencySpringRepository.findRoutesByCities(origin, destination).stream()
+                .map(mapper::toRouteSearchView)
+                .toList();
     }
 }

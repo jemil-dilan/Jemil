@@ -8,7 +8,10 @@ import static org.mockito.Mockito.when;
 import cm.jemil.agency.application.inbound.usecase.GetAgencyByIdUseCaseImpl;
 import cm.jemil.agency.domain.agency.Agency;
 import cm.jemil.agency.domain.agency.AgencyId;
+import cm.jemil.agency.domain.agency.AgencyName;
+import cm.jemil.agency.domain.agency.CommissionRate;
 import cm.jemil.agency.domain.agency.AgencyRepository;
+import cm.jemil.agency.domain.agency.LicenceNumber;
 import cm.jemil.agency.domain.agency.views.AgencyView;
 import cm.jemil.agency.domain.exception.AgencyErrorCode;
 import cm.jemil.shared.exception.DomainException;
@@ -35,15 +38,15 @@ class GetAgencyByIdUseCaseImplTest {
     @Test
     void shouldReturnAgencyWhenFound() {
         var id = AgencyId.generate();
-        var agency = Agency.of("Test", new PhoneNumber("1", "2"), "boo", 2.0);
+        var agency = Agency.of(new AgencyName("Test"), new PhoneNumber("1", "2"), new LicenceNumber("boo"), new CommissionRate(2.0));
         var view = new AgencyView.AgencyView1(
                 agency.getId(),
-                agency.getName(),
+                agency.getName().value(),
                 agency.getPhoneNumber(),
                 agency.getStatus(),
                 List.of(),
-                agency.getLicenseNumber(),
-                agency.getCommissionRate(),
+                agency.getLicenseNumber().value(),
+                agency.getCommissionRateValue(),
                 agency.getCreatedAt());
         when(agencyRepository.loadByIdAgencyView1(any())).thenReturn(view);
 

@@ -8,12 +8,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AgencyBranch {
     private final BranchId id;
-    private String name;
-    private String address;
+    private BranchName name;
+    private BranchAddress address;
     private boolean active;
     private CityId cityId;
 
-    public static AgencyBranch of(String name, String address, CityId cityId) {
+    public static AgencyBranch of(BranchName name, BranchAddress address, CityId cityId) {
         return new AgencyBranch(BranchId.generate(), name, address, true, cityId);
     }
 }

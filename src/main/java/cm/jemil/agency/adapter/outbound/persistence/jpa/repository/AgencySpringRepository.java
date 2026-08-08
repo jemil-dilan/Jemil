@@ -1,6 +1,7 @@
 package cm.jemil.agency.adapter.outbound.persistence.jpa.repository;
 
 import cm.jemil.agency.adapter.outbound.persistence.jpa.entity.AgencyJpa;
+import cm.jemil.agency.adapter.outbound.persistence.jpa.entity.RouteJpa;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -58,4 +59,15 @@ public interface AgencySpringRepository extends JpaRepository<AgencyJpa, UUID> {
             AND (:cityName IS NULL OR lower(city.name) = lower(:cityName))
             """)
     long countByBranchCityName(@Param("cityName") String cityName);
+
+    @Query("""
+            SELECT DISTINCT route
+            FROM AgencyJpa agency
+            JOIN agency.routes route
+            LEFT JOIN FETCH route.schedules schedule
+            WHERE agency.status = 'ACTIVE'
+            AND lower(route.departure) = lower(:origin)
+            AND lower(route.arrival) = lower(:destination)
+            """)
+    List<RouteJpa> findRoutesByCities(@Param("origin") String origin, @Param("destination") String destination);
 }

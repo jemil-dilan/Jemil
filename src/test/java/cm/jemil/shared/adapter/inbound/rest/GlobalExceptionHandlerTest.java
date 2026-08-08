@@ -49,6 +49,17 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void shouldHandleIllegalArgumentException() {
+        var ex = new IllegalArgumentException("Phone number is required");
+
+        var response = handler.handleIllegalArgument(ex);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).containsEntry("error", "VALIDATION_ERROR");
+        assertThat(response.getBody()).containsEntry("message", "Phone number is required");
+    }
+
+    @Test
     void shouldHandleUnexpectedException() {
         var ex = new RuntimeException("Unexpected error");
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+	<changeSet id="JEMIL-24" author="jemil-cli">
+		<comment>Seed reference data for route search E2E: one active agency
+			with a Douala - Yaoundé route and one available schedule</comment>
+		<insert tableName="t_agency">
+			<column name="c_id"
+				value="99999999-9999-9999-9999-999999999999" />
+			<column name="c_name" value="Seed Transit" />
+			<column name="c_status" value="ACTIVE" />
+			<column name="c_country_code" value="237" />
+			<column name="c_phone_number" value="699000000" />
+			<column name="c_license_number" value="LIC-SEED-0001" />
+			<column name="c_commission_rate" valueNumeric="5.0" />
+			<column name="c_created_at" valueComputed="CURRENT_TIMESTAMP" />
+		</insert>
+		<insert tableName="t_routes">
+			<column name="id" value="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" />
+			<column name="c_agency_id"
+				value="99999999-9999-9999-9999-999999999999" />
+			<column name="departure" value="Douala" />
+			<column name="arrival" value="Yaoundé" />
+			<column name="price" valueNumeric="5000" />
+			<column name="total_seats" valueNumeric="40" />
+		</insert>
+		<insert tableName="schedules">
+			<column name="id" value="bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb" />
+			<column name="route_id"
+				value="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" />
+			<column name="departure_time"
+				valueComputed="CURRENT_TIMESTAMP + INTERVAL '7 days'" />
+			<column name="total_seats" valueNumeric="40" />
+			<column name="available_seats" valueNumeric="40" />
+		</insert>
+	</changeSet>
+
+</databaseChangeLog>

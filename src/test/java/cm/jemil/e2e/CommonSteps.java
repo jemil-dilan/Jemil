@@ -41,6 +41,7 @@ public class CommonSteps implements En {
 
         Then(
                 "the response status is {int}",
-                (Integer expectedStatus) -> assertThat(this.httpClient.lastStatus()).isEqualTo(expectedStatus));
+                (Integer expectedStatus) ->
+                        assertThat(this.httpClient.lastStatus()).isEqualTo(expectedStatus));
     }
 }
