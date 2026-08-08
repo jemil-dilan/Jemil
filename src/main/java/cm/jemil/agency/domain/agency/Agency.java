@@ -17,17 +17,20 @@ import lombok.Getter;
 @AllArgsConstructor
 public class Agency {
     private final AgencyId id;
-    private String name;
+    private AgencyName name;
     private AgencyStatus status;
     private PhoneNumber phoneNumber;
-    private String licenseNumber;
-    private double commissionRate;
+    private LicenceNumber licenseNumber;
+    private CommissionRate commissionRate;
     private final List<AgencyBranch> branches;
     private final List<Route> routes;
     private CreatedAt createdAt;
 
-    public static Agency of(String name, PhoneNumber phoneNumber, String licenseNumber, double commissionRate) {
-        validateRequired(name, phoneNumber);
+    public static Agency of(
+            AgencyName name, 
+            PhoneNumber phoneNumber, 
+            LicenceNumber licenseNumber, 
+            CommissionRate commissionRate) {
         return new Agency(
                 AgencyId.generate(),
                 name,
@@ -48,14 +51,8 @@ public class Agency {
         this.status = AgencyStatus.ACTIVE;
     }
 
-    public Route addRoute(String departure, String arrival, double price) {
+    public Route addRoute(Departure departure, Arrival arrival, RoutePrice price) {
         Route route = Route.create(departure, arrival, price);
-        routes.add(route);
-        return route;
-    }
-
-    public Route addRoute(String departure, String arrival, double price, int totalSeats) {
-        Route route = Route.create(departure, arrival, price, totalSeats);
         routes.add(route);
         return route;
     }
@@ -64,16 +61,17 @@ public class Agency {
         return Collections.unmodifiableList(routes);
     }
 
-    private static void validateRequired(String name, PhoneNumber phoneNumber) {
-        if (name == null || name.isBlank()) {
-            throw new DomainException(AGENCY_400_003);
-        }
-        if (phoneNumber == null
-                || phoneNumber.countryCode() == null
-                || phoneNumber.countryCode().isBlank()
-                || phoneNumber.number() == null
-                || phoneNumber.number().isBlank()) {
-            throw new DomainException(AGENCY_400_005);
-        }
+    /**
+     * Updates the commission rate for this agency.
+     */
+    public void updateCommissionRate(CommissionRate newRate) {
+        this.commissionRate = newRate;
+    }
+
+    /**
+     * Returns the commission rate as a double for compatibility with existing code.
+     */
+    public double getCommissionRateValue() {
+        return commissionRate.value();
     }
 }

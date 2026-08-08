@@ -1,8 +1,8 @@
 package cm.jemil.agency.application.inbound.usecase;
 
-import cm.jemil.agency.domain.agency.AgencyId;
 import cm.jemil.agency.domain.agency.Route;
+import java.util.UUID;
 
 public interface AddRouteUseCase {
-    Route execute(AgencyId agencyId, String departure, String arrival, double price, int totalSeats);
+    Route execute(UUID agencyId, String departure, String arrival, double price, int totalSeats);
 }

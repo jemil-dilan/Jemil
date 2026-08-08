@@ -13,6 +13,7 @@ import io.restassured.specification.RequestSpecification;
 import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ public class E2eHttpClient {
     @LocalServerPort
     private int port;
 
+    @Setter
     @Getter
     private String accessToken;
 
@@ -44,10 +46,6 @@ public class E2eHttpClient {
                         .defaultContentCharset("UTF-8")
                         .appendDefaultContentCharsetToContentTypeIfUndefined(false))
                 .httpClient(HttpClientConfig.httpClientConfig().dontReuseHttpClientInstance());
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
     }
 
     public void clearAccessToken() {

@@ -23,6 +23,8 @@ import cm.jemil.agency.application.inbound.usecase.GetBranchByIdUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.GetDemoByIdUseCase;
 import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCase;
 import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCaseImpl;
+import cm.jemil.agency.application.inbound.usecase.SearchRoutesUseCase;
+import cm.jemil.agency.application.inbound.usecase.SearchRoutesUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.UpdateBranchUseCase;
 import cm.jemil.agency.application.inbound.usecase.UpdateBranchUseCaseImpl;
 import cm.jemil.agency.domain.agency.AgencyRegisteredEvent;
@@ -57,9 +59,14 @@ public class SpringBeans {
         return new GetAllAgenciesUseCaseImpl(agencyRepository);
     }
 
+    @Bean("searchRoutesUseCase")
+    public SearchRoutesUseCase searchRoutesUseCase(AgencyRepository agencyRepository) {
+        return new SearchRoutesUseCaseImpl(agencyRepository);
+    }
+
     @Bean("addRouteUseCase")
-    public AddRouteUseCase addRouteUseCase(AgencyRepository agencyRepository) {
-        return new AddRouteService(agencyRepository);
+    public AddRouteUseCase addRouteUseCase(AgencyRepository agencyRepository, CityRepository cityRepository) {
+        return new AddRouteService(agencyRepository, cityRepository);
     }
 
     @Bean("agencyRegisteredEventType")

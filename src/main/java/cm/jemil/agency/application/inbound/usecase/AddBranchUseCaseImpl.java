@@ -3,6 +3,8 @@ package cm.jemil.agency.application.inbound.usecase;
 import cm.jemil.agency.domain.agency.AgencyId;
 import cm.jemil.agency.domain.agency.AgencyRepository;
 import cm.jemil.agency.domain.branch.AgencyBranch;
+import cm.jemil.agency.domain.branch.BranchAddress;
+import cm.jemil.agency.domain.branch.BranchName;
 import cm.jemil.agency.domain.branch.BranchRepository;
 import cm.jemil.agency.domain.city.CityId;
 import cm.jemil.agency.domain.city.CityRepository;
@@ -28,7 +30,7 @@ public class AddBranchUseCaseImpl implements AddBranchUseCase {
             throw new DomainException(AgencyErrorCode.CITY_404_001);
         }
 
-        AgencyBranch branch = AgencyBranch.of(name, address, new CityId(cityId));
+        AgencyBranch branch = AgencyBranch.of(new BranchName(name), new BranchAddress(address), new CityId(cityId));
         branchRepository.save(branch, id);
         return branch;
     }

@@ -6,15 +6,30 @@ import cm.jemil.agency.adapter.outbound.persistence.jpa.entity.RouteJpa;
 import cm.jemil.agency.adapter.outbound.persistence.jpa.entity.ScheduleJpa;
 import cm.jemil.agency.domain.agency.Agency;
 import cm.jemil.agency.domain.agency.AgencyId;
+import cm.jemil.agency.domain.agency.AgencyName;
+import cm.jemil.agency.domain.agency.AgencyStatus;
+import cm.jemil.agency.domain.agency.Arrival;
+import cm.jemil.agency.domain.agency.AvailableSeats;
+import cm.jemil.agency.domain.agency.CommissionRate;
+import cm.jemil.agency.domain.agency.Departure;
+import cm.jemil.agency.domain.agency.LicenceNumber;
 import cm.jemil.agency.domain.agency.Route;
 import cm.jemil.agency.domain.agency.RouteId;
+import cm.jemil.agency.domain.agency.RoutePrice;
 import cm.jemil.agency.domain.agency.Schedule;
 import cm.jemil.agency.domain.agency.ScheduleId;
+import cm.jemil.agency.domain.agency.TotalSeats;
 import cm.jemil.agency.domain.agency.views.AgencyView;
 import cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1;
+import cm.jemil.agency.domain.agency.views.RouteSearchView;
 import cm.jemil.agency.domain.branch.AgencyBranch;
+import cm.jemil.agency.domain.branch.BranchAddress;
 import cm.jemil.agency.domain.branch.BranchId;
+import cm.jemil.agency.domain.branch.BranchName;
 import cm.jemil.agency.domain.city.CityId;
+import cm.jemil.shared.utils.CreatedAt;
+import cm.jemil.shared.utils.PhoneNumber;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -81,25 +96,34 @@ public interface AgencyJpaMapper {
     @Mapping(target = "active", source = "active")
     AgencyView.BranchView toBranchView(AgencyBranchJpa branchJpa);
 
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "phoneNumber.countryCode", source = "phoneCountryCode")
-    @Mapping(target = "phoneNumber.number", source = "phoneNumber")
-    @Mapping(target = "commissionRate", source = "commissionRate")
-    @Mapping(target = "licenseNumber", source = "licenseNumber")
-    @Mapping(target = "status", source = "status")
-    @Mapping(target = "createdAt.value", source = "createdAt")
-    @Mapping(target = "branches", source = "branches")
-    @Mapping(target = "routes", source = "routes")
-    Agency toDomain(AgencyJpa entity);
+    default Agency toDomain(AgencyJpa entity) {
+        if (entity == null) {
+            return null;
+        }
+        return new Agency(
+                mapToAgencyId(entity.getId()),
+                new AgencyName(entity.getName()),
+                entity.getStatus(),
+                new PhoneNumber(entity.getPhoneCountryCode(), entity.getPhoneNumber()),
+                new LicenceNumber(entity.getLicenseNumber()),
+                new CommissionRate(entity.getCommissionRate()),
+                entity.getBranches() == null
+                        ? new ArrayList<>()
+                        : new ArrayList<>(entity.getBranches().stream()
+                                .map(this::toDomain)
+                                .toList()),
+                entity.getRoutes() == null
+                        ? new ArrayList<>()
+                        : new ArrayList<>(
+                                entity.getRoutes().stream().map(this::toDomain).toList()),
+                new CreatedAt(entity.getCreatedAt()));
+    }
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id.value")
     @Mapping(target = "departure", source = "departure")
     @Mapping(target = "arrival", source = "arrival")
     @Mapping(target = "price", source = "price")
-    @Mapping(target = "totalSeats", source = "totalSeats")
     @Mapping(target = "schedules", source = "schedules")
     @Mapping(target = "agency", ignore = true)
     RouteJpa toJpa(Route route);
@@ -116,18 +140,101 @@ public interface AgencyJpaMapper {
 
         return new Route(
                 mapToRouteId(entity.getId()),
-                entity.getDeparture(),
-                entity.getArrival(),
-                entity.getPrice(),
-                entity.getTotalSeats(),
+                new Departure(entity.getDeparture()),
+                new Arrival(entity.getArrival()),
+                new RoutePrice(BigDecimal.valueOf(entity.getPrice())),
                 schedules);
     }
 
-    @Mapping(target = "version", ignore = true)
-    ScheduleJpa toJpa(Schedule schedule);
+    default ScheduleJpa toJpa(Schedule schedule) {
+        if (schedule == null) {
+            return null;
+        }
+        ScheduleJpa entity = new ScheduleJpa();
+        entity.setId(map(schedule.getId()));
+        entity.setDepartureTime(schedule.getDepartureTime());
+        entity.setTotalSeats(schedule.getTotalSeats().value());
+        entity.setAvailableSeats(schedule.getAvailableSeats().value());
+        return entity;
+    }
 
+    default Schedule toDomain(ScheduleJpa entity) {
+        if (entity == null) {
+            return null;
+        }
+        return new Schedule(
+                mapToScheduleId(entity.getId()),
+                entity.getDepartureTime(),
+                new TotalSeats(entity.getTotalSeats()),
+                new AvailableSeats(entity.getAvailableSeats()));
+    }
+
+    @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
-    Schedule toDomain(ScheduleJpa entity);
+    @Mapping(target = "agencyId", source = "agency.id")
+    @Mapping(target = "agencyName", source = "agency.name")
+    @Mapping(target = "originCityName", source = "departure")
+    @Mapping(target = "destinationCityName", source = "arrival")
+    @Mapping(target = "price", source = "price")
+    @Mapping(target = "totalSeats", source = "totalSeats")
+    @Mapping(target = "active", source = "agency.status")
+    @Mapping(target = "availableSchedules", source = "schedules")
+    RouteSearchView toRouteSearchView(RouteJpa entity);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "departureTime", source = "departureTime")
+    @Mapping(target = "totalSeats", source = "totalSeats")
+    @Mapping(target = "availableSeats", source = "availableSeats")
+    RouteSearchView.ScheduleView toScheduleView(ScheduleJpa entity);
+
+    default double map(CommissionRate commissionRate) {
+        return commissionRate == null ? 0 : commissionRate.value();
+    }
+
+    default double map(AvailableSeats availableSeats) {
+        return availableSeats == null ? 0 : availableSeats.value();
+    }
+
+    default boolean map(AgencyStatus status) {
+        return status == AgencyStatus.ACTIVE;
+    }
+
+    default String map(AgencyName value) {
+        return value == null ? null : value.value();
+    }
+
+    default String map(LicenceNumber value) {
+        return value == null ? null : value.value();
+    }
+
+    default String map(Departure value) {
+        return value == null ? null : value.value();
+    }
+
+    default String map(Arrival value) {
+        return value == null ? null : value.value();
+    }
+
+    default String map(BranchName value) {
+        return value == null ? null : value.value();
+    }
+
+    default String map(BranchAddress value) {
+        return value == null ? null : value.value();
+    }
+
+    default BranchName mapToBranchName(String value) {
+        return new BranchName(value);
+    }
+
+    default BranchAddress mapToBranchAddress(String value) {
+        return new BranchAddress(value);
+    }
+
+    default double map(RoutePrice value) {
+        return value == null ? 0 : value.price().doubleValue();
+    }
 
     default UUID map(AgencyId id) {
         return id != null ? id.value() : null;

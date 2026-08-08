@@ -419,6 +419,37 @@ paths:
         '404':
           description: "Agency or City not found"
 
+  /routes/search:
+    get:
+      tags:
+        - "Agency"
+      summary: "Search routes by origin and destination city names"
+      operationId: "searchRoutes"
+      parameters:
+        - name: "originCityName"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+        - name: "destinationCityName"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteSearchResponseDTO'
+        '400':
+          description: "Invalid data provided"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+
 components:
   schemas:
     DemoDTO:
@@ -662,6 +693,74 @@ components:
           type: "integer"
         active:
           type: "boolean"
+    RouteSearchResponseDTO:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/RouteSearchItemDTO'
+          description: "The available routes matching the search"
+        totalElements:
+          type: "integer"
+          description: "The total number of matching routes"
+    RouteSearchItemDTO:
+      type: "object"
+      required:
+        - "id"
+        - "agencyId"
+        - "agencyName"
+        - "originCityName"
+        - "destinationCityName"
+        - "price"
+        - "totalSeats"
+        - "availableSchedules"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        agencyId:
+          type: "string"
+          format: "uuid"
+        agencyName:
+          type: "string"
+          example: "Global Voyages"
+        originCityId:
+          type: "string"
+          format: "uuid"
+        destinationCityId:
+          type: "string"
+          format: "uuid"
+        originCityName:
+          type: "string"
+          example: "Douala"
+        destinationCityName:
+          type: "string"
+          example: "Yaoundé"
+        price:
+          type: "number"
+          format: "double"
+        totalSeats:
+          type: "integer"
+        active:
+          type: "boolean"
+        availableSchedules:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ScheduleDTO'
+    ScheduleDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        departureTime:
+          type: "string"
+          format: "date-time"
+        totalSeats:
+          type: "integer"
+        availableSeats:
+          type: "integer"
     ErrorDTO:
       type: "object"
       properties:

@@ -10,6 +10,8 @@
 | `DomainException` | `400`     | `AGENCY_400_006` | Route cities are required                  |
 | `DomainException` | `400`     | `AGENCY_400_007` | Route price must be positive               |
 | `DomainException` | `400`     | `AGENCY_400_008` | Seat count must be positive                |
+| `DomainException` | `400`     | `AGENCY_400_009` | Departure time is required                 |
+| `DomainException` | `400`     | `PHONE_400_001`  | Phone number is required                   |
 | `DomainException` | `400`     | `AUTH_400_001`   | Email is required                          |
 | `DomainException` | `400`     | `AUTH_400_002`   | Password is required                       |
 | `DomainException` | `400`     | `CITY_400_001`   | City name is required                      |

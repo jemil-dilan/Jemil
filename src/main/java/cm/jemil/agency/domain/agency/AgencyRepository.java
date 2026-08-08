@@ -1,6 +1,7 @@
 package cm.jemil.agency.domain.agency;
 
 import cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1;
+import cm.jemil.agency.domain.agency.views.RouteSearchView;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,4 +23,6 @@ public interface AgencyRepository {
     List<AgencyView1> getAllAgencyView1(String cityFilter, int page, int size);
 
     long countAgencies(String cityFilter);
+
+    List<RouteSearchView> searchRoutes(String origin, String destination);
 }

@@ -7,6 +7,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.response.Response;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -118,6 +119,29 @@ public class AgencyStepDefinitions {
     @Then("the response contains a route id")
     public void theResponseContainsARouteId() {
         assertThat(context.getCreatedRouteId()).isNotNull();
+    }
+
+    @Given("agencies with routes exist")
+    public void agenciesWithRoutesExist() {
+        iAddARoute("Douala", "Yaoundé", 5000, 40);
+        iAddTheRouteToTheAgency();
+    }
+
+    @When("I search routes from {string} to {string}")
+    public void iSearchRoutesFromTo(String origin, String destination) {
+        httpClient.get("/routes/search", Map.of("originCityName", origin, "destinationCityName", destination));
+    }
+
+    @Then("I should see available schedules")
+    public void iShouldSeeAvailableSchedules() {
+        Response response = httpClient.getLastResponse();
+        assertThat(response.statusCode()).isEqualTo(200);
+        List<Map<String, Object>> content = response.jsonPath().getList("content");
+        assertThat(content).as("search should return at least one route").isNotEmpty();
+        assertThat(content).anyMatch(item -> {
+            Object schedules = item.get("availableSchedules");
+            return schedules instanceof List<?> list && !list.isEmpty();
+        });
     }
 
     private UUID cityId(String city) {

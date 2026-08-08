@@ -9,6 +9,9 @@ import cm.jemil.agency.adapter.outbound.persistence.jpa.entity.AgencyJpa;
 import cm.jemil.agency.adapter.outbound.persistence.jpa.repository.mapper.AgencyJpaMapper;
 import cm.jemil.agency.domain.agency.Agency;
 import cm.jemil.agency.domain.agency.AgencyId;
+import cm.jemil.agency.domain.agency.AgencyName;
+import cm.jemil.agency.domain.agency.CommissionRate;
+import cm.jemil.agency.domain.agency.LicenceNumber;
 import cm.jemil.shared.exception.DomainException;
 import cm.jemil.shared.utils.PhoneNumber;
 import java.util.List;
@@ -37,7 +40,7 @@ class JpaAgencyRepositoryTest {
 
     @Test
     void shouldInsertAgency() {
-        var agency = Agency.of("Test", new PhoneNumber("1", "2"), "boo", 2.0);
+        var agency = Agency.of(new AgencyName("Test"), new PhoneNumber("1", "2"), new LicenceNumber("boo"), new CommissionRate(2.0));
         var jpaEntity = new AgencyJpa();
         when(mapper.toJpa(agency)).thenReturn(jpaEntity);
 
@@ -51,15 +54,15 @@ class JpaAgencyRepositoryTest {
         var uuid = UUID.randomUUID();
         var id = new AgencyId(uuid);
         var jpaEntity = new AgencyJpa();
-        var agencyAgg = Agency.of("Test", new PhoneNumber("1", "2"), "boo", 2.0);
+        var agencyAgg = Agency.of(new AgencyName("Test"), new PhoneNumber("1", "2"), new LicenceNumber("boo"), new CommissionRate(2.0));
         var agency = new cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1(
                 agencyAgg.getId(),
-                agencyAgg.getName(),
+                agencyAgg.getName().value(),
                 agencyAgg.getPhoneNumber(),
                 agencyAgg.getStatus(),
                 List.of(),
-                agencyAgg.getLicenseNumber(),
-                agencyAgg.getCommissionRate(),
+                agencyAgg.getLicenseNumber().value(),
+                agencyAgg.getCommissionRateValue(),
                 agencyAgg.getCreatedAt());
         when(jpaRepository.findById(uuid)).thenReturn(Optional.of(jpaEntity));
         when(mapper.toAgencyView1(jpaEntity)).thenReturn(agency);
@@ -84,15 +87,15 @@ class JpaAgencyRepositoryTest {
     @Test
     void shouldGetAllAgencyView1Agencies() {
         var jpaEntity = new AgencyJpa();
-        var agencyAgg2 = Agency.of("Test", new PhoneNumber("1", "2"), "boo", 2.0);
+        var agencyAgg2 = Agency.of(new AgencyName("Test"), new PhoneNumber("1", "2"), new LicenceNumber("boo"), new CommissionRate(2.0));
         var agency2 = new cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1(
                 agencyAgg2.getId(),
-                agencyAgg2.getName(),
+                agencyAgg2.getName().value(),
                 agencyAgg2.getPhoneNumber(),
                 agencyAgg2.getStatus(),
                 List.of(),
-                agencyAgg2.getLicenseNumber(),
-                agencyAgg2.getCommissionRate(),
+                agencyAgg2.getLicenseNumber().value(),
+                agencyAgg2.getCommissionRateValue(),
                 agencyAgg2.getCreatedAt());
         when(jpaRepository.findAllWithBranches()).thenReturn(List.of(jpaEntity));
         when(mapper.toAgencyView1(jpaEntity)).thenReturn(agency2);

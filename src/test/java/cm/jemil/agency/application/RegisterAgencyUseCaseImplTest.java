@@ -6,8 +6,10 @@ import static org.mockito.Mockito.verify;
 
 import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCaseImpl;
 import cm.jemil.agency.domain.agency.Agency;
+import cm.jemil.agency.domain.agency.AgencyName;
 import cm.jemil.agency.domain.agency.AgencyRepository;
 import cm.jemil.agency.domain.agency.AgencyStatus;
+import cm.jemil.agency.domain.agency.LicenceNumber;
 import cm.jemil.shared.outbox.OutboxEventPublisher;
 import cm.jemil.shared.utils.PhoneNumber;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +42,7 @@ class RegisterAgencyUseCaseImplTest {
     void shouldExecuteAgency() {
         var phoneNumber = new PhoneNumber("237", "653492410");
 
-        var command = new RegisterAgencyUseCaseImpl.Command("Global Voyages", phoneNumber, "", 0.0);
+        var command = new RegisterAgencyUseCaseImpl.Command("Global Voyages", phoneNumber, "LIC-001", 5.0);
         var id = service.execute(command);
 
         assertThat(id).isNotNull();
@@ -51,21 +53,23 @@ class RegisterAgencyUseCaseImplTest {
     void shouldSaveAgencyToRepository() {
         var phoneNumber = new PhoneNumber("237", "653492410");
 
-        var command = new RegisterAgencyUseCaseImpl.Command("Global Voyages", phoneNumber, "", 0.0);
+        var command = new RegisterAgencyUseCaseImpl.Command("Global Voyages", phoneNumber, "LIC-001", 5.0);
         service.execute(command);
 
         verify(agencyRepository).insert(agencyCaptor.capture());
         var saved = agencyCaptor.getValue();
-        assertThat(saved.getName()).isEqualTo("Global Voyages");
+        assertThat(saved.getName()).isEqualTo(new AgencyName("Global Voyages"));
         assertThat(saved.getPhoneNumber()).isEqualTo(phoneNumber);
+        assertThat(saved.getLicenseNumber()).isEqualTo(new LicenceNumber("LIC-001"));
         assertThat(saved.getStatus()).isEqualTo(AgencyStatus.ACTIVE);
     }
 
     @Test
     void shouldPublishEventAfterRegistration() {
-        var command2 = new RegisterAgencyUseCaseImpl.Command("Test", new PhoneNumber("1", "2"), "", 0.0);
+        var command2 = new RegisterAgencyUseCaseImpl.Command("Test", new PhoneNumber("1", "2"), "LIC-002", 3.0);
         service.execute(command2);
 
         verify(eventPublisher).publish(any());
     }
 }
+

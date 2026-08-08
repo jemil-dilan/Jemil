@@ -11,57 +11,31 @@ import lombok.Getter;
 @Getter
 public class Route {
     private final RouteId id;
-    private String departure;
-    private String arrival;
-    private double price;
-    private int totalSeats;
+    private final Departure departure;
+    private final Arrival arrival;
+    private final RoutePrice price;
     private final List<Schedule> schedules;
 
-    public Route(RouteId id, String departure, String arrival, double price, List<Schedule> schedules) {
-        this(id, departure, arrival, price, 0, schedules);
-    }
-
-    public Route(RouteId id, String departure, String arrival, double price, int totalSeats, List<Schedule> schedules) {
-        validate(departure, arrival, price);
-        if (totalSeats < 0) {
-            throw new DomainException(AgencyErrorCode.AGENCY_400_008);
-        }
+    public Route(RouteId id, Departure departure, Arrival arrival, RoutePrice price, List<Schedule> schedules) {
         this.id = id;
         this.departure = departure;
         this.arrival = arrival;
         this.price = price;
-        this.totalSeats = totalSeats;
         this.schedules = schedules == null ? new ArrayList<>() : schedules;
     }
 
-    public static Route create(String departure, String arrival, double price) {
+    public static Route create(Departure departure, Arrival arrival, RoutePrice price) {
         return new Route(RouteId.generate(), departure, arrival, price, new ArrayList<>());
     }
 
-    public static Route create(String departure, String arrival, double price, int totalSeats) {
-        if (totalSeats <= 0) {
-            throw new DomainException(AgencyErrorCode.AGENCY_400_008);
+    public void addSchedule(LocalDateTime departureTime, TotalSeats totalSeats) {
+        if (departureTime == null) {
+            throw new DomainException(AgencyErrorCode.AGENCY_400_009, "Departure time is required");
         }
-        return new Route(RouteId.generate(), departure, arrival, price, totalSeats, new ArrayList<>());
-    }
-
-    public void addSchedule(LocalDateTime departureTime, int totalSeats) {
-        if (departureTime == null || totalSeats <= 0) {
-            throw new DomainException(AgencyErrorCode.AGENCY_400_008);
-        }
-        schedules.add(new Schedule(ScheduleId.generate(), departureTime, totalSeats, totalSeats));
+        schedules.add(Schedule.of(ScheduleId.generate(), departureTime, totalSeats));
     }
 
     public List<Schedule> getSchedules() {
         return Collections.unmodifiableList(schedules);
-    }
-
-    private static void validate(String departure, String arrival, double price) {
-        if (departure == null || departure.isBlank() || arrival == null || arrival.isBlank()) {
-            throw new DomainException(AgencyErrorCode.AGENCY_400_006);
-        }
-        if (price <= 0) {
-            throw new DomainException(AgencyErrorCode.AGENCY_400_007);
-        }
     }
 }

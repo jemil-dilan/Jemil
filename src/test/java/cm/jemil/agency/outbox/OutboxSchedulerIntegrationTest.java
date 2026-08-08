@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import cm.jemil.agency.domain.agency.AgencyId;
+import cm.jemil.agency.domain.agency.AgencyName;
 import cm.jemil.agency.domain.agency.AgencyRegisteredEvent;
 import cm.jemil.shared.events.DomainEventType;
 import cm.jemil.shared.outbox.JpaOutboxEventPublisher;
@@ -67,7 +68,7 @@ class OutboxSchedulerIntegrationTest {
 
     @Test
     void shouldPublishAndProcessOutboxEvent() throws Exception {
-        var event = AgencyRegisteredEvent.of(AgencyId.generate(), "Test Agency");
+        var event = AgencyRegisteredEvent.of(AgencyId.generate(), new AgencyName("Test Agency"));
         outboxEventPublisher.publish(event);
 
         verify(outboxRepository).save(eventCaptor.capture());
@@ -79,7 +80,7 @@ class OutboxSchedulerIntegrationTest {
 
     @Test
     void shouldMarkEventAsSentAfterProcessing() throws Exception {
-        var event = AgencyRegisteredEvent.of(AgencyId.generate(), "Test Agency");
+        var event = AgencyRegisteredEvent.of(AgencyId.generate(), new AgencyName("Test Agency"));
 
         var outboxEvent = new OutboxEvent(
                 UUID.randomUUID(),
@@ -100,7 +101,7 @@ class OutboxSchedulerIntegrationTest {
 
     @Test
     void shouldMarkExpiredEventsAsFailed() throws Exception {
-        var event = AgencyRegisteredEvent.of(AgencyId.generate(), "Test Agency");
+        var event = AgencyRegisteredEvent.of(AgencyId.generate(), new AgencyName("Test Agency"));
 
         var outboxEvent = createExpiredEvent(event);
 

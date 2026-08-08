@@ -30,7 +30,7 @@ Feature: Agency Registration
   Scenario: Reject registration with invalid phone number
     Given an invalid agency payload with phone "12345678901"
     When I register the agency as an admin
-    Then the last request failed with the http status "BAD_REQUEST" and error code "AGENCY_400_005"
+    Then the last request failed with the http status "BAD_REQUEST" and error code "PHONE_400_001"
 
   Scenario: Reject registration when not authenticated
     Given I am not authenticated
