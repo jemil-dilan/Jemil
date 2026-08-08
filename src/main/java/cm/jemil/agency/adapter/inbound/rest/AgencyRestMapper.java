@@ -113,8 +113,8 @@ public interface AgencyRestMapper {
         dto.setAgencyName(view.agencyName());
         dto.setOriginCityName(view.originCityName());
         dto.setDestinationCityName(view.destinationCityName());
-        dto.setPrice(view.price());
-        dto.setTotalSeats(view.totalSeats());
+        dto.setPrice(view.price().price().doubleValue());
+        dto.setTotalSeats(view.totalSeats().value());
         dto.setActive(view.active());
         dto.setAvailableSchedules(toScheduleDTO(view.availableSchedules()));
         return dto;
@@ -126,10 +126,22 @@ public interface AgencyRestMapper {
                     var dto = new ScheduleDTO();
                     dto.setId(schedule.id());
                     dto.setDepartureTime(schedule.departureTime());
-                    dto.setTotalSeats(schedule.totalSeats());
-                    dto.setAvailableSeats(schedule.availableSeats());
+                    dto.setTotalSeats(schedule.totalSeats().value());
+                    dto.setAvailableSeats(schedule.availableSeats().value());
                     return dto;
                 })
                 .toList();
+    }
+
+    default double map(cm.jemil.agency.domain.agency.RoutePrice price) {
+        return price == null ? 0 : price.price().doubleValue();
+    }
+
+    default int map(cm.jemil.agency.domain.agency.TotalSeats totalSeats) {
+        return totalSeats == null ? 0 : totalSeats.value();
+    }
+
+    default int map(cm.jemil.agency.domain.agency.AvailableSeats availableSeats) {
+        return availableSeats == null ? 0 : availableSeats.value();
     }
 }

@@ -5,6 +5,8 @@ import cm.jemil.agency.adapter.outbound.persistence.jpa.repository.mapper.Agency
 import cm.jemil.agency.domain.agency.Agency;
 import cm.jemil.agency.domain.agency.AgencyId;
 import cm.jemil.agency.domain.agency.AgencyRepository;
+import cm.jemil.agency.domain.agency.Arrival;
+import cm.jemil.agency.domain.agency.Departure;
 import cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1;
 import cm.jemil.agency.domain.agency.views.RouteSearchView;
 import cm.jemil.agency.domain.exception.AgencyErrorCode;
@@ -91,8 +93,8 @@ public class JpaAgencyRepository implements AgencyRepository {
     }
 
     @Override
-    public List<RouteSearchView> searchRoutes(String origin, String destination) {
-        return agencySpringRepository.findRoutesByCities(origin, destination).stream()
+    public List<RouteSearchView> searchRoutes(Departure origin, Arrival destination) {
+        return agencySpringRepository.findRoutesByCities(origin.value(), destination.value()).stream()
                 .map(mapper::toRouteSearchView)
                 .toList();
     }
