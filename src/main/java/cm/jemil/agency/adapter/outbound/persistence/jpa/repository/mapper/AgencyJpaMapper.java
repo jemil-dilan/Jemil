@@ -37,6 +37,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
@@ -175,18 +176,37 @@ public interface AgencyJpaMapper {
     @Mapping(target = "agencyName", source = "agency.name")
     @Mapping(target = "originCityName", source = "departure")
     @Mapping(target = "destinationCityName", source = "arrival")
-    @Mapping(target = "price", source = "price")
-    @Mapping(target = "totalSeats", source = "totalSeats")
+    @Mapping(target = "price", source = "price", qualifiedByName = "mapPrice")
+    @Mapping(target = "totalSeats", source = "totalSeats", qualifiedByName = "mapTotalSeats")
     @Mapping(target = "active", source = "agency.status")
     @Mapping(target = "availableSchedules", source = "schedules")
     RouteSearchView toRouteSearchView(RouteJpa entity);
 
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "departureTime", source = "departureTime")
-    @Mapping(target = "totalSeats", source = "totalSeats")
-    @Mapping(target = "availableSeats", source = "availableSeats")
-    RouteSearchView.ScheduleView toScheduleView(ScheduleJpa entity);
+    @Named("mapPrice")
+    default RoutePrice mapPrice(double price) {
+        return price <= 0 ? null : new RoutePrice(java.math.BigDecimal.valueOf(price));
+    }
+
+    @Named("mapTotalSeats")
+    default TotalSeats mapTotalSeats(int totalSeats) {
+        return totalSeats <= 0 ? null : new TotalSeats(totalSeats);
+    }
+
+    @Named("mapAvailableSeats")
+    default AvailableSeats mapAvailableSeats(int availableSeats) {
+        return availableSeats < 0 ? null : new AvailableSeats(availableSeats);
+    }
+
+    default RouteSearchView.ScheduleView toScheduleView(ScheduleJpa entity) {
+        if (entity == null) {
+            return null;
+        }
+        return new RouteSearchView.ScheduleView(
+                entity.getId(),
+                entity.getDepartureTime(),
+                mapTotalSeats(entity.getTotalSeats()),
+                mapAvailableSeats(entity.getAvailableSeats()));
+    }
 
     default double map(CommissionRate commissionRate) {
         return commissionRate == null ? 0 : commissionRate.value();

@@ -9,6 +9,8 @@ import cm.jemil.agency.application.inbound.usecase.GetBranchByIdUseCase;
 import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCase;
 import cm.jemil.agency.application.inbound.usecase.SearchRoutesUseCase;
 import cm.jemil.agency.domain.agency.AgencyId;
+import cm.jemil.agency.domain.agency.Arrival;
+import cm.jemil.agency.domain.agency.Departure;
 import cm.jemil.agency.domain.agency.views.AgencyView;
 import cm.jemil.agency.domain.exception.AgencyErrorCode;
 import cm.jemil.generated.agency.adapter.rest.inbound.api.AgencyApi;
@@ -78,7 +80,9 @@ public class AgencyController implements AgencyApi {
 
     @Override
     public ResponseEntity<RouteSearchResponseDTO> searchRoutes(String originCityName, String destinationCityName) {
-        var routes = searchRoutesUseCase.execute(originCityName, destinationCityName).stream()
+        var routes = searchRoutesUseCase.execute(
+                new Departure(originCityName),
+                new Arrival(destinationCityName)).stream()
                 .map(restMapper::toRouteSearchDto)
                 .toList();
         var response = new RouteSearchResponseDTO();

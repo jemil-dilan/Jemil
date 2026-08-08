@@ -20,6 +20,7 @@ public enum AgencyErrorCode implements ErrorCode {
     AGENCY_400_009("AGENCY_400_009", "Departure time is required"),
     AGENCY_400_010("AGENCY_400_010", "Invalid commission rate"),
     AGENCY_400_011("AGENCY_400_011", "License number is required"),
+    AGENCY_400_012("AGENCY_400_012", "Origin and destination cannot be the same"),
     CITY_400_001("CITY_400_001", "City name is required"),
     CITY_400_002("CITY_400_002", "City region is required"),
     CITY_404_001("CITY_404_001", "City not found"),
