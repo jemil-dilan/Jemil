@@ -235,6 +235,47 @@ paths:
                 $ref: '#/components/schemas/AgencyDTO'
         '404':
           description: "Agency not found"
+    patch:
+      tags:
+        - "Agency"
+      summary: "Suspend an agency"
+      description: "Suspends an agency, preventing it from creating new routes or accepting bookings. Only ADMIN can perform this action."
+      operationId: "suspendAgency"
+      security:
+        - oAuth:
+            - "agency:admin"
+      parameters:
+        - name: "agencyId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        '200':
+          description: "Agency suspended successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgencyDTO'
+        '400':
+          description: "Invalid data provided"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '401':
+          description: "Unauthorized - ADMIN role required"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '404':
+          description: "Agency not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
 
   /agency/{agencyId}/branches:
     post:
