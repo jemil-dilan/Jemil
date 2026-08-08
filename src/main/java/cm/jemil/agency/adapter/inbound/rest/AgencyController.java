@@ -8,6 +8,7 @@ import cm.jemil.agency.application.inbound.usecase.GetAllBranchesByAgencyUseCase
 import cm.jemil.agency.application.inbound.usecase.GetBranchByIdUseCase;
 import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCase;
 import cm.jemil.agency.application.inbound.usecase.SearchRoutesUseCase;
+import cm.jemil.agency.application.inbound.usecase.SuspendAgencyUseCase;
 import cm.jemil.agency.domain.agency.AgencyId;
 import cm.jemil.agency.domain.agency.Arrival;
 import cm.jemil.agency.domain.agency.Departure;
@@ -39,6 +40,7 @@ public class AgencyController implements AgencyApi {
     private final GetAgencyByIdUseCase getAgencyByIdUseCase;
     private final GetAllAgenciesUseCase getAllAgenciesUseCase;
     private final SearchRoutesUseCase searchRoutesUseCase;
+    private final SuspendAgencyUseCase suspendAgencyUseCase;
     private final AddRouteUseCase addRouteUseCase;
     private final AddBranchUseCase addBranchUseCase;
     private final GetBranchByIdUseCase getBranchByIdUseCase;
@@ -55,6 +57,12 @@ public class AgencyController implements AgencyApi {
     public ResponseEntity<AgencyDTO> getAgencyById(UUID agencyId) {
         AgencyView.AgencyView1 response = getAgencyByIdUseCase.execute(agencyId);
         return ResponseEntity.status(HttpStatus.OK).body(restMapper.toDto(response));
+    }
+
+    @Override
+    public ResponseEntity<AgencyDTO> suspendAgency(UUID agencyId) {
+        var agencyView = suspendAgencyUseCase.execute(new AgencyId(agencyId));
+        return ResponseEntity.status(HttpStatus.OK).body(restMapper.toDto(agencyView));
     }
 
     @Override

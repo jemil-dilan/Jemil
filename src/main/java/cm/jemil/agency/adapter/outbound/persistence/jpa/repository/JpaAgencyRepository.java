@@ -98,4 +98,16 @@ public class JpaAgencyRepository implements AgencyRepository {
                 .map(mapper::toRouteSearchView)
                 .toList();
     }
+
+    @Override
+    public void save(Agency agency) {
+        AgencyJpa entity = mapper.toJpa(agency);
+        if (entity.getRoutes() != null) {
+            entity.getRoutes().forEach(route -> route.setAgency(entity));
+        }
+        if (entity.getBranches() != null) {
+            entity.getBranches().forEach(branch -> branch.setAgency(entity));
+        }
+        agencySpringRepository.save(entity);
+    }
 }

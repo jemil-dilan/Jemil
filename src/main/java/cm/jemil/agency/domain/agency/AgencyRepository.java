@@ -25,4 +25,6 @@ public interface AgencyRepository {
     long countAgencies(String cityFilter);
 
     List<RouteSearchView> searchRoutes(Departure origin, Arrival destination);
+
+    void save(Agency agency);
 }
