@@ -129,7 +129,7 @@ public class AgencyStepDefinitions {
 
     @When("I search routes from {string} to {string}")
     public void iSearchRoutesFromTo(String origin, String destination) {
-        httpClient.get("/routes/search", Map.of("originCityName", origin, "destinationCityName", destination));
+        httpClient.get("/routes/search", Map.of("originCityId", origin, "destinationCityId", destination));
     }
 
     @Then("I should see available schedules")

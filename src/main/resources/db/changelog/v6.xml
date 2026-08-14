@@ -185,7 +185,7 @@
 		<addForeignKeyConstraint
 			baseTableName="t_booking" baseColumnNames="c_route_id"
 			constraintName="fk_booking_route" deferrable="true"
-			referencedTableName="t_routes" referencedColumnNames="id" />
+			referencedTableName="t_routes" referencedColumnNames="c_id" />
 
 		<addForeignKeyConstraint
 			baseTableName="t_booking" baseColumnNames="c_agency_id"
@@ -195,7 +195,7 @@
 		<addForeignKeyConstraint
 			baseTableName="t_booking" baseColumnNames="c_schedule_id"
 			constraintName="fk_booking_schedule" deferrable="true"
-			referencedTableName="schedules" referencedColumnNames="id" />
+			referencedTableName="schedules" referencedColumnNames="c_id" />
 
 		<!-- Foreign Keys for t_payment -->
 		<addForeignKeyConstraint
@@ -223,7 +223,7 @@
 		<addForeignKeyConstraint
 			baseTableName="t_ticket" baseColumnNames="c_route_id"
 			constraintName="fk_ticket_route" deferrable="true"
-			referencedTableName="t_routes" referencedColumnNames="id" />
+			referencedTableName="t_routes" referencedColumnNames="c_id" />
 
 		<!-- Foreign Keys for t_validation_record -->
 		<addForeignKeyConstraint

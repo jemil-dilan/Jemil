@@ -37,6 +37,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
@@ -51,12 +52,11 @@ public interface AgencyJpaMapper {
     @Mapping(target = "name", source = "name")
     @Mapping(target = "phoneCountryCode", source = "phoneNumber.countryCode")
     @Mapping(target = "phoneNumber", source = "phoneNumber.number")
-    @Mapping(target = "commissionRate", source = "commissionRate")
     @Mapping(target = "licenseNumber", source = "licenseNumber")
     @Mapping(target = "status", source = "status")
-    @Mapping(target = "createdAt", source = "createdAt.value")
-    @Mapping(target = "branches", ignore = true)
     @Mapping(target = "routes", source = "routes")
+    @Mapping(target = "branches", source = "branches")
+    @Mapping(target = "createdAt", source = "createdAt.value")
     AgencyJpa toJpa(Agency agency);
 
     @BeanMapping(ignoreByDefault = true)
@@ -64,8 +64,9 @@ public interface AgencyJpaMapper {
     @Mapping(target = "name", source = "name")
     @Mapping(target = "address", source = "address")
     @Mapping(target = "active", source = "active")
-    @Mapping(target = "city", ignore = true)
-    @Mapping(target = "agency", ignore = true)
+    @Mapping(target = "agencyId", source = "agencyId.value")
+    @Mapping(target = "cityId", source = "cityId.value")
+    @Mapping(target = "createdAt", source = "createdAt.value")
     AgencyBranchJpa toJpa(AgencyBranch branch);
 
     @BeanMapping(ignoreByDefault = true)
@@ -73,29 +74,31 @@ public interface AgencyJpaMapper {
     @Mapping(target = "name", source = "name")
     @Mapping(target = "address", source = "address")
     @Mapping(target = "active", source = "active")
-    @Mapping(target = "cityId", source = "city.id")
+    @Mapping(target = "cityId", source = "cityId")
+    @Mapping(target = "agencyId", source = "agencyId")
+    @Mapping(target = "createdAt.value", source = "createdAt")
     AgencyBranch toDomain(AgencyBranchJpa entity);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id.value", source = "id")
-    @Mapping(target = "name", source = "name")
+    @Mapping(target = "name.value", source = "name")
+    @Mapping(target = "address.value", source = "address")
+    @Mapping(target = "cityId.value", source = "cityId")
+    @Mapping(target = "active", source = "active")
+    @Mapping(target = "agencyId.value", source = "agencyId")
+    @Mapping(target = "createdAt.value", source = "createdAt")
+    AgencyView.BranchView toView(AgencyBranchJpa entity);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id.value", source = "id")
+    @Mapping(target = "name.value", source = "name")
     @Mapping(target = "phoneNumber.countryCode", source = "phoneCountryCode")
     @Mapping(target = "phoneNumber.number", source = "phoneNumber")
-    @Mapping(target = "commissionRate", source = "commissionRate")
-    @Mapping(target = "licenseNumber", source = "licenseNumber")
+    @Mapping(target = "licenseNumber.value", source = "licenseNumber")
     @Mapping(target = "status", source = "status")
     @Mapping(target = "createdAt.value", source = "createdAt")
     @Mapping(target = "branches", source = "branches")
     AgencyView1 toAgencyView1(AgencyJpa entity);
-
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "address", source = "address")
-    @Mapping(target = "cityId", source = "city.id")
-    @Mapping(target = "cityName", source = "city.name")
-    @Mapping(target = "active", source = "active")
-    AgencyView.BranchView toBranchView(AgencyBranchJpa branchJpa);
 
     default Agency toDomain(AgencyJpa entity) {
         if (entity == null) {
@@ -107,7 +110,6 @@ public interface AgencyJpaMapper {
                 entity.getStatus(),
                 new PhoneNumber(entity.getPhoneCountryCode(), entity.getPhoneNumber()),
                 new LicenceNumber(entity.getLicenseNumber()),
-                new CommissionRate(entity.getCommissionRate()),
                 entity.getBranches() == null
                         ? new ArrayList<>()
                         : new ArrayList<>(entity.getBranches().stream()
@@ -122,11 +124,12 @@ public interface AgencyJpaMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id.value")
-    @Mapping(target = "departure", source = "departure")
-    @Mapping(target = "arrival", source = "arrival")
+    @Mapping(target = "departureId", source = "departure")
+    @Mapping(target = "arrivalId", source = "arrival")
     @Mapping(target = "price", source = "price")
     @Mapping(target = "schedules", source = "schedules")
-    @Mapping(target = "agency", ignore = true)
+    @Mapping(target = "agencyId", ignore = true)
+    @Mapping(target = "totalSeats", ignore = true)
     RouteJpa toJpa(Route route);
 
     default Route toDomain(RouteJpa entity) {
@@ -141,8 +144,8 @@ public interface AgencyJpaMapper {
 
         return new Route(
                 mapToRouteId(entity.getId()),
-                new Departure(entity.getDeparture()),
-                new Arrival(entity.getArrival()),
+                new CityId(entity.getDepartureId()),
+                new CityId(entity.getArrivalId()),
                 new RoutePrice(BigDecimal.valueOf(entity.getPrice())),
                 schedules);
     }
@@ -172,13 +175,11 @@ public interface AgencyJpaMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "agencyId", source = "agency.id")
-    @Mapping(target = "agencyName", source = "agency.name")
-    @Mapping(target = "originCityName", source = "departure")
-    @Mapping(target = "destinationCityName", source = "arrival")
+    @Mapping(target = "agencyId", source = "agencyId")
+    @Mapping(target = "originCityId", source = "departureId")
+    @Mapping(target = "destinationCityId", source = "arrivalId")
     @Mapping(target = "price", source = "price", qualifiedByName = "mapPrice")
     @Mapping(target = "totalSeats", source = "totalSeats", qualifiedByName = "mapTotalSeats")
-    @Mapping(target = "active", source = "agency.status")
     @Mapping(target = "availableSchedules", source = "schedules")
     RouteSearchView toRouteSearchView(RouteJpa entity);
 
@@ -202,7 +203,7 @@ public interface AgencyJpaMapper {
             return null;
         }
         return new RouteSearchView.ScheduleView(
-                entity.getId(),
+                new ScheduleId(entity.getId()),
                 entity.getDepartureTime(),
                 mapTotalSeats(entity.getTotalSeats()),
                 mapAvailableSeats(entity.getAvailableSeats()));
@@ -295,4 +296,16 @@ public interface AgencyJpaMapper {
     default CityId mapToCityId(UUID id) {
         return id != null ? new CityId(id) : null;
     }
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id.value")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "phoneCountryCode", source = "phoneNumber.countryCode")
+    @Mapping(target = "phoneNumber", source = "phoneNumber.number")
+    @Mapping(target = "licenseNumber", source = "licenseNumber")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "branches", source = "branches")
+    @Mapping(target = "routes", source = "routes")
+    @Mapping(target = "createdAt", source = "createdAt.value")
+    void fromAgencyDomain(@MappingTarget AgencyJpa agencyJpa, Agency agency);
 }

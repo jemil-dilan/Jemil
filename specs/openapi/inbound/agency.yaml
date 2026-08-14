@@ -235,7 +235,7 @@ paths:
                 $ref: '#/components/schemas/AgencyDTO'
         '404':
           description: "Agency not found"
-    patch:
+    put:
       tags:
         - "Agency"
       summary: "Suspend an agency"
@@ -252,12 +252,8 @@ paths:
             type: "string"
             format: "uuid"
       responses:
-        '200':
+        '204':
           description: "Agency suspended successfully"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AgencyDTO'
         '400':
           description: "Invalid data provided"
           content:
@@ -303,7 +299,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AgencyBranchDTO'
+                $ref: '#/components/schemas/CreationResponseDTO'
         '400':
           description: "Invalid data provided"
           content:
@@ -447,10 +443,6 @@ paths:
       responses:
         '201':
           description: "Successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RouteDTO'
         '400':
           description: "Invalid data provided"
           content:
@@ -467,16 +459,18 @@ paths:
       summary: "Search routes by origin and destination city names"
       operationId: "searchRoutes"
       parameters:
-        - name: "originCityName"
+        - name: "originCityId"
           in: "query"
           required: true
           schema:
             type: "string"
-        - name: "destinationCityName"
+            format: "uuid"
+        - name: "destinationCityId"
           in: "query"
           required: true
           schema:
             type: "string"
+            format: "uuid"
       responses:
         '200':
           description: "Successful operation"
@@ -598,6 +592,14 @@ components:
           $ref: "#/components/schemas/AddressDTO"
         isActive:
           type: "boolean"
+        agencyId:
+          type: "string"
+          format: "uuid"
+          description: "UUID of the agency that owns this branch"
+        cityId:
+          type: "string"
+          format: "uuid"
+          description: "UUID of the city where the branch is located"
         longitude:
           type: "integer"
           format: "double"
@@ -609,14 +611,12 @@ components:
         createdAt:
           type: "string"
           format: "date-time"
-
     CreateAgencyDTO:
       type: "object"
       required:
         - "name"
         - "phoneNumber"
         - "licenseNumber"
-        - "commissionRate"
       properties:
         name:
           type: "string"
@@ -625,12 +625,6 @@ components:
         licenseNumber:
           type: "string"
           description: "Agency license number delivered by transport authorities (MINT)"
-        commissionRate:
-          type: "number"
-          format: "double"
-          description: "The commission rate in percentage (e.g., 4.0)"
-          example: 4.0
-
     AgencyDTO:
       type: "object"
       properties:
@@ -651,9 +645,6 @@ components:
           type: "integer"
         licenseNumber:
           type: "string"
-        commissionRate:
-          type: "number"
-          format: "double"
         createdAt:
           type: "string"
           format: "date-time"
@@ -706,46 +697,18 @@ components:
         - "ACTIVE"
         - "SUSPENDED"
         - "INACTIVE"
-    RouteDTO:
-      type: "object"
-      properties:
-        id:
-          type: "string"
-          format: "uuid"
-        agencyId:
-          type: "string"
-          format: "uuid"
-        originCityId:
-          type: "string"
-          format: "uuid"
-        originCityName:
-          type: "string"
-          example: "Douala"
-        destinationCityId:
-          type: "string"
-          format: "uuid"
-        destinationCityName:
-          type: "string"
-          example: "Yaoundé"
-        price:
-          type: "number"
-          format: "double"
-        totalSeats:
-          type: "integer"
-        active:
-          type: "boolean"
     RouteSearchResponseDTO:
       type: "object"
       properties:
         content:
           type: "array"
           items:
-            $ref: '#/components/schemas/RouteSearchItemDTO'
+            $ref: '#/components/schemas/RouteDTO'
           description: "The available routes matching the search"
         totalElements:
           type: "integer"
           description: "The total number of matching routes"
-    RouteSearchItemDTO:
+    RouteDTO:
       type: "object"
       required:
         - "id"
@@ -763,21 +726,12 @@ components:
         agencyId:
           type: "string"
           format: "uuid"
-        agencyName:
-          type: "string"
-          example: "Global Voyages"
         originCityId:
           type: "string"
           format: "uuid"
         destinationCityId:
           type: "string"
           format: "uuid"
-        originCityName:
-          type: "string"
-          example: "Douala"
-        destinationCityName:
-          type: "string"
-          example: "Yaoundé"
         price:
           type: "number"
           format: "double"

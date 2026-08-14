@@ -1,8 +1,8 @@
 package cm.jemil.agency.application.inbound.usecase;
 
-import cm.jemil.agency.domain.branch.AgencyBranch;
+import cm.jemil.agency.application.inbound.usecase.AddBranchUseCaseImpl.Command;
 import java.util.UUID;
 
 public interface AddBranchUseCase {
-    AgencyBranch execute(UUID agencyId, String name, String address, UUID cityId);
+    UUID execute(Command command);
 }

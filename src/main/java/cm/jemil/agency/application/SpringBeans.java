@@ -2,8 +2,8 @@ package cm.jemil.agency.application;
 
 import cm.jemil.agency.application.inbound.usecase.AddBranchUseCase;
 import cm.jemil.agency.application.inbound.usecase.AddBranchUseCaseImpl;
-import cm.jemil.agency.application.inbound.usecase.AddRouteService;
 import cm.jemil.agency.application.inbound.usecase.AddRouteUseCase;
+import cm.jemil.agency.application.inbound.usecase.AddRouteUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.CreateCityUseCase;
 import cm.jemil.agency.application.inbound.usecase.CreateCityUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.CreateDemoUseCase;
@@ -72,8 +72,8 @@ public class SpringBeans {
     }
 
     @Bean("addRouteUseCase")
-    public AddRouteUseCase addRouteUseCase(AgencyRepository agencyRepository, CityRepository cityRepository) {
-        return new AddRouteService(agencyRepository, cityRepository);
+    public AddRouteUseCase addRouteUseCase(AgencyRepository agencyRepository) {
+        return new AddRouteUseCaseImpl(agencyRepository);
     }
 
     @Bean("agencyRegisteredEventType")

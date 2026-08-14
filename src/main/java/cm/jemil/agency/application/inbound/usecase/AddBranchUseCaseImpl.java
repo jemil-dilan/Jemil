@@ -8,8 +8,8 @@ import cm.jemil.agency.domain.branch.BranchName;
 import cm.jemil.agency.domain.branch.BranchRepository;
 import cm.jemil.agency.domain.city.CityId;
 import cm.jemil.agency.domain.city.CityRepository;
-import cm.jemil.agency.domain.exception.AgencyErrorCode;
-import cm.jemil.shared.exception.DomainException;
+import cm.jemil.agency.domain.exception.AgencyNotFoundException;
+import cm.jemil.agency.domain.exception.CityNotFoundException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
@@ -20,18 +20,36 @@ public class AddBranchUseCaseImpl implements AddBranchUseCase {
     private final CityRepository cityRepository;
 
     @Override
-    public AgencyBranch execute(UUID agencyId, String name, String address, UUID cityId) {
-        AgencyId id = new AgencyId(agencyId);
-        if (!agencyRepository.existsById(id)) {
-            throw new DomainException(AgencyErrorCode.AGENCY_404_001);
+    public UUID execute(Command command) {
+        if (!agencyRepository.existsById(command.getAgencyId())) {
+            throw new AgencyNotFoundException();
         }
 
-        if (cityRepository.findById(cityId).isEmpty()) {
-            throw new DomainException(AgencyErrorCode.CITY_404_001);
+        if (!cityRepository.existsById(command.getCityId())) {
+            throw new CityNotFoundException();
         }
 
-        AgencyBranch branch = AgencyBranch.of(new BranchName(name), new BranchAddress(address), new CityId(cityId));
-        branchRepository.save(branch, id);
-        return branch;
+        AgencyBranch branch = AgencyBranch.of(
+                command.getAgencyId(), command.getBranchName(), command.getBranchAddress(), command.getCityId());
+        branchRepository.save(branch);
+        return branch.id();
+    }
+
+    public record Command(UUID agencyId, String name, String address, UUID cityId) {
+        private AgencyId getAgencyId() {
+            return new AgencyId(agencyId);
+        }
+
+        private BranchName getBranchName() {
+            return new BranchName(name);
+        }
+
+        private BranchAddress getBranchAddress() {
+            return new BranchAddress(address);
+        }
+
+        private CityId getCityId() {
+            return new CityId(cityId);
+        }
     }
 }

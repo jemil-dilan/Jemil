@@ -8,8 +8,10 @@ import cm.jemil.agency.application.inbound.usecase.GetAllAgenciesUseCaseImpl;
 import cm.jemil.agency.domain.agency.Agency;
 import cm.jemil.agency.domain.agency.AgencyName;
 import cm.jemil.agency.domain.agency.AgencyRepository;
-import cm.jemil.agency.domain.agency.CommissionRate;
 import cm.jemil.agency.domain.agency.LicenceNumber;
+import cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1;
+import cm.jemil.shared.utils.CreatedAt;
+import cm.jemil.shared.utils.PageData;
 import cm.jemil.shared.utils.PhoneNumber;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,106 +34,52 @@ class GetAllAgenciesUseCaseImplTest {
 
     @Test
     void shouldReturnAllAgencies() {
-        var a = Agency.of(new AgencyName("A"), new PhoneNumber("1", "2"), new LicenceNumber("yuyugy"), new CommissionRate(4.0));
-        var b = Agency.of(new AgencyName("B"), new PhoneNumber("1", "2"), new LicenceNumber("gfh"), new CommissionRate(3.0));
-        var agencies = List.of(
-                new cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1(
-                        a.getId(),
-                        a.getName().value(),
-                        a.getPhoneNumber(),
-                        a.getStatus(),
-                        List.of(),
-                        a.getLicenseNumber().value(),
-                        a.getCommissionRateValue(),
-                        a.getCreatedAt()),
-                new cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1(
-                        b.getId(),
-                        b.getName().value(),
-                        b.getPhoneNumber(),
-                        b.getStatus(),
-                        List.of(),
-                        b.getLicenseNumber().value(),
-                        b.getCommissionRateValue(),
-                        b.getCreatedAt()));
-        when(agencyRepository.getAllAgencyView1(any())).thenReturn(agencies);
+        var a = Agency.of(new AgencyName("A"), new PhoneNumber("1", "2"), new LicenceNumber("yuyugy"));
+        var b = Agency.of(new AgencyName("B"), new PhoneNumber("1", "2"), new LicenceNumber("gfh"));
+        when(agencyRepository.loadAllAgency(any(), any()))
+                .thenReturn(new PageData<>(2, List.of(viewOf(a), viewOf(b)), 1, 10, 0));
 
-        var result = service.execute(null);
+        var result = service.execute(new GetAllAgenciesUseCaseImpl.Query(null, 0, 10));
 
-        assertThat(result).hasSize(2);
-        assertThat(result.get(0).name()).isEqualTo("A");
-        assertThat(result.get(1).name()).isEqualTo("B");
+        assertThat(result.allAgencies()).hasSize(2);
+        assertThat(result.allAgencies().get(0).name().value()).isEqualTo("A");
+        assertThat(result.allAgencies().get(1).name().value()).isEqualTo("B");
+        assertThat(result.totalElements()).isEqualTo(2);
+        assertThat(result.totalPages()).isEqualTo(1);
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result.pageNumber()).isZero();
     }
 
     @Test
     void shouldReturnEmptyListWhenNoAgencies() {
-        when(agencyRepository.getAllAgencyView1(any())).thenReturn(List.of());
+        when(agencyRepository.loadAllAgency(any(), any())).thenReturn(new PageData<>(0, List.of(), 0, 10, 0));
 
-        var result = service.execute(null);
+        var result = service.execute(new GetAllAgenciesUseCaseImpl.Query(null, 0, 10));
 
-        assertThat(result).isEmpty();
+        assertThat(result.allAgencies()).isEmpty();
     }
 
     @Test
     void shouldFilterAgenciesByCityIgnoringCase() {
         var d = Agency.of(
-                new AgencyName("Douala Agency"), new PhoneNumber("237", "1"), new LicenceNumber("vhjvhjvhjv"), new CommissionRate(6.0));
-        var y = Agency.of(
-                new AgencyName("Yaounde Agency"), new PhoneNumber("237", "2"), new LicenceNumber("fiuuiiu"), new CommissionRate(1.0));
-        var agencies2 = List.of(
-                new cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1(
-                        d.getId(),
-                        d.getName().value(),
-                        d.getPhoneNumber(),
-                        d.getStatus(),
-                        List.of(),
-                        d.getLicenseNumber().value(),
-                        d.getCommissionRateValue(),
-                        d.getCreatedAt()),
-                new cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1(
-                        y.getId(),
-                        y.getName().value(),
-                        y.getPhoneNumber(),
-                        y.getStatus(),
-                        List.of(),
-                        y.getLicenseNumber().value(),
-                        y.getCommissionRateValue(),
-                        y.getCreatedAt()));
-        when(agencyRepository.getAllAgencyView1(any())).thenReturn(agencies2);
+                new AgencyName("Douala Agency"), new PhoneNumber("237", "1"), new LicenceNumber("vhjvhjvhjv"));
+        var y = Agency.of(new AgencyName("Yaounde Agency"), new PhoneNumber("237", "2"), new LicenceNumber("fiuuiiu"));
+        when(agencyRepository.loadAllAgency(any(), any()))
+                .thenReturn(new PageData<>(2, List.of(viewOf(d), viewOf(y)), 1, 10, 0));
 
-        var result = service.execute("douala");
+        var result = service.execute(new GetAllAgenciesUseCaseImpl.Query("douala", 0, 10));
 
-        assertThat(result).hasSize(2);
+        assertThat(result.allAgencies()).hasSize(2);
     }
 
-    @Test
-    void shouldReturnOnlyActiveAgencies() {
-        var activeAgg =
-                Agency.of(new AgencyName("Active"), new PhoneNumber("237", "1"), new LicenceNumber("vhjvhjvhjv"), new CommissionRate(6.0));
-        var suspendedAgg =
-                Agency.of(new AgencyName("Suspended"), new PhoneNumber("237", "2"), new LicenceNumber("fiuuiiu"), new CommissionRate(1.0));
-        suspendedAgg.suspend();
-        var active = new cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1(
-                activeAgg.getId(),
-                activeAgg.getName().value(),
-                activeAgg.getPhoneNumber(),
-                activeAgg.getStatus(),
+    private AgencyView1 viewOf(Agency agency) {
+        return new AgencyView1(
+                agency.getId(),
+                agency.getName(),
+                agency.getPhoneNumber(),
+                agency.getStatus(),
                 List.of(),
-                activeAgg.getLicenseNumber().value(),
-                activeAgg.getCommissionRateValue(),
-                activeAgg.getCreatedAt());
-        var suspended = new cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1(
-                suspendedAgg.getId(),
-                suspendedAgg.getName().value(),
-                suspendedAgg.getPhoneNumber(),
-                suspendedAgg.getStatus(),
-                List.of(),
-                suspendedAgg.getLicenseNumber().value(),
-                suspendedAgg.getCommissionRateValue(),
-                suspendedAgg.getCreatedAt());
-        when(agencyRepository.getAllAgencyView1(any())).thenReturn(List.of(active, suspended));
-
-        var result = service.execute(null);
-
-        assertThat(result).containsExactly(active);
+                agency.getLicenseNumber(),
+                new CreatedAt());
     }
 }

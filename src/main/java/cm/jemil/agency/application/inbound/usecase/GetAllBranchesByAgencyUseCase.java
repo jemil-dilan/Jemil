@@ -1,9 +1,9 @@
 package cm.jemil.agency.application.inbound.usecase;
 
-import cm.jemil.agency.domain.agency.AgencyId;
-import cm.jemil.agency.domain.branch.AgencyBranch;
+import cm.jemil.agency.domain.agency.views.AgencyView.BranchView;
 import java.util.List;
+import java.util.UUID;
 
 public interface GetAllBranchesByAgencyUseCase {
-    List<AgencyBranch> execute(AgencyId agencyId);
+    List<BranchView> execute(UUID agencyId);
 }

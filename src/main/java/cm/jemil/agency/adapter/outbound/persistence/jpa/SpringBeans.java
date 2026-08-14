@@ -38,11 +38,8 @@ public class SpringBeans {
 
     @Bean("branchRepository")
     public BranchRepository branchRepository(
-            AgencyBranchSpringRepository branchSpringRepository,
-            AgencySpringRepository agencySpringRepository,
-            CitySpringRepository citySpringRepository,
-            AgencyJpaMapper mapper) {
-        return new JpaBranchRepository(branchSpringRepository, agencySpringRepository, citySpringRepository, mapper);
+            AgencyBranchSpringRepository branchSpringRepository, AgencyJpaMapper mapper) {
+        return new JpaBranchRepository(branchSpringRepository, mapper);
     }
 
     @Bean("agencyDemoRepository")

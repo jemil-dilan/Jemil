@@ -2,40 +2,37 @@ package cm.jemil.agency.adapter.outbound.persistence.jpa.repository;
 
 import cm.jemil.agency.adapter.outbound.persistence.jpa.repository.mapper.AgencyJpaMapper;
 import cm.jemil.agency.domain.agency.AgencyId;
+import cm.jemil.agency.domain.agency.views.AgencyView.BranchView;
 import cm.jemil.agency.domain.branch.AgencyBranch;
 import cm.jemil.agency.domain.branch.BranchId;
 import cm.jemil.agency.domain.branch.BranchRepository;
+import cm.jemil.agency.domain.exception.BranchNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JpaBranchRepository implements BranchRepository {
 
     private final AgencyBranchSpringRepository branchSpringRepository;
-    private final AgencySpringRepository agencySpringRepository;
-    private final CitySpringRepository citySpringRepository;
-    private final AgencyJpaMapper mapper;
+    private final AgencyJpaMapper jpaMapper;
 
     @Override
-    public void save(AgencyBranch branch, AgencyId agencyId) {
-        var agencyJpa = agencySpringRepository.getReferenceById(agencyId.value());
-        var cityJpa = citySpringRepository.getReferenceById(branch.getCityId().value());
-        var branchJpa = mapper.toJpa(branch);
-        branchJpa.setAgency(agencyJpa);
-        branchJpa.setCity(cityJpa);
-        branchSpringRepository.save(branchJpa);
+    public void save(AgencyBranch branch) {
+        branchSpringRepository.save(jpaMapper.toJpa(branch));
     }
 
     @Override
-    public Optional<AgencyBranch> findById(BranchId branchId) {
-        return branchSpringRepository.findById(branchId.value()).map(mapper::toDomain);
+    public BranchView loadById(BranchId branchId) {
+        return branchSpringRepository
+                .findById(branchId.value())
+                .map(jpaMapper::toView)
+                .orElseThrow(BranchNotFoundException::new);
     }
 
     @Override
-    public List<AgencyBranch> findAllByAgencyId(AgencyId agencyId) {
+    public List<BranchView> loadAllByAgencyId(AgencyId agencyId) {
         return branchSpringRepository.findAllByAgencyIdWithCity(agencyId.value()).stream()
-                .map(mapper::toDomain)
+                .map(jpaMapper::toView)
                 .toList();
     }
 

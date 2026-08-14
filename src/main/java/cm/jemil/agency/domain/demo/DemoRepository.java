@@ -2,7 +2,6 @@ package cm.jemil.agency.domain.demo;
 
 import cm.jemil.agency.domain.demo.view.DemoView.DemoView1;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface DemoRepository {
@@ -11,5 +10,5 @@ public interface DemoRepository {
 
     List<DemoView1> loadAllView1();
 
-    Optional<DemoView1> loadDemoByIdView1(UUID demoID);
+    DemoView1 loadDemoByIdView1(UUID demoID);
 }

@@ -4,7 +4,6 @@ import static cm.jemil.agency.domain.exception.AgencyErrorCode.AGENCY_400_011;
 
 import cm.jemil.shared.exception.DomainException;
 
-
 /**
  * Value object representing the license number of an agency.
  * Enforces business rules: license number cannot be null or blank.
@@ -20,6 +19,3 @@ public record LicenceNumber(String value) {
         }
     }
 }
-
-
-

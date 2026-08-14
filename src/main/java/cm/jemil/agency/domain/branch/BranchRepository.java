@@ -1,15 +1,15 @@
 package cm.jemil.agency.domain.branch;
 
 import cm.jemil.agency.domain.agency.AgencyId;
+import cm.jemil.agency.domain.agency.views.AgencyView.BranchView;
 import java.util.List;
-import java.util.Optional;
 
 public interface BranchRepository {
-    void save(AgencyBranch branch, AgencyId agencyId);
+    void save(AgencyBranch branch);
 
-    Optional<AgencyBranch> findById(BranchId branchId);
+    BranchView loadById(BranchId branchId);
 
-    List<AgencyBranch> findAllByAgencyId(AgencyId agencyId);
+    List<BranchView> loadAllByAgencyId(AgencyId agencyId);
 
     void delete(BranchId branchId);
 

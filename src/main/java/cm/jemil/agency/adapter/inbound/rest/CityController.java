@@ -2,12 +2,12 @@ package cm.jemil.agency.adapter.inbound.rest;
 
 import cm.jemil.agency.application.inbound.usecase.CreateCityUseCase;
 import cm.jemil.agency.application.inbound.usecase.GetAllCitiesUseCase;
+import cm.jemil.agency.application.inbound.usecase.GetAllCitiesUseCaseImpl.Query;
 import cm.jemil.generated.agency.adapter.rest.inbound.api.CityApi;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreateCityDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreationResponseDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.PageResponseDTO;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,14 +29,7 @@ public class CityController implements CityApi {
 
     @Override
     public ResponseEntity<PageResponseDTO> getAllCities(@Valid Integer page, @Valid Integer size) {
-        var cities =
-                getAllCitiesUseCase.execute().stream().map(restMapper::toDto).toList();
-        var response = new PageResponseDTO();
-        response.setContent(List.copyOf(cities));
-        response.setTotalElements(cities.size());
-        response.setTotalPages(1);
-        response.setSize(cities.size());
-        response.setNumber(0);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        var cities = getAllCitiesUseCase.execute(new Query(page, size));
+        return ResponseEntity.status(HttpStatus.OK).body(restMapper.toDto(cities));
     }
 }

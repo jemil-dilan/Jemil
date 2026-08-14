@@ -22,4 +22,3 @@ public record PhoneNumber(String countryCode, String number) {
         return "+" + countryCode + number;
     }
 }
-

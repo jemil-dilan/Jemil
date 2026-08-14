@@ -42,7 +42,7 @@ class RegisterAgencyUseCaseImplTest {
     void shouldExecuteAgency() {
         var phoneNumber = new PhoneNumber("237", "653492410");
 
-        var command = new RegisterAgencyUseCaseImpl.Command("Global Voyages", phoneNumber, "LIC-001", 5.0);
+        var command = new RegisterAgencyUseCaseImpl.Command("Global Voyages", phoneNumber, "LIC-001");
         var id = service.execute(command);
 
         assertThat(id).isNotNull();
@@ -53,7 +53,7 @@ class RegisterAgencyUseCaseImplTest {
     void shouldSaveAgencyToRepository() {
         var phoneNumber = new PhoneNumber("237", "653492410");
 
-        var command = new RegisterAgencyUseCaseImpl.Command("Global Voyages", phoneNumber, "LIC-001", 5.0);
+        var command = new RegisterAgencyUseCaseImpl.Command("Global Voyages", phoneNumber, "LIC-001");
         service.execute(command);
 
         verify(agencyRepository).insert(agencyCaptor.capture());
@@ -66,10 +66,9 @@ class RegisterAgencyUseCaseImplTest {
 
     @Test
     void shouldPublishEventAfterRegistration() {
-        var command2 = new RegisterAgencyUseCaseImpl.Command("Test", new PhoneNumber("1", "2"), "LIC-002", 3.0);
+        var command2 = new RegisterAgencyUseCaseImpl.Command("Test", new PhoneNumber("1", "2"), "LIC-002");
         service.execute(command2);
 
         verify(eventPublisher).publish(any());
     }
 }
-

@@ -2,6 +2,7 @@ package cm.jemil.shared.config.jwt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,12 +17,12 @@ class JwtServiceTest {
 
     @Test
     void shouldGenerateAndValidateAccessToken() {
-        var token = jwtService.generateAccessToken("user-123", "PASSENGER");
+        var token = jwtService.generateAccessToken("user-123", Set.of("PASSENGER"));
 
         assertThat(token).isNotNull();
         assertThat(jwtService.isValid(token)).isTrue();
         assertThat(jwtService.extractUserId(token)).isEqualTo("user-123");
-        assertThat(jwtService.extractRole(token)).isEqualTo("PASSENGER");
+        assertThat(jwtService.extractRoles(token)).containsExactly("PASSENGER");
     }
 
     @Test
@@ -40,23 +41,23 @@ class JwtServiceTest {
 
     @Test
     void shouldRejectTamperedToken() {
-        var token = jwtService.generateAccessToken("user-123", "ADMIN");
+        var token = jwtService.generateAccessToken("user-123", Set.of("ADMIN"));
         var tampered = token.substring(0, token.length() - 5) + "XXXXX";
 
         assertThat(jwtService.isValid(tampered)).isFalse();
     }
 
     @Test
-    void shouldExtractAdminRole() {
-        var token = jwtService.generateAccessToken("user-456", "ADMIN");
+    void shouldExtractMultipleRoles() {
+        var token = jwtService.generateAccessToken("user-456", Set.of("ADMIN", "AGENCY_MANAGER"));
 
-        assertThat(jwtService.extractRole(token)).isEqualTo("ADMIN");
+        assertThat(jwtService.extractRoles(token)).containsExactlyInAnyOrder("ADMIN", "AGENCY_MANAGER");
     }
 
     @Test
-    void shouldExtractControllerRole() {
-        var token = jwtService.generateAccessToken("user-789", "CONTROLLER");
+    void shouldReturnEmptyRolesForTokenWithoutRolesClaim() {
+        var token = jwtService.generateRefreshToken("user-789");
 
-        assertThat(jwtService.extractRole(token)).isEqualTo("CONTROLLER");
+        assertThat(jwtService.extractRoles(token)).isEmpty();
     }
 }

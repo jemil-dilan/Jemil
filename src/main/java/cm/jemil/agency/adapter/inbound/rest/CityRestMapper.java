@@ -1,10 +1,10 @@
 package cm.jemil.agency.adapter.inbound.rest;
 
 import cm.jemil.agency.application.inbound.usecase.CreateCityUseCaseImpl;
-import cm.jemil.agency.domain.city.views.CityView.CityView1;
-import cm.jemil.generated.agency.adapter.rest.inbound.dto.CityDTO;
+import cm.jemil.agency.application.inbound.usecase.GetAllCitiesUseCaseImpl;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreateCityDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreationResponseDTO;
+import cm.jemil.generated.agency.adapter.rest.inbound.dto.PageResponseDTO;
 import java.util.UUID;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -16,11 +16,12 @@ import org.mapstruct.ReportingPolicy;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CityRestMapper {
-
-    @Mapping(target = "id", source = "id.value")
-    @Mapping(target = "name", source = "name.value")
-    @Mapping(target = "region", source = "region.value")
-    CityDTO toDto(CityView1 view);
+    @Mapping(target = "content", source = "allCities")
+    @Mapping(target = "number", source = "pageNumber")
+    @Mapping(target = "size", source = "size")
+    @Mapping(target = "totalElements", source = "totalElements")
+    @Mapping(target = "totalPages", source = "totalPages")
+    PageResponseDTO toDto(GetAllCitiesUseCaseImpl.Response response);
 
     @Mapping(target = "name", source = "name")
     @Mapping(target = "region", source = "region")

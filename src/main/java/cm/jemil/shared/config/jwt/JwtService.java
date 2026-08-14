@@ -25,16 +25,6 @@ public class JwtService {
         this.refreshTokenExpirationMs = refreshTokenExpirationMs;
     }
 
-    public String generateAccessToken(String userId, String role) {
-        return Jwts.builder()
-                .subject(userId)
-                .claim("role", role)
-                .issuedAt(Date.from(Instant.now()))
-                .expiration(Date.from(Instant.now().plusMillis(accessTokenExpirationMs)))
-                .signWith(secretKey)
-                .compact();
-    }
-
     public String generateAccessToken(String userId, java.util.Set<String> roles) {
         return Jwts.builder()
                 .subject(userId)
@@ -58,18 +48,12 @@ public class JwtService {
         return parseToken(token).getSubject();
     }
 
-    public String extractRole(String token) {
-        return parseToken(token).get("role", String.class);
-    }
-
     public java.util.Set<String> extractRoles(String token) {
-        try {
-            return parseToken(token).get("roles", java.util.Set.class);
-        } catch (Exception e) {
-            // Fallback for tokens with single role
-            String role = extractRole(token);
-            return role != null ? java.util.Set.of(role) : java.util.Set.of();
+        Object roles = parseToken(token).get("roles");
+        if (roles instanceof java.util.Collection<?> collection) {
+            return collection.stream().map(String::valueOf).collect(java.util.stream.Collectors.toSet());
         }
+        return java.util.Set.of();
     }
 
     public Claims validateToken(String token) {
