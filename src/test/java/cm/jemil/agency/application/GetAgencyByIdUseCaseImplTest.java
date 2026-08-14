@@ -9,12 +9,12 @@ import cm.jemil.agency.application.inbound.usecase.GetAgencyByIdUseCaseImpl;
 import cm.jemil.agency.domain.agency.Agency;
 import cm.jemil.agency.domain.agency.AgencyId;
 import cm.jemil.agency.domain.agency.AgencyName;
-import cm.jemil.agency.domain.agency.CommissionRate;
 import cm.jemil.agency.domain.agency.AgencyRepository;
 import cm.jemil.agency.domain.agency.LicenceNumber;
 import cm.jemil.agency.domain.agency.views.AgencyView;
 import cm.jemil.agency.domain.exception.AgencyErrorCode;
 import cm.jemil.shared.exception.DomainException;
+import cm.jemil.shared.utils.CreatedAt;
 import cm.jemil.shared.utils.PhoneNumber;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,22 +38,21 @@ class GetAgencyByIdUseCaseImplTest {
     @Test
     void shouldReturnAgencyWhenFound() {
         var id = AgencyId.generate();
-        var agency = Agency.of(new AgencyName("Test"), new PhoneNumber("1", "2"), new LicenceNumber("boo"), new CommissionRate(2.0));
+        var agency = Agency.of(new AgencyName("Test"), new PhoneNumber("1", "2"), new LicenceNumber("boo"));
         var view = new AgencyView.AgencyView1(
                 agency.getId(),
-                agency.getName().value(),
+                agency.getName(),
                 agency.getPhoneNumber(),
                 agency.getStatus(),
                 List.of(),
-                agency.getLicenseNumber().value(),
-                agency.getCommissionRateValue(),
-                agency.getCreatedAt());
+                agency.getLicenseNumber(),
+                new CreatedAt());
         when(agencyRepository.loadByIdAgencyView1(any())).thenReturn(view);
 
         var result = service.execute(id.value());
 
         assertThat(result).isNotNull();
-        assertThat(result.name()).isEqualTo("Test");
+        assertThat(result.name().value()).isEqualTo("Test");
     }
 
     @Test

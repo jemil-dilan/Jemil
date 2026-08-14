@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -45,9 +46,6 @@ public class AgencyJpa {
     @Column(name = "c_license_number", nullable = false)
     private String licenseNumber;
 
-    @Column(name = "c_commission_rate", nullable = false)
-    private double commissionRate;
-
     @Column(name = "c_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private AgencyStatus status;
@@ -55,20 +53,20 @@ public class AgencyJpa {
     @Column(name = "c_created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "agency", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "c_agency_id", nullable = false, insertable = false, updatable = false)
     private Set<AgencyBranchJpa> branches = new HashSet<>();
 
-    @OneToMany(mappedBy = "agency", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "c_agency_id", nullable = false, insertable = false, updatable = false)
     private Set<RouteJpa> routes = new HashSet<>();
 
     public void addBranch(AgencyBranchJpa branch) {
         branches.add(branch);
-        branch.setAgency(this);
     }
 
     public void addRoute(RouteJpa route) {
         routes.add(route);
-        route.setAgency(this);
     }
 
     @Override

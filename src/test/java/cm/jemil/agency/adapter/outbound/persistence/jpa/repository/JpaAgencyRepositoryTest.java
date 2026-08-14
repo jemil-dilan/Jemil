@@ -10,9 +10,10 @@ import cm.jemil.agency.adapter.outbound.persistence.jpa.repository.mapper.Agency
 import cm.jemil.agency.domain.agency.Agency;
 import cm.jemil.agency.domain.agency.AgencyId;
 import cm.jemil.agency.domain.agency.AgencyName;
-import cm.jemil.agency.domain.agency.CommissionRate;
 import cm.jemil.agency.domain.agency.LicenceNumber;
+import cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1;
 import cm.jemil.shared.exception.DomainException;
+import cm.jemil.shared.utils.CreatedAt;
 import cm.jemil.shared.utils.PhoneNumber;
 import java.util.List;
 import java.util.Optional;
@@ -40,13 +41,13 @@ class JpaAgencyRepositoryTest {
 
     @Test
     void shouldInsertAgency() {
-        var agency = Agency.of(new AgencyName("Test"), new PhoneNumber("1", "2"), new LicenceNumber("boo"), new CommissionRate(2.0));
+        var agency = Agency.of(new AgencyName("Test"), new PhoneNumber("1", "2"), new LicenceNumber("boo"));
         var jpaEntity = new AgencyJpa();
         when(mapper.toJpa(agency)).thenReturn(jpaEntity);
 
         repository.insert(agency);
 
-        verify(jpaRepository).save(jpaEntity);
+        verify(jpaRepository).saveAndFlush(jpaEntity);
     }
 
     @Test
@@ -54,23 +55,22 @@ class JpaAgencyRepositoryTest {
         var uuid = UUID.randomUUID();
         var id = new AgencyId(uuid);
         var jpaEntity = new AgencyJpa();
-        var agencyAgg = Agency.of(new AgencyName("Test"), new PhoneNumber("1", "2"), new LicenceNumber("boo"), new CommissionRate(2.0));
-        var agency = new cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1(
+        var agencyAgg = Agency.of(new AgencyName("Test"), new PhoneNumber("1", "2"), new LicenceNumber("boo"));
+        var agency = new AgencyView1(
                 agencyAgg.getId(),
-                agencyAgg.getName().value(),
+                agencyAgg.getName(),
                 agencyAgg.getPhoneNumber(),
                 agencyAgg.getStatus(),
                 List.of(),
-                agencyAgg.getLicenseNumber().value(),
-                agencyAgg.getCommissionRateValue(),
-                agencyAgg.getCreatedAt());
+                agencyAgg.getLicenseNumber(),
+                new CreatedAt());
         when(jpaRepository.findById(uuid)).thenReturn(Optional.of(jpaEntity));
         when(mapper.toAgencyView1(jpaEntity)).thenReturn(agency);
 
         var result = repository.loadByIdAgencyView1(id);
 
         assertThat(result).isNotNull();
-        assertThat(result.name()).isEqualTo("Test");
+        assertThat(result.name().value()).isEqualTo("Test");
     }
 
     @Test
@@ -87,30 +87,29 @@ class JpaAgencyRepositoryTest {
     @Test
     void shouldGetAllAgencyView1Agencies() {
         var jpaEntity = new AgencyJpa();
-        var agencyAgg2 = Agency.of(new AgencyName("Test"), new PhoneNumber("1", "2"), new LicenceNumber("boo"), new CommissionRate(2.0));
-        var agency2 = new cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1(
+        var agencyAgg2 = Agency.of(new AgencyName("Test"), new PhoneNumber("1", "2"), new LicenceNumber("boo"));
+        var agency2 = new AgencyView1(
                 agencyAgg2.getId(),
-                agencyAgg2.getName().value(),
+                agencyAgg2.getName(),
                 agencyAgg2.getPhoneNumber(),
                 agencyAgg2.getStatus(),
                 List.of(),
-                agencyAgg2.getLicenseNumber().value(),
-                agencyAgg2.getCommissionRateValue(),
-                agencyAgg2.getCreatedAt());
+                agencyAgg2.getLicenseNumber(),
+                new CreatedAt());
         when(jpaRepository.findAllWithBranches()).thenReturn(List.of(jpaEntity));
         when(mapper.toAgencyView1(jpaEntity)).thenReturn(agency2);
 
-        var result = repository.getAllAgencyView1();
+        var result = repository.loadAllAgency();
 
         assertThat(result).hasSize(1);
-        assertThat(result.getFirst().name()).isEqualTo("Test");
+        assertThat(result.getFirst().name().value()).isEqualTo("Test");
     }
 
     @Test
     void shouldReturnEmptyListWhenNoneFound() {
         when(jpaRepository.findAllWithBranches()).thenReturn(List.of());
 
-        var result = repository.getAllAgencyView1();
+        var result = repository.loadAllAgency();
 
         assertThat(result).isEmpty();
     }

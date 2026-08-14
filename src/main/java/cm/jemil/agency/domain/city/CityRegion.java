@@ -4,7 +4,6 @@ import static cm.jemil.agency.domain.exception.AgencyErrorCode.CITY_400_002;
 
 import cm.jemil.shared.exception.DomainException;
 
-
 /**
  * Value object representing the region of a city.
  * Enforces business rules: city region cannot be null or blank.
@@ -20,6 +19,3 @@ public record CityRegion(String value) {
         }
     }
 }
-
-
-

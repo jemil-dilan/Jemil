@@ -2,8 +2,13 @@ package cm.jemil.agency.domain.agency;
 
 import cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1;
 import cm.jemil.agency.domain.agency.views.RouteSearchView;
+import cm.jemil.agency.domain.city.CityId;
+import cm.jemil.agency.domain.city.CityName;
+import cm.jemil.shared.utils.PageData;
+import cm.jemil.shared.utils.PaginationFetchRequest;
 import java.util.List;
 import java.util.Optional;
+import org.jspecify.annotations.Nullable;
 
 public interface AgencyRepository {
     void insert(Agency agency);
@@ -16,15 +21,15 @@ public interface AgencyRepository {
 
     boolean existsById(AgencyId id);
 
-    List<AgencyView1> getAllAgencyView1();
+    List<AgencyView1> loadAllAgency();
 
-    List<AgencyView1> getAllAgencyView1(String cityFilter);
+    List<AgencyView1> loadAllAgency(String cityFilter);
 
-    List<AgencyView1> getAllAgencyView1(String cityFilter, int page, int size);
+    PageData<AgencyView1> loadAllAgency(@Nullable CityName cityName, PaginationFetchRequest paginationFetchRequest);
 
     long countAgencies(String cityFilter);
 
-    List<RouteSearchView> searchRoutes(Departure origin, Arrival destination);
+    List<RouteSearchView> searchRoutes(CityId origin, CityId destination);
 
-    void save(Agency agency);
+    void update(Agency agency);
 }

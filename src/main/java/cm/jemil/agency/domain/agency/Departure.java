@@ -19,6 +19,3 @@ public record Departure(String value) {
         }
     }
 }
-
-
-

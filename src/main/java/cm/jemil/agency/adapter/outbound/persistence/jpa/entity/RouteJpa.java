@@ -3,10 +3,8 @@ package cm.jemil.agency.adapter.outbound.persistence.jpa.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
@@ -29,22 +27,22 @@ import lombok.experimental.FieldNameConstants;
 @AllArgsConstructor
 public class RouteJpa {
     @Id
+    @Column(name = "c_id")
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "c_agency_id", nullable = false)
-    private AgencyJpa agency;
+    @Column(name = "c_agency_id", nullable = false)
+    private UUID agencyId;
 
-    @Column(nullable = false)
-    private String departure;
+    @Column(name = "c_departure", nullable = false)
+    private UUID departureId;
 
-    @Column(nullable = false)
-    private String arrival;
+    @Column(name = "c_arrival", nullable = false)
+    private UUID arrivalId;
 
-    @Column(nullable = false)
+    @Column(name = "c_price", nullable = false)
     private double price;
 
-    @Column(nullable = false)
+    @Column(name = "c_total_seats", nullable = false)
     private int totalSeats;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

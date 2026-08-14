@@ -5,7 +5,6 @@ import static cm.jemil.agency.domain.exception.AgencyErrorCode.AGENCY_400_007;
 import cm.jemil.shared.exception.DomainException;
 import java.math.BigDecimal;
 
-
 /**
  * Value object representing the price of a route.
  * Enforces business rules: price must be non-null and positive.
@@ -25,5 +24,3 @@ public record RoutePrice(BigDecimal price) {
         return price.doubleValue();
     }
 }
-
-

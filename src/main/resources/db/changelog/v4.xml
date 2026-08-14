@@ -16,7 +16,7 @@
 			<column name="route_id" type="UUID">
 				<constraints nullable="false"
 					foreignKeyName="fk_agency_routes_route"
-					referencedTableName="t_routes" referencedColumnNames="id" />
+					referencedTableName="t_routes" referencedColumnNames="c_id" />
 			</column>
 		</createTable>
 

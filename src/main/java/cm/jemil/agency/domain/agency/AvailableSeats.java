@@ -26,4 +26,3 @@ public record AvailableSeats(int value) {
         return new AvailableSeats(value - seatsToBook);
     }
 }
-

@@ -16,17 +16,12 @@ public final class Schedule {
     private final TotalSeats totalSeats;
     private final AvailableSeats availableSeats;
 
-    public Schedule(
-            ScheduleId id,
-            LocalDateTime departureTime,
-            TotalSeats totalSeats,
-            AvailableSeats availableSeats) {
+    public Schedule(ScheduleId id, LocalDateTime departureTime, TotalSeats totalSeats, AvailableSeats availableSeats) {
         if (departureTime == null) {
             throw new DomainException(AgencyErrorCode.AGENCY_400_009, "Departure time is required");
         }
         if (availableSeats.value() > totalSeats.value()) {
-            throw new DomainException(
-                    AgencyErrorCode.AGENCY_400_002);
+            throw new DomainException(AgencyErrorCode.AGENCY_400_002);
         }
         this.id = id;
         this.departureTime = departureTime;
@@ -37,10 +32,7 @@ public final class Schedule {
     /**
      * Factory method to create a schedule with all seats available.
      */
-    public static Schedule of(
-            ScheduleId id, 
-            LocalDateTime departureTime, 
-            TotalSeats totalSeats) {
+    public static Schedule of(ScheduleId id, LocalDateTime departureTime, TotalSeats totalSeats) {
         return new Schedule(id, departureTime, totalSeats, new AvailableSeats(totalSeats.value()));
     }
 
@@ -55,12 +47,10 @@ public final class Schedule {
         if (!hasAvailableSeats(count)) {
             throw new DomainException(AgencyErrorCode.AGENCY_400_002);
         }
-        return new Schedule(
-                id, departureTime, totalSeats, availableSeats.subtract(count));
+        return new Schedule(id, departureTime, totalSeats, availableSeats.subtract(count));
     }
 
     public boolean hasAvailableSeats(int requestedSeats) {
         return availableSeats.canAccommodate(requestedSeats);
     }
 }
-

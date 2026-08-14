@@ -19,6 +19,3 @@ public record Arrival(String value) {
         }
     }
 }
-
-
-

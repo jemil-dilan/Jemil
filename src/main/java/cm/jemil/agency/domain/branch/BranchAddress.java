@@ -4,7 +4,6 @@ import static cm.jemil.agency.domain.exception.AgencyErrorCode.BRANCH_400_003;
 
 import cm.jemil.shared.exception.DomainException;
 
-
 /**
  * Value object representing the address of an agency branch.
  * Enforces business rules: branch address cannot be null or blank.
@@ -20,5 +19,3 @@ public record BranchAddress(String value) {
         }
     }
 }
-
-

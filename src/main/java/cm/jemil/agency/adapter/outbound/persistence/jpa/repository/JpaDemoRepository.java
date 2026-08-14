@@ -4,8 +4,8 @@ import cm.jemil.agency.adapter.outbound.persistence.jpa.repository.mapper.Agency
 import cm.jemil.agency.domain.demo.Demo;
 import cm.jemil.agency.domain.demo.DemoRepository;
 import cm.jemil.agency.domain.demo.view.DemoView.DemoView1;
+import cm.jemil.agency.domain.exception.DemoNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +25,7 @@ public class JpaDemoRepository implements DemoRepository {
     }
 
     @Override
-    public Optional<DemoView1> loadDemoByIdView1(UUID demoID) {
-        return demoSpringRepository.findByIdAsView1(demoID);
+    public DemoView1 loadDemoByIdView1(UUID demoID) {
+        return demoSpringRepository.findByIdAsView1(demoID).orElseThrow(DemoNotFoundException::new);
     }
 }

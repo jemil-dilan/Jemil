@@ -1,72 +1,72 @@
 package cm.jemil.agency.adapter.outbound.persistence.jpa.repository;
 
-import cm.jemil.agency.adapter.outbound.persistence.jpa.entity.AgencyJpa;
 import cm.jemil.agency.adapter.outbound.persistence.jpa.repository.mapper.AgencyJpaMapper;
 import cm.jemil.agency.domain.agency.Agency;
 import cm.jemil.agency.domain.agency.AgencyId;
 import cm.jemil.agency.domain.agency.AgencyRepository;
-import cm.jemil.agency.domain.agency.Arrival;
-import cm.jemil.agency.domain.agency.Departure;
+import cm.jemil.agency.domain.agency.AgencyStatus;
 import cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1;
 import cm.jemil.agency.domain.agency.views.RouteSearchView;
-import cm.jemil.agency.domain.exception.AgencyErrorCode;
-import cm.jemil.shared.exception.DomainException;
+import cm.jemil.agency.domain.city.CityId;
+import cm.jemil.agency.domain.city.CityName;
+import cm.jemil.agency.domain.exception.AgencyNotFoundException;
+import cm.jemil.shared.utils.PageData;
+import cm.jemil.shared.utils.PaginationFetchRequest;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @RequiredArgsConstructor
 public class JpaAgencyRepository implements AgencyRepository {
 
     private final AgencySpringRepository agencySpringRepository;
-    private final AgencyJpaMapper mapper;
+    private final AgencyJpaMapper jpaMapper;
 
     @Override
     public void insert(Agency agency) {
-        AgencyJpa entity = mapper.toJpa(agency);
-        if (entity.getRoutes() != null) {
-            entity.getRoutes().forEach(route -> route.setAgency(entity));
-        }
-        agencySpringRepository.save(entity);
+        agencySpringRepository.saveAndFlush(jpaMapper.toJpa(agency));
     }
 
     @Override
     public AgencyView1 loadByIdAgencyView1(AgencyId id) {
         return agencySpringRepository
                 .findById(id.value())
-                .map(mapper::toAgencyView1)
-                .orElseThrow(() -> new DomainException(AgencyErrorCode.AGENCY_404_001));
+                .map(jpaMapper::toAgencyView1)
+                .orElseThrow(AgencyNotFoundException::new);
     }
 
     @Override
     public Agency loadById(AgencyId id) {
         return agencySpringRepository
                 .findById(id.value())
-                .map(mapper::toDomain)
-                .orElseThrow(() -> new DomainException(AgencyErrorCode.AGENCY_404_001));
+                .map(jpaMapper::toDomain)
+                .orElseThrow(AgencyNotFoundException::new);
     }
 
     @Override
-    public List<AgencyView1> getAllAgencyView1() {
+    public List<AgencyView1> loadAllAgency() {
         return agencySpringRepository.findAllWithBranches().stream()
-                .map(mapper::toAgencyView1)
+                .map(jpaMapper::toAgencyView1)
                 .toList();
     }
 
     @Override
-    public List<AgencyView1> getAllAgencyView1(String cityFilter) {
+    public List<AgencyView1> loadAllAgency(String cityFilter) {
         if (cityFilter == null || cityFilter.isBlank()) {
-            return getAllAgencyView1();
+            return loadAllAgency();
         }
         return agencySpringRepository.findAllWithBranchesByCity(cityFilter).stream()
-                .map(mapper::toAgencyView1)
+                .map(jpaMapper::toAgencyView1)
                 .toList();
     }
 
     @Override
     public Optional<Agency> findById(AgencyId id) {
-        return agencySpringRepository.findById(id.value()).map(mapper::toDomain);
+        return agencySpringRepository.findById(id.value()).map(jpaMapper::toDomain);
     }
 
     @Override
@@ -75,13 +75,20 @@ public class JpaAgencyRepository implements AgencyRepository {
     }
 
     @Override
-    public List<AgencyView1> getAllAgencyView1(String cityFilter, int page, int size) {
-        if (cityFilter == null || cityFilter.isBlank()) {
-            return getAllAgencyView1();
-        }
-        return agencySpringRepository.findAllWithBranchesByCity(cityFilter, PageRequest.of(page, size)).stream()
-                .map(mapper::toAgencyView1)
-                .toList();
+    public PageData<AgencyView1> loadAllAgency(
+            @Nullable CityName cityName, PaginationFetchRequest paginationFetchRequest) {
+        var name = Optional.ofNullable(cityName).map(CityName::value).orElse(null);
+        Pageable pageable = PageRequest.of(paginationFetchRequest.page(), paginationFetchRequest.limit());
+        var allAgencies = agencySpringRepository.findAllAgencies(name, AgencyStatus.ACTIVE, pageable);
+
+        var views =
+                allAgencies.getContent().stream().map(jpaMapper::toAgencyView1).toList();
+        return new PageData<>(
+                allAgencies.getTotalElements(),
+                views,
+                allAgencies.getTotalPages(),
+                allAgencies.getSize(),
+                allAgencies.getNumber());
     }
 
     @Override
@@ -93,21 +100,17 @@ public class JpaAgencyRepository implements AgencyRepository {
     }
 
     @Override
-    public List<RouteSearchView> searchRoutes(Departure origin, Arrival destination) {
+    public List<RouteSearchView> searchRoutes(CityId origin, CityId destination) {
         return agencySpringRepository.findRoutesByCities(origin.value(), destination.value()).stream()
-                .map(mapper::toRouteSearchView)
+                .map(jpaMapper::toRouteSearchView)
                 .toList();
     }
 
     @Override
-    public void save(Agency agency) {
-        AgencyJpa entity = mapper.toJpa(agency);
-        if (entity.getRoutes() != null) {
-            entity.getRoutes().forEach(route -> route.setAgency(entity));
-        }
-        if (entity.getBranches() != null) {
-            entity.getBranches().forEach(branch -> branch.setAgency(entity));
-        }
-        agencySpringRepository.save(entity);
+    public void update(@NonNull Agency agency) {
+        agencySpringRepository.findById(agency.id()).ifPresent(agencyJpa -> {
+            jpaMapper.fromAgencyDomain(agencyJpa, agency);
+            agencySpringRepository.save(agencyJpa);
+        });
     }
 }

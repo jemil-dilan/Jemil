@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,9 @@ public class CityJpa {
 
     @Column(name = "c_region")
     private String region;
+
+    @Column(name = "c_created_at")
+    private LocalDateTime createdAt;
 
     @Override
     public boolean equals(Object o) {

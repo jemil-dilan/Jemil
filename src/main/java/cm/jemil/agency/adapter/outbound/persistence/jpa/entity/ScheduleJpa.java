@@ -12,15 +12,16 @@ import lombok.Setter;
 @Setter
 public class ScheduleJpa {
     @Id
+    @Column(name = "c_id")
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(name = "c_departure_time", nullable = false)
     private LocalDateTime departureTime;
 
-    @Column(nullable = false)
+    @Column(name = "c_total_seats", nullable = false)
     private int totalSeats;
 
-    @Column(nullable = false)
+    @Column(name = "c_available_seats", nullable = false)
     private int availableSeats;
 
     @Version

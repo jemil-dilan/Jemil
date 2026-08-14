@@ -1,10 +1,10 @@
 package cm.jemil.agency.domain.agency;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import cm.jemil.agency.domain.exception.AgencyErrorCode;
 import cm.jemil.shared.exception.DomainException;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CommissionRateTest {
 
@@ -28,16 +28,14 @@ class CommissionRateTest {
 
     @Test
     void shouldRejectNegativeCommissionRate() {
-        DomainException exception = assertThrows(DomainException.class, 
-                () -> new CommissionRate(-1.0));
+        DomainException exception = assertThrows(DomainException.class, () -> new CommissionRate(-1.0));
         assertEquals(AgencyErrorCode.AGENCY_400_010.getCode(), exception.getCode());
         assertEquals("Commission rate cannot be negative", exception.getMessage());
     }
 
     @Test
     void shouldRejectCommissionRateExceeding100() {
-        DomainException exception = assertThrows(DomainException.class, 
-                () -> new CommissionRate(101.0));
+        DomainException exception = assertThrows(DomainException.class, () -> new CommissionRate(101.0));
         assertEquals(AgencyErrorCode.AGENCY_400_010.getCode(), exception.getCode());
         assertEquals("Commission rate cannot exceed 100%", exception.getMessage());
     }

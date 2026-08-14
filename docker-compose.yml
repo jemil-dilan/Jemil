@@ -11,7 +11,7 @@ services:
     image: postgres:15-alpine
     container_name: jemil-postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_DB: ${DB_NAME:-jemil_db}
       POSTGRES_USER: ${DB_USER:-jemil}

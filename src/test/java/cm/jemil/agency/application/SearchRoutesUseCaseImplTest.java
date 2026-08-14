@@ -6,13 +6,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import cm.jemil.agency.application.inbound.usecase.SearchRoutesUseCaseImpl;
+import cm.jemil.agency.domain.agency.AgencyId;
 import cm.jemil.agency.domain.agency.AgencyRepository;
-import cm.jemil.agency.domain.agency.Arrival;
 import cm.jemil.agency.domain.agency.AvailableSeats;
-import cm.jemil.agency.domain.agency.Departure;
+import cm.jemil.agency.domain.agency.RouteId;
 import cm.jemil.agency.domain.agency.RoutePrice;
+import cm.jemil.agency.domain.agency.ScheduleId;
 import cm.jemil.agency.domain.agency.TotalSeats;
 import cm.jemil.agency.domain.agency.views.RouteSearchView;
+import cm.jemil.agency.domain.city.CityId;
 import cm.jemil.agency.domain.exception.AgencyErrorCode;
 import cm.jemil.shared.exception.DomainException;
 import java.math.BigDecimal;
@@ -39,114 +41,107 @@ class SearchRoutesUseCaseImplTest {
 
     @Test
     void shouldDelegateToRepository() {
-        var origin = "Douala";
-        var destination = "Yaoundé";
+        var origin = UUID.randomUUID();
+        var destination = UUID.randomUUID();
         var view = new RouteSearchView(
-                UUID.randomUUID(),
-                UUID.randomUUID(),
-                "Global Voyages",
-                origin,
-                destination,
+                new RouteId(UUID.randomUUID()),
+                new AgencyId(UUID.randomUUID()),
+                new CityId(origin),
+                new CityId(destination),
                 new RoutePrice(BigDecimal.valueOf(5000)),
                 new TotalSeats(40),
-                true,
-                List.of(new RouteSearchView.ScheduleView(UUID.randomUUID(), LocalDateTime.now(), new TotalSeats(40), new AvailableSeats(40))));
-        when(agencyRepository.searchRoutes(new Departure(origin), new Arrival(destination)))
+                List.of(new RouteSearchView.ScheduleView(
+                        new ScheduleId(UUID.randomUUID()),
+                        LocalDateTime.now(),
+                        new TotalSeats(40),
+                        new AvailableSeats(40))));
+        when(agencyRepository.searchRoutes(new CityId(origin), new CityId(destination)))
                 .thenReturn(List.of(view));
 
-        var result = service.execute(new Departure(origin), new Arrival(destination));
+        var result = service.execute(origin, destination);
 
         assertThat(result).containsExactly(view);
-        verify(agencyRepository).searchRoutes(new Departure(origin), new Arrival(destination));
+        verify(agencyRepository).searchRoutes(new CityId(origin), new CityId(destination));
     }
 
     @Test
     void shouldReturnEmptyListWhenNoRouteMatches() {
-        when(agencyRepository.searchRoutes(new Departure("Douala"), new Arrival("Bafoussam")))
+        var origin = UUID.randomUUID();
+        var destination = UUID.randomUUID();
+        when(agencyRepository.searchRoutes(new CityId(origin), new CityId(destination)))
                 .thenReturn(List.of());
 
-        var result = service.execute(new Departure("Douala"), new Arrival("Bafoussam"));
+        var result = service.execute(origin, destination);
 
         assertThat(result).isEmpty();
     }
 
     @Test
     void shouldThrowWhenOriginEqualsDestination() {
-        assertThatThrownBy(() -> service.execute(new Departure("Douala"), new Arrival("Douala")))
-                .isInstanceOf(DomainException.class)
-                .hasFieldOrPropertyWithValue("code", AgencyErrorCode.AGENCY_400_012.getCode());
-    }
+        var id = UUID.randomUUID();
 
-    @Test
-    void shouldThrowWhenOriginEqualsDestinationCaseInsensitive() {
-        assertThatThrownBy(() -> service.execute(new Departure("Douala"), new Arrival("DOUALA")))
+        assertThatThrownBy(() -> service.execute(id, id))
                 .isInstanceOf(DomainException.class)
                 .hasFieldOrPropertyWithValue("code", AgencyErrorCode.AGENCY_400_012.getCode());
     }
 
     @Test
     void shouldHandleMultipleResults() {
-        var origin = "Douala";
-        var destination = "Yaoundé";
+        var origin = UUID.randomUUID();
+        var destination = UUID.randomUUID();
         var view1 = new RouteSearchView(
-                UUID.randomUUID(),
-                UUID.randomUUID(),
-                "Agency 1",
-                origin,
-                destination,
+                new RouteId(UUID.randomUUID()),
+                new AgencyId(UUID.randomUUID()),
+                new CityId(origin),
+                new CityId(destination),
                 new RoutePrice(BigDecimal.valueOf(5000)),
                 new TotalSeats(40),
-                true,
                 List.of());
         var view2 = new RouteSearchView(
-                UUID.randomUUID(),
-                UUID.randomUUID(),
-                "Agency 2",
-                origin,
-                destination,
+                new RouteId(UUID.randomUUID()),
+                new AgencyId(UUID.randomUUID()),
+                new CityId(origin),
+                new CityId(destination),
                 new RoutePrice(BigDecimal.valueOf(6000)),
                 new TotalSeats(50),
-                true,
                 List.of());
-        
-        when(agencyRepository.searchRoutes(new Departure(origin), new Arrival(destination)))
+
+        when(agencyRepository.searchRoutes(new CityId(origin), new CityId(destination)))
                 .thenReturn(List.of(view1, view2));
 
-        var result = service.execute(new Departure(origin), new Arrival(destination));
+        var result = service.execute(origin, destination);
 
         assertThat(result).containsExactly(view1, view2);
     }
 
     @Test
     void shouldPreserveScheduleInformation() {
-        var origin = "Douala";
-        var destination = "Yaoundé";
+        var origin = UUID.randomUUID();
+        var destination = UUID.randomUUID();
         var schedule1 = new RouteSearchView.ScheduleView(
-                UUID.randomUUID(),
+                new ScheduleId(UUID.randomUUID()),
                 LocalDateTime.now().plusHours(1),
                 new TotalSeats(40),
                 new AvailableSeats(20));
         var schedule2 = new RouteSearchView.ScheduleView(
-                UUID.randomUUID(),
+                new ScheduleId(UUID.randomUUID()),
                 LocalDateTime.now().plusHours(2),
                 new TotalSeats(40),
                 new AvailableSeats(15));
-        
+
         var view = new RouteSearchView(
-                UUID.randomUUID(),
-                UUID.randomUUID(),
-                "Agency",
-                origin,
-                destination,
+                new RouteId(UUID.randomUUID()),
+                new AgencyId(UUID.randomUUID()),
+                new CityId(origin),
+                new CityId(destination),
                 new RoutePrice(BigDecimal.valueOf(5000)),
                 new TotalSeats(40),
-                true,
                 List.of(schedule1, schedule2));
-        
-        when(agencyRepository.searchRoutes(new Departure(origin), new Arrival(destination)))
+
+        when(agencyRepository.searchRoutes(new CityId(origin), new CityId(destination)))
                 .thenReturn(List.of(view));
 
-        var result = service.execute(new Departure(origin), new Arrival(destination));
+        var result = service.execute(origin, destination);
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).availableSchedules()).containsExactly(schedule1, schedule2);

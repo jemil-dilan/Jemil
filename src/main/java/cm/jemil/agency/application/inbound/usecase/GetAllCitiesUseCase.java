@@ -1,8 +1,8 @@
 package cm.jemil.agency.application.inbound.usecase;
 
-import cm.jemil.agency.domain.city.views.CityView.CityView1;
-import java.util.List;
+import cm.jemil.agency.application.inbound.usecase.GetAllCitiesUseCaseImpl.Query;
+import cm.jemil.agency.application.inbound.usecase.GetAllCitiesUseCaseImpl.Response;
 
 public interface GetAllCitiesUseCase {
-    List<CityView1> execute();
+    Response execute(Query query);
 }

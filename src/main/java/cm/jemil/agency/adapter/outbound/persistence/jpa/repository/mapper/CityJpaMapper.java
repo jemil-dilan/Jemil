@@ -15,6 +15,7 @@ public interface CityJpaMapper {
     @Mapping(target = "id", source = "id.value")
     @Mapping(target = "name", source = "name.value")
     @Mapping(target = "region", source = "region.value")
+    @Mapping(target = "createdAt", source = "createdAt.value")
     CityJpa toJpa(City city);
 
     @BeanMapping(ignoreByDefault = true)

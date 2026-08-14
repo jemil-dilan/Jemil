@@ -57,3 +57,4 @@ springdoc:
     operationsSorter: "method"
 server:
   port: 8080
+agency: null

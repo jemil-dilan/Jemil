@@ -1,14 +1,13 @@
 package cm.jemil.agency.domain.city;
 
 import cm.jemil.agency.domain.city.views.CityView.CityView1;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import cm.jemil.shared.utils.PageData;
+import cm.jemil.shared.utils.PaginationFetchRequest;
 
 public interface CityRepository {
     void save(City city);
 
-    Optional<City> findById(UUID id);
+    boolean existsById(CityId id);
 
-    List<CityView1> findAllView1();
+    PageData<CityView1> findAllView1(PaginationFetchRequest paginationFetchRequest);
 }

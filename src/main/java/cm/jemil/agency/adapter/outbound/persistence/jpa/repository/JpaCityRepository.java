@@ -2,12 +2,14 @@ package cm.jemil.agency.adapter.outbound.persistence.jpa.repository;
 
 import cm.jemil.agency.adapter.outbound.persistence.jpa.repository.mapper.CityJpaMapper;
 import cm.jemil.agency.domain.city.City;
+import cm.jemil.agency.domain.city.CityId;
 import cm.jemil.agency.domain.city.CityRepository;
 import cm.jemil.agency.domain.city.views.CityView.CityView1;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import cm.jemil.shared.utils.PageData;
+import cm.jemil.shared.utils.PaginationFetchRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @RequiredArgsConstructor
 public class JpaCityRepository implements CityRepository {
@@ -21,12 +23,19 @@ public class JpaCityRepository implements CityRepository {
     }
 
     @Override
-    public Optional<City> findById(UUID id) {
-        return citySpringRepository.findById(id).map(mapper::toDomain);
+    public boolean existsById(CityId id) {
+        return citySpringRepository.existsById(id.value());
     }
 
     @Override
-    public List<CityView1> findAllView1() {
-        return citySpringRepository.findAll().stream().map(mapper::toCityView1).toList();
+    public PageData<CityView1> findAllView1(PaginationFetchRequest paginationFetchRequest) {
+        Pageable pageable = PageRequest.of(paginationFetchRequest.page(), paginationFetchRequest.limit());
+        var allCities = citySpringRepository.findAllCities(pageable);
+        return new PageData<>(
+                allCities.getTotalElements(),
+                allCities.getContent(),
+                allCities.getTotalPages(),
+                allCities.getSize(),
+                allCities.getNumber());
     }
 }
