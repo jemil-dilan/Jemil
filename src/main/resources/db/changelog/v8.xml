@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+	<changeSet id="JEMIL-25-route-price-xaf-integer"
+		author="codex">
+		<comment>Store route prices as whole XAF amounts; XAF has no minor
+			unit.</comment>
+		<modifyDataType tableName="t_routes"
+			columnName="c_price" newDataType="INT" />
+	</changeSet>
+
+	<changeSet id="JEMIL-26-remove-schedule-aggregate-version"
+		author="codex">
+		<comment>Remove aggregate-level schedule versioning; seat contention
+			is per seat assignment.</comment>
+		<dropColumn tableName="schedules" columnName="version" />
+	</changeSet>
+
+	<changeSet id="JEMIL-27-mvp-inventory-foundation"
+		author="codex">
+		<comment>Add MVP tables for trip inventory, seat assignment, payments,
+			ticketing, SMS, and audit.</comment>
+
+		<createTable tableName="buses">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="agency_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_buses_agency" referencedTableName="t_agency"
+					referencedColumnNames="c_id" />
+			</column>
+			<column name="label" type="VARCHAR(120)">
+				<constraints nullable="false" />
+			</column>
+			<column name="plate" type="VARCHAR(40)">
+				<constraints nullable="false" />
+			</column>
+			<column name="seat_count" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="seat_layout" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="staff_users">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="agency_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_staff_users_agency"
+					referencedTableName="t_agency" referencedColumnNames="c_id" />
+			</column>
+			<column name="full_name" type="VARCHAR(160)">
+				<constraints nullable="false" />
+			</column>
+			<column name="msisdn" type="VARCHAR(32)">
+				<constraints nullable="false" unique="true"
+					uniqueConstraintName="uq_staff_users_msisdn" />
+			</column>
+			<column name="role" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="pin_hash" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="status" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="schedule_templates">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="route_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_schedule_templates_route"
+					referencedTableName="t_routes" referencedColumnNames="c_id" />
+			</column>
+			<column name="bus_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_schedule_templates_bus"
+					referencedTableName="buses" referencedColumnNames="id" />
+			</column>
+			<column name="departure_time" type="TIME">
+				<constraints nullable="false" />
+			</column>
+			<column name="days_of_week" type="SMALLINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="price_xaf" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="travel_class" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="active" type="BOOLEAN"
+				defaultValueBoolean="true">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="trips">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="template_id" type="UUID">
+				<constraints foreignKeyName="fk_trips_schedule_template"
+					referencedTableName="schedule_templates" referencedColumnNames="id" />
+			</column>
+			<column name="agency_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_trips_agency" referencedTableName="t_agency"
+					referencedColumnNames="c_id" />
+			</column>
+			<column name="route_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_trips_route" referencedTableName="t_routes"
+					referencedColumnNames="c_id" />
+			</column>
+			<column name="bus_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_trips_bus" referencedTableName="buses"
+					referencedColumnNames="id" />
+			</column>
+			<column name="departure_at" type="TIMESTAMPTZ">
+				<constraints nullable="false" />
+			</column>
+			<column name="service_date" type="DATE">
+				<constraints nullable="false" />
+			</column>
+			<column name="price_xaf" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="travel_class" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="status" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="seats_total" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="seats_sold" type="INT" defaultValueNumeric="0">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createIndex tableName="trips"
+			indexName="idx_trips_route_departure">
+			<column name="route_id" />
+			<column name="departure_at" />
+		</createIndex>
+
+		<sql>
+			CREATE UNIQUE INDEX trip_once_per_template_date
+			ON trips
+			(template_id, service_date)
+			WHERE template_id IS NOT NULL;
+		</sql>
+
+		<createTable tableName="bookings">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="ref" type="VARCHAR(16)">
+				<constraints nullable="false" unique="true"
+					uniqueConstraintName="uq_bookings_ref" />
+			</column>
+			<column name="trip_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_bookings_trip" referencedTableName="trips"
+					referencedColumnNames="id" />
+			</column>
+			<column name="channel" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="passenger_name" type="VARCHAR(160)">
+				<constraints nullable="false" />
+			</column>
+			<column name="passenger_msisdn" type="VARCHAR(32)" />
+			<column name="amount_xaf" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="status" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="hold_expires_at" type="TIMESTAMPTZ" />
+			<column name="sold_by_staff_id" type="UUID">
+				<constraints foreignKeyName="fk_bookings_sold_by_staff"
+					referencedTableName="staff_users" referencedColumnNames="id" />
+			</column>
+			<column name="created_at" type="TIMESTAMPTZ">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="seat_assignments">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="trip_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_seat_assignments_trip"
+					referencedTableName="trips" referencedColumnNames="id" />
+			</column>
+			<column name="seat_no" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="booking_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_seat_assignments_booking"
+					referencedTableName="bookings" referencedColumnNames="id" />
+			</column>
+			<column name="status" type="VARCHAR(16)">
+				<constraints nullable="false" />
+			</column>
+			<column name="created_at" type="TIMESTAMPTZ">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<sql>
+			CREATE UNIQUE INDEX seat_once_per_trip
+			ON seat_assignments
+			(trip_id, seat_no)
+			WHERE status IN ('HELD', 'SOLD');
+		</sql>
+
+		<createTable tableName="payments">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="booking_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_payments_booking" referencedTableName="bookings"
+					referencedColumnNames="id" />
+			</column>
+			<column name="provider" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="provider_ref" type="VARCHAR(120)" />
+			<column name="idempotency_key" type="VARCHAR(120)">
+				<constraints nullable="false" unique="true"
+					uniqueConstraintName="uq_payments_idempotency_key" />
+			</column>
+			<column name="amount_xaf" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="status" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="payer_msisdn" type="VARCHAR(32)" />
+			<column name="raw_response" type="JSONB" />
+			<column name="raw_callback" type="JSONB" />
+			<column name="created_at" type="TIMESTAMPTZ">
+				<constraints nullable="false" />
+			</column>
+			<column name="resolved_at" type="TIMESTAMPTZ" />
+		</createTable>
+
+		<createTable tableName="refund_tasks">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="payment_id" type="UUID">
+				<constraints nullable="false"
+					foreignKeyName="fk_refund_tasks_payment"
+					referencedTableName="payments" referencedColumnNames="id" />
+			</column>
+			<column name="reason" type="VARCHAR(120)">
+				<constraints nullable="false" />
+			</column>
+			<column name="status" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="created_at" type="TIMESTAMPTZ">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="boarding_passes">
+			<column name="booking_id" type="UUID">
+				<constraints primaryKey="true" nullable="false"
+					foreignKeyName="fk_boarding_passes_booking"
+					referencedTableName="bookings" referencedColumnNames="id" />
+			</column>
+			<column name="code_hash" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="qr_token" type="TEXT">
+				<constraints nullable="false" />
+			</column>
+			<column name="boarded_at" type="TIMESTAMPTZ" />
+			<column name="boarded_by" type="UUID">
+				<constraints
+					foreignKeyName="fk_boarding_passes_boarded_by"
+					referencedTableName="staff_users" referencedColumnNames="id" />
+			</column>
+			<column name="device_id" type="VARCHAR(120)" />
+			<column name="sync_batch_id" type="UUID" />
+		</createTable>
+
+		<createTable tableName="sms_log">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="msisdn" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="template" type="VARCHAR(80)">
+				<constraints nullable="false" />
+			</column>
+			<column name="body" type="TEXT">
+				<constraints nullable="false" />
+			</column>
+			<column name="provider_ref" type="VARCHAR(120)" />
+			<column name="status" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="cost_xaf" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="created_at" type="TIMESTAMPTZ">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="audit_log">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="actor_type" type="VARCHAR(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="actor_id" type="UUID" />
+			<column name="action" type="VARCHAR(120)">
+				<constraints nullable="false" />
+			</column>
+			<column name="entity" type="VARCHAR(80)">
+				<constraints nullable="false" />
+			</column>
+			<column name="entity_id" type="UUID">
+				<constraints nullable="false" />
+			</column>
+			<column name="before" type="JSONB" />
+			<column name="after" type="JSONB" />
+			<column name="created_at" type="TIMESTAMPTZ">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+</databaseChangeLog>

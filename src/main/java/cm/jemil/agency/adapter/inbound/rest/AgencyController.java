@@ -90,7 +90,7 @@ public class AgencyController implements AgencyApi {
                 agencyId,
                 addRouteDTO.getOriginCityId(),
                 addRouteDTO.getDestinationCityId(),
-                addRouteDTO.getPrice(),
+                addRouteDTO.getPrice().intValue(),
                 addRouteDTO.getTotalSeats()));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

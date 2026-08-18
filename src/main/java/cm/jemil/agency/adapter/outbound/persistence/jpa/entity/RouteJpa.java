@@ -40,7 +40,7 @@ public class RouteJpa {
     private UUID arrivalId;
 
     @Column(name = "c_price", nullable = false)
-    private double price;
+    private int price;
 
     @Column(name = "c_total_seats", nullable = false)
     private int totalSeats;

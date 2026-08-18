@@ -3,8 +3,8 @@ package cm.jemil.agency.application.inbound.usecase;
 import cm.jemil.agency.domain.agency.AgencyId;
 import cm.jemil.agency.domain.agency.AgencyRepository;
 import cm.jemil.agency.domain.agency.RoutePrice;
+import cm.jemil.agency.domain.agency.TotalSeats;
 import cm.jemil.agency.domain.city.CityId;
-import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
@@ -15,11 +15,11 @@ public class AddRouteUseCaseImpl implements AddRouteUseCase {
     @Override
     public void execute(Command command) {
         var agency = agencyRepository.loadById(command.getAgencyId());
-        agency.addRoute(command.departure(), command.arrival(), command.getPrice());
+        agency.addRoute(command.departure(), command.arrival(), command.getPrice(), command.getTotalSeats());
         agencyRepository.update(agency);
     }
 
-    public record Command(UUID agencyId, UUID originCityId, UUID destinationCityId, double price, int totalSeats) {
+    public record Command(UUID agencyId, UUID originCityId, UUID destinationCityId, int priceXaf, int totalSeats) {
         private AgencyId getAgencyId() {
             return new AgencyId(agencyId);
         }
@@ -33,7 +33,11 @@ public class AddRouteUseCaseImpl implements AddRouteUseCase {
         }
 
         private RoutePrice getPrice() {
-            return new RoutePrice(BigDecimal.valueOf(price));
+            return RoutePrice.ofXaf(priceXaf);
+        }
+
+        private TotalSeats getTotalSeats() {
+            return new TotalSeats(totalSeats);
         }
     }
 }

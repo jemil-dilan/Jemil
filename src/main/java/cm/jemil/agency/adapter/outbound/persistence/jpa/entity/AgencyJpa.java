@@ -66,6 +66,7 @@ public class AgencyJpa {
     }
 
     public void addRoute(RouteJpa route) {
+        route.setAgencyId(id);
         routes.add(route);
     }
 

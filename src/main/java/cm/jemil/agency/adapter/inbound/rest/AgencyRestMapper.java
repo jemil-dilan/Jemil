@@ -100,7 +100,7 @@ public interface AgencyRestMapper {
         dto.setDestinationCityId(destinationCityId);
         dto.setOriginCityId(route.getDeparture().value());
         dto.setOriginCityId(route.getArrival().value());
-        dto.setPrice(route.getPrice().price().doubleValue());
+        dto.setPrice((double) route.getPrice().amountXaf());
         return dto;
     }
 
@@ -110,27 +110,36 @@ public interface AgencyRestMapper {
         dto.setAgencyId(view.agencyId().value());
         dto.setOriginCityId(view.originCityId().value());
         dto.setDestinationCityId(view.destinationCityId().value());
-        dto.setPrice(view.price().price().doubleValue());
-        dto.setTotalSeats(view.totalSeats().value());
+        dto.setPrice(view.price() == null ? 0 : (double) view.price().amountXaf());
+        dto.setTotalSeats(view.totalSeats() == null ? 0 : view.totalSeats().value());
         dto.setAvailableSchedules(toScheduleDTO(view.availableSchedules()));
         return dto;
     }
 
     private List<ScheduleDTO> toScheduleDTO(List<RouteSearchView.ScheduleView> schedules) {
+        if (schedules == null) {
+            return List.of();
+        }
         return schedules.stream()
                 .map(schedule -> {
                     var dto = new ScheduleDTO();
                     dto.setId(schedule.id().value());
                     dto.setDepartureTime(schedule.departureTime());
-                    dto.setTotalSeats(schedule.totalSeats().value());
-                    dto.setAvailableSeats(schedule.availableSeats().value());
+                    dto.setTotalSeats(
+                            schedule.totalSeats() == null
+                                    ? 0
+                                    : schedule.totalSeats().value());
+                    dto.setAvailableSeats(
+                            schedule.availableSeats() == null
+                                    ? 0
+                                    : schedule.availableSeats().value());
                     return dto;
                 })
                 .toList();
     }
 
     default double map(RoutePrice price) {
-        return Objects.isNull(price)  ? 0 : price.price().doubleValue();
+        return Objects.isNull(price) ? 0 : price.amountXaf();
     }
 
     default int map(cm.jemil.agency.domain.agency.TotalSeats totalSeats) {

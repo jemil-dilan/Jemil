@@ -80,6 +80,6 @@ class GetAllAgenciesUseCaseImplTest {
                 agency.getStatus(),
                 List.of(),
                 agency.getLicenseNumber(),
-                new CreatedAt());
+                CreatedAt.now());
     }
 }

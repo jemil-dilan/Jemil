@@ -109,27 +109,39 @@ public class AgencyStepDefinitions {
 
     @When("I add the route to the agency")
     public void iAddTheRouteToTheAgency() {
-        Response response =
-                httpClient.post("/agency/{id}/routes", context.getRequestBody(), context.getCreatedAgencyId());
-        if (response.statusCode() == 201) {
-            context.setCreatedRouteId(UUID.fromString(response.jsonPath().getString("id")));
-        }
+        httpClient.post("/agency/{id}/routes", context.getRequestBody(), context.getCreatedAgencyId());
     }
 
     @Then("the response contains a route id")
     public void theResponseContainsARouteId() {
-        assertThat(context.getCreatedRouteId()).isNotNull();
+        assertThat(httpClient.lastStatus()).isEqualTo(201);
+        httpClient.get(
+                "/routes/search",
+                Map.of(
+                        "originCityId", cityId("Douala").toString(),
+                        "destinationCityId", cityId("Yaoundé").toString()));
+        assertThat(httpClient.lastStatus()).isEqualTo(200);
+        List<Map<String, Object>> content =
+                httpClient.getLastResponse().jsonPath().getList("content");
+        assertThat(content)
+                .anyMatch(
+                        route -> context.getCreatedAgencyId().toString().equals(String.valueOf(route.get("agencyId"))));
     }
 
     @Given("agencies with routes exist")
     public void agenciesWithRoutesExist() {
         iAddARoute("Douala", "Yaoundé", 5000, 40);
         iAddTheRouteToTheAgency();
+        assertThat(httpClient.lastStatus()).isEqualTo(201);
     }
 
     @When("I search routes from {string} to {string}")
     public void iSearchRoutesFromTo(String origin, String destination) {
-        httpClient.get("/routes/search", Map.of("originCityId", origin, "destinationCityId", destination));
+        httpClient.get(
+                "/routes/search",
+                Map.of(
+                        "originCityId", cityId(origin).toString(),
+                        "destinationCityId", cityId(destination).toString()));
     }
 
     @Then("I should see available schedules")

@@ -29,10 +29,10 @@ import cm.jemil.agency.domain.branch.BranchName;
 import cm.jemil.agency.domain.city.CityId;
 import cm.jemil.shared.utils.CreatedAt;
 import cm.jemil.shared.utils.PhoneNumber;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -58,6 +58,11 @@ public interface AgencyJpaMapper {
     @Mapping(target = "branches", source = "branches")
     @Mapping(target = "createdAt", source = "createdAt.value")
     AgencyJpa toJpa(Agency agency);
+
+    @AfterMapping
+    default void linkRoutesToAgency(@MappingTarget AgencyJpa agencyJpa, Agency agency) {
+        linkChildRoutes(agencyJpa);
+    }
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id.value")
@@ -119,7 +124,7 @@ public interface AgencyJpaMapper {
                         ? new ArrayList<>()
                         : new ArrayList<>(
                                 entity.getRoutes().stream().map(this::toDomain).toList()),
-                new CreatedAt(entity.getCreatedAt()));
+                CreatedAt.reconstitute(entity.getCreatedAt()));
     }
 
     @BeanMapping(ignoreByDefault = true)
@@ -129,7 +134,7 @@ public interface AgencyJpaMapper {
     @Mapping(target = "price", source = "price")
     @Mapping(target = "schedules", source = "schedules")
     @Mapping(target = "agencyId", ignore = true)
-    @Mapping(target = "totalSeats", ignore = true)
+    @Mapping(target = "totalSeats", source = "totalSeats")
     RouteJpa toJpa(Route route);
 
     default Route toDomain(RouteJpa entity) {
@@ -146,7 +151,8 @@ public interface AgencyJpaMapper {
                 mapToRouteId(entity.getId()),
                 new CityId(entity.getDepartureId()),
                 new CityId(entity.getArrivalId()),
-                new RoutePrice(BigDecimal.valueOf(entity.getPrice())),
+                RoutePrice.ofXaf(entity.getPrice()),
+                mapTotalSeats(entity.getTotalSeats()),
                 schedules);
     }
 
@@ -184,8 +190,8 @@ public interface AgencyJpaMapper {
     RouteSearchView toRouteSearchView(RouteJpa entity);
 
     @Named("mapPrice")
-    default RoutePrice mapPrice(double price) {
-        return price <= 0 ? null : new RoutePrice(java.math.BigDecimal.valueOf(price));
+    default RoutePrice mapPrice(int price) {
+        return price <= 0 ? null : RoutePrice.ofXaf(price);
     }
 
     @Named("mapTotalSeats")
@@ -253,8 +259,12 @@ public interface AgencyJpaMapper {
         return new BranchAddress(value);
     }
 
-    default double map(RoutePrice value) {
-        return value == null ? 0 : value.price().doubleValue();
+    default int map(RoutePrice value) {
+        return value == null ? 0 : value.amountXaf();
+    }
+
+    default int map(TotalSeats value) {
+        return value == null ? 0 : value.value();
     }
 
     default UUID map(AgencyId id) {
@@ -308,4 +318,16 @@ public interface AgencyJpaMapper {
     @Mapping(target = "routes", source = "routes")
     @Mapping(target = "createdAt", source = "createdAt.value")
     void fromAgencyDomain(@MappingTarget AgencyJpa agencyJpa, Agency agency);
+
+    @AfterMapping
+    default void linkRoutesToAgencyOnUpdate(@MappingTarget AgencyJpa agencyJpa, Agency agency) {
+        linkChildRoutes(agencyJpa);
+    }
+
+    default void linkChildRoutes(AgencyJpa agencyJpa) {
+        if (agencyJpa.getId() == null || agencyJpa.getRoutes() == null) {
+            return;
+        }
+        agencyJpa.getRoutes().forEach(route -> route.setAgencyId(agencyJpa.getId()));
+    }
 }

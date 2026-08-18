@@ -19,7 +19,7 @@ public class AgencyBranch {
     private CreatedAt createdAt;
 
     public static AgencyBranch of(AgencyId agencyId, BranchName name, BranchAddress address, CityId cityId) {
-        return new AgencyBranch(BranchId.generate(), agencyId, name, address, true, cityId, new CreatedAt());
+        return new AgencyBranch(BranchId.generate(), agencyId, name, address, true, cityId, CreatedAt.now());
     }
 
     public UUID id() {

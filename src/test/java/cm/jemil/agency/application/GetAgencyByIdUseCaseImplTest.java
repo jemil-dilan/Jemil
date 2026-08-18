@@ -46,7 +46,7 @@ class GetAgencyByIdUseCaseImplTest {
                 agency.getStatus(),
                 List.of(),
                 agency.getLicenseNumber(),
-                new CreatedAt());
+                CreatedAt.now());
         when(agencyRepository.loadByIdAgencyView1(any())).thenReturn(view);
 
         var result = service.execute(id.value());
