@@ -26,7 +26,7 @@ class AgencyRestMapperTest {
                 agencyAgg.getStatus(),
                 List.of(),
                 agencyAgg.getLicenseNumber(),
-                new CreatedAt());
+                CreatedAt.now());
 
         var dto = mapper.toDto(agency);
 

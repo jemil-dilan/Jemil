@@ -63,7 +63,7 @@ class JpaAgencyRepositoryTest {
                 agencyAgg.getStatus(),
                 List.of(),
                 agencyAgg.getLicenseNumber(),
-                new CreatedAt());
+                CreatedAt.now());
         when(jpaRepository.findById(uuid)).thenReturn(Optional.of(jpaEntity));
         when(mapper.toAgencyView1(jpaEntity)).thenReturn(agency);
 
@@ -95,7 +95,7 @@ class JpaAgencyRepositoryTest {
                 agencyAgg2.getStatus(),
                 List.of(),
                 agencyAgg2.getLicenseNumber(),
-                new CreatedAt());
+                CreatedAt.now());
         when(jpaRepository.findAllWithBranches()).thenReturn(List.of(jpaEntity));
         when(mapper.toAgencyView1(jpaEntity)).thenReturn(agency2);
 

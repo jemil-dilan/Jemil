@@ -25,12 +25,12 @@ public class User {
                 phoneNumber,
                 new HashSet<>(Set.of(role)),
                 true,
-                new CreatedAt());
+                CreatedAt.now());
     }
 
     public static User create(String email, String passwordHash, String phoneNumber, Set<UserRole> roles) {
         return new User(
-                UserId.generate(), email, passwordHash, phoneNumber, new HashSet<>(roles), true, new CreatedAt());
+                UserId.generate(), email, passwordHash, phoneNumber, new HashSet<>(roles), true, CreatedAt.now());
     }
 
     public void deactivate() {

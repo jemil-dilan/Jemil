@@ -7,6 +7,7 @@ import cm.jemil.agency.domain.agency.AgencyName;
 import cm.jemil.agency.domain.agency.AgencyStatus;
 import cm.jemil.agency.domain.agency.LicenceNumber;
 import cm.jemil.agency.domain.agency.RoutePrice;
+import cm.jemil.agency.domain.agency.TotalSeats;
 import cm.jemil.agency.domain.city.CityId;
 import cm.jemil.shared.utils.PhoneNumber;
 import java.math.BigDecimal;
@@ -52,13 +53,14 @@ class AgencyTest {
         var departure = new CityId(UUID.randomUUID());
         var arrival = new CityId(UUID.randomUUID());
 
-        agency.addRoute(departure, arrival, new RoutePrice(BigDecimal.valueOf(5000)));
+        agency.addRoute(departure, arrival, new RoutePrice(BigDecimal.valueOf(5000)), new TotalSeats(40));
 
         assertThat(agency.getRoutes()).hasSize(1);
         var route = agency.getRoutes().getFirst();
         assertThat(route.getDeparture()).isEqualTo(departure);
         assertThat(route.getArrival()).isEqualTo(arrival);
         assertThat(route.getPrice().price()).isEqualByComparingTo(BigDecimal.valueOf(5000));
+        assertThat(route.getTotalSeats().value()).isEqualTo(40);
     }
 
     @Test

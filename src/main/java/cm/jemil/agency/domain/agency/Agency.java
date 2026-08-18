@@ -32,7 +32,7 @@ public class Agency {
                 licenseNumber,
                 new ArrayList<>(),
                 new ArrayList<>(),
-                new CreatedAt());
+                CreatedAt.now());
     }
 
     public void suspend() {
@@ -43,8 +43,8 @@ public class Agency {
         this.status = AgencyStatus.ACTIVE;
     }
 
-    public void addRoute(CityId departure, CityId arrival, RoutePrice price) {
-        Route route = Route.create(departure, arrival, price);
+    public void addRoute(CityId departure, CityId arrival, RoutePrice price, TotalSeats totalSeats) {
+        Route route = Route.create(departure, arrival, price, totalSeats);
         routes.add(route);
     }
 

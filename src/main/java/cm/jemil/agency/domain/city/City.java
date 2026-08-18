@@ -18,6 +18,6 @@ public class City {
     }
 
     public static City of(CityName name, CityRegion region) {
-        return new City(CityId.generate(), name, region, new CreatedAt());
+        return new City(CityId.generate(), name, region, CreatedAt.now());
     }
 }

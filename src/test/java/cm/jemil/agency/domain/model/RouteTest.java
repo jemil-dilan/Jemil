@@ -21,12 +21,18 @@ class RouteTest {
         var departure = new CityId(UUID.randomUUID());
         var arrival = new CityId(UUID.randomUUID());
         var route = new Route(
-                RouteId.generate(), departure, arrival, new RoutePrice(BigDecimal.valueOf(5000)), new ArrayList<>());
+                RouteId.generate(),
+                departure,
+                arrival,
+                new RoutePrice(BigDecimal.valueOf(5000)),
+                new TotalSeats(40),
+                new ArrayList<>());
 
         assertThat(route.getId()).isNotNull();
         assertThat(route.getDeparture()).isEqualTo(departure);
         assertThat(route.getArrival()).isEqualTo(arrival);
         assertThat(route.getPrice().price()).isEqualByComparingTo(BigDecimal.valueOf(5000));
+        assertThat(route.getTotalSeats().value()).isEqualTo(40);
         assertThat(route.getSchedules()).isEmpty();
     }
 
@@ -37,6 +43,7 @@ class RouteTest {
                 new CityId(UUID.randomUUID()),
                 new CityId(UUID.randomUUID()),
                 new RoutePrice(BigDecimal.valueOf(5000)),
+                new TotalSeats(50),
                 new ArrayList<>());
 
         route.addSchedule(LocalDateTime.of(2026, Month.APRIL, 15, 8, 0), new TotalSeats(50));
@@ -55,6 +62,7 @@ class RouteTest {
                 new CityId(UUID.randomUUID()),
                 new CityId(UUID.randomUUID()),
                 new RoutePrice(BigDecimal.valueOf(5000)),
+                new TotalSeats(50),
                 new ArrayList<>());
 
         route.addSchedule(LocalDateTime.of(2026, Month.APRIL, 15, 8, 0), new TotalSeats(50));

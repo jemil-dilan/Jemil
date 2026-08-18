@@ -72,7 +72,13 @@ class AgencyJpaMapperTest {
         var routeId = RouteId.generate();
         var departure = new CityId(UUID.randomUUID());
         var arrival = new CityId(UUID.randomUUID());
-        var route = new Route(routeId, departure, arrival, new RoutePrice(BigDecimal.valueOf(5000)), new ArrayList<>());
+        var route = new Route(
+                routeId,
+                departure,
+                arrival,
+                new RoutePrice(BigDecimal.valueOf(5000)),
+                new TotalSeats(40),
+                new ArrayList<>());
 
         var entity = mapper.toJpa(route);
 
@@ -81,6 +87,7 @@ class AgencyJpaMapperTest {
         assertThat(entity.getDepartureId()).isEqualTo(departure.value());
         assertThat(entity.getArrivalId()).isEqualTo(arrival.value());
         assertThat(entity.getPrice()).isEqualTo(5000);
+        assertThat(entity.getTotalSeats()).isEqualTo(40);
     }
 
     @Test

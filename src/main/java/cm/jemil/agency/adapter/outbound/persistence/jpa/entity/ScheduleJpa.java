@@ -23,7 +23,4 @@ public class ScheduleJpa {
 
     @Column(name = "c_available_seats", nullable = false)
     private int availableSeats;
-
-    @Version
-    private Long version;
 }

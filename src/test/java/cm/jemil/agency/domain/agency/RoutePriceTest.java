@@ -36,4 +36,19 @@ class RoutePriceTest {
                 .extracting("code")
                 .isEqualTo(AgencyErrorCode.AGENCY_400_007.getCode());
     }
+
+    @Test
+    void shouldExposeWholeXafAmount() {
+        var price = RoutePrice.ofXaf(5000);
+
+        assertThat(price.amountXaf()).isEqualTo(5000);
+    }
+
+    @Test
+    void shouldRejectFractionalXafAmount() {
+        assertThatThrownBy(() -> new RoutePrice(java.math.BigDecimal.valueOf(5000.50)))
+                .isInstanceOf(DomainException.class)
+                .extracting("code")
+                .isEqualTo(AgencyErrorCode.AGENCY_400_007.getCode());
+    }
 }

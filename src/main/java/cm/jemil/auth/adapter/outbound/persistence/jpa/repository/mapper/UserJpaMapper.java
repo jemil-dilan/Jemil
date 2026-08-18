@@ -27,7 +27,7 @@ public interface UserJpaMapper {
                 jpa.getPhoneNumber(),
                 new java.util.HashSet<>(jpa.getRoles()),
                 jpa.isActive(),
-                new CreatedAt(jpa.getCreatedAt()));
+                CreatedAt.reconstitute(jpa.getCreatedAt()));
     }
 
     default java.util.Set<cm.jemil.auth.domain.user.UserRole> mapRoles(
