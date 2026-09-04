@@ -1,9 +1,11 @@
 package cm.jemil.booking.application;
 
-import cm.jemil.booking.application.inbound.usecase.CreateDemoUseCase;
-import cm.jemil.booking.application.inbound.usecase.GetAllDemoUseCase;
-import cm.jemil.booking.application.inbound.usecase.GetDemoByIdUseCase;
-import cm.jemil.booking.demo.DemoRepository;
+import cm.jemil.booking.application.inbound.usecase.PlaceBookingHoldUseCase;
+import cm.jemil.booking.application.inbound.usecase.PlaceBookingHoldUseCaseImpl;
+import cm.jemil.booking.application.inbound.usecase.SearchTripsUseCase;
+import cm.jemil.booking.application.inbound.usecase.SearchTripsUseCaseImpl;
+import cm.jemil.booking.domain.trip.TripRepository;
+import java.time.Clock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,18 +14,21 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class SpringBeans {
 
-    @Bean("bookingCreateDemoUseCase")
-    public CreateDemoUseCase createDemoUseCase(DemoRepository demoRepository) {
-        return new CreateDemoUseCase(demoRepository);
+    @Bean("bookingClock")
+    Clock bookingClock() {
+        return Clock.systemUTC();
     }
 
-    @Bean("bookingGetAllDemoUseCase")
-    public GetAllDemoUseCase getAllDemoUseCase(DemoRepository demoRepository) {
-        return new GetAllDemoUseCase(demoRepository);
+    @Bean
+    SearchTripsUseCase searchTripsUseCase(
+            TripRepository tripRepository,
+            @org.springframework.beans.factory.annotation.Qualifier("bookingClock") Clock bookingClock) {
+        return new SearchTripsUseCaseImpl(tripRepository, bookingClock);
     }
 
-    @Bean("bookingGetDemoByIdUseCase")
-    public GetDemoByIdUseCase getAlGetDemoByIdUseCase(DemoRepository demoRepository) {
-        return new GetDemoByIdUseCase(demoRepository);
+    @Bean
+    PlaceBookingHoldUseCase placeBookingHoldUseCase(
+            TripRepository tripRepository, cm.jemil.booking.inventory.SeatHoldService seatHoldService) {
+        return new PlaceBookingHoldUseCaseImpl(tripRepository, seatHoldService);
     }
 }

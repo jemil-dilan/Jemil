@@ -2,7 +2,6 @@ package cm.jemil.agency.adapter.inbound.rest;
 
 import cm.jemil.agency.application.inbound.usecase.AddBranchUseCase;
 import cm.jemil.agency.application.inbound.usecase.AddRouteUseCase;
-import cm.jemil.agency.application.inbound.usecase.AddRouteUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.GetAgencyByIdUseCase;
 import cm.jemil.agency.application.inbound.usecase.GetAllAgenciesUseCase;
 import cm.jemil.agency.application.inbound.usecase.GetAllAgenciesUseCaseImpl.Query;
@@ -15,10 +14,10 @@ import cm.jemil.generated.agency.adapter.rest.inbound.api.AgencyApi;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.AddRouteDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.AgencyBranchDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.AgencyDTO;
+import cm.jemil.generated.agency.adapter.rest.inbound.dto.AgencyPaginationDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreateAgencyDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreateBranchDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreationResponseDTO;
-import cm.jemil.generated.agency.adapter.rest.inbound.dto.PageResponseDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.RouteSearchResponseDTO;
 import java.util.List;
 import java.util.UUID;
@@ -52,7 +51,7 @@ public class AgencyController implements AgencyApi {
     @Override
     public ResponseEntity<AgencyDTO> getAgencyById(UUID agencyId) {
         var response = getAgencyByIdUseCase.execute(agencyId);
-        return ResponseEntity.status(HttpStatus.OK).body(restMapper.toDto(response));
+        return ResponseEntity.status(HttpStatus.OK).body(restMapper.toPaginationDTO(response));
     }
 
     @Override
@@ -62,9 +61,9 @@ public class AgencyController implements AgencyApi {
     }
 
     @Override
-    public ResponseEntity<PageResponseDTO> getAllAgencies(@Nullable String city, Integer page, Integer size) {
+    public ResponseEntity<AgencyPaginationDTO> getAllAgencies(@Nullable String city, Integer page, Integer size) {
         var agencies = getAllAgenciesUseCase.execute(new Query(city, page, size));
-        return ResponseEntity.status(HttpStatus.OK).body(restMapper.toDto(agencies));
+        return ResponseEntity.status(HttpStatus.OK).body(restMapper.toDTO(agencies));
     }
 
     @Override
@@ -85,14 +84,9 @@ public class AgencyController implements AgencyApi {
     }
 
     @Override
-    public ResponseEntity<Void> addRouteToAgency(UUID agencyId, AddRouteDTO addRouteDTO) {
-        addRouteUseCase.execute(new AddRouteUseCaseImpl.Command(
-                agencyId,
-                addRouteDTO.getOriginCityId(),
-                addRouteDTO.getDestinationCityId(),
-                addRouteDTO.getPrice().intValue(),
-                addRouteDTO.getTotalSeats()));
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<CreationResponseDTO> addRouteToAgency(UUID agencyId, AddRouteDTO addRouteDTO) {
+        UUID reponse = addRouteUseCase.execute(restMapper.toCommand(agencyId, addRouteDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(restMapper.toCreationResponse(reponse));
     }
 
     @Override
@@ -105,7 +99,7 @@ public class AgencyController implements AgencyApi {
     @Override
     public ResponseEntity<AgencyBranchDTO> getBranchById(UUID branchId) {
         var branch = getBranchByIdUseCase.execute(branchId);
-        return ResponseEntity.ok(restMapper.toDto(branch));
+        return ResponseEntity.ok(restMapper.toPaginationDTO(branch));
     }
 
     @Override
@@ -118,7 +112,7 @@ public class AgencyController implements AgencyApi {
     @Override
     public ResponseEntity<List<AgencyBranchDTO>> getAgencyBranches(UUID agencyId) {
         var branches = getAllBranchesByAgencyUseCase.execute(agencyId).stream()
-                .map(restMapper::toDto)
+                .map(restMapper::toPaginationDTO)
                 .toList();
         return ResponseEntity.ok(branches);
     }

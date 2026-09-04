@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+	<changeSet id="JEMIL-7-drop-demo-tables" author="codex">
+		<preConditions onFail="MARK_RAN">
+			<tableExists tableName="t_auth_demo" />
+		</preConditions>
+		<comment>Drop scaffold demo tables and indexes after Demo purge</comment>
+		<dropIndex indexName="idx_auth_demo_name"
+			tableName="t_auth_demo" />
+		<dropTable tableName="t_auth_demo" />
+	</changeSet>
+
+	<changeSet id="JEMIL-7-drop-agency-demo" author="codex">
+		<preConditions onFail="MARK_RAN">
+			<tableExists tableName="t_agency_demo" />
+		</preConditions>
+		<dropIndex indexName="idx_agency_demo_name"
+			tableName="t_agency_demo" />
+		<dropTable tableName="t_agency_demo" />
+	</changeSet>
+
+	<changeSet id="JEMIL-7-drop-booking-demo" author="codex">
+		<preConditions onFail="MARK_RAN">
+			<tableExists tableName="t_booking_demo" />
+		</preConditions>
+		<dropIndex indexName="idx_booking_demo_name"
+			tableName="t_booking_demo" />
+		<dropTable tableName="t_booking_demo" />
+	</changeSet>
+
+	<changeSet id="JEMIL-7-drop-payment-demo" author="codex">
+		<preConditions onFail="MARK_RAN">
+			<tableExists tableName="t_payment_demo" />
+		</preConditions>
+		<dropIndex indexName="idx_payment_demo_name"
+			tableName="t_payment_demo" />
+		<dropTable tableName="t_payment_demo" />
+	</changeSet>
+
+	<changeSet id="JEMIL-7-drop-ticket-demo" author="codex">
+		<preConditions onFail="MARK_RAN">
+			<tableExists tableName="t_ticket_demo" />
+		</preConditions>
+		<dropIndex indexName="idx_ticket_demo_name"
+			tableName="t_ticket_demo" />
+		<dropTable tableName="t_ticket_demo" />
+	</changeSet>
+
+	<changeSet id="JEMIL-7-drop-trip-demo" author="codex">
+		<preConditions onFail="MARK_RAN">
+			<tableExists tableName="t_trip_demo" />
+		</preConditions>
+		<dropIndex indexName="idx_trip_demo_name"
+			tableName="t_trip_demo" />
+		<dropTable tableName="t_trip_demo" />
+	</changeSet>
+
+</databaseChangeLog>

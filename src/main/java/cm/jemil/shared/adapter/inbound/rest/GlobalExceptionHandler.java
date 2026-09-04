@@ -5,10 +5,13 @@ import jakarta.validation.ConstraintViolationException;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,9 +19,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<Map<String, Object>> handleDomainException(DomainException ex) {
-        HttpStatus status = ex.getCode().contains("_404_") ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        if (ex.getCode().contains("_404_")) {
+            status = HttpStatus.NOT_FOUND;
+        } else if (ex.getCode().contains("_409_")) {
+            status = HttpStatus.CONFLICT;
+        }
         return ResponseEntity.status(status).body(buildErrorBody(ex, status.value(), ex.getCode()));
     }
 
@@ -49,6 +59,15 @@ public class GlobalExceptionHandler {
                 .body(buildErrorBody(ex, HttpStatus.BAD_REQUEST.value(), "MALFORMED_REQUEST"));
     }
 
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<Map<String, Object>> handleUnsupportedMediaType(HttpMediaTypeNotSupportedException ex) {
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                .body(buildErrorBody(
+                        ex,
+                        HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(),
+                        HttpStatus.UNSUPPORTED_MEDIA_TYPE.getReasonPhrase().replace(' ', '_')));
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -63,6 +82,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleUnexpected(Exception ex) {
+        LOG.error("Unhandled exception", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(buildErrorBody(ex, HttpStatus.INTERNAL_SERVER_ERROR.value(), "INTERNAL_ERROR"));
     }

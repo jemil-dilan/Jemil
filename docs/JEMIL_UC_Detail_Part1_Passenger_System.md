@@ -22,12 +22,12 @@ Each use case gives you: the flows, the business rules, the data written, the en
 
 # UC-P-01 · Rechercher un départ
 
-| | |
-|---|---|
-| **Actor** | Passenger (unauthenticated) |
-| **Priority** | P0 · **Sprint** 1 · **Estimate** 3 days |
+|                |                                                                       |
+|----------------|-----------------------------------------------------------------------|
+| **Actor**      | Passenger (unauthenticated)                                           |
+| **Priority**   | P0 · **Sprint** 1 · **Estimate** 3 days                               |
 | **Depends on** | UC-A-03, UC-S-06 (trips must exist before search can return anything) |
-| **Criteria** | See UC-P-01, AC 1–8 |
+| **Criteria**   | See UC-P-01, AC 1–8                                                   |
 
 **Goal.** Find bookable departures between two cities on a chosen date.
 
@@ -96,12 +96,12 @@ Mobile-first. The result card is a single tap target — no nested buttons. Clas
 
 # UC-P-02 · Consulter le plan de sièges
 
-| | |
-|---|---|
-| **Actor** | Passenger |
-| **Priority** | P0 · **Sprint** 1 · **Estimate** 3 days |
-| **Depends on** | UC-P-01 |
-| **Criteria** | See UC-P-02, AC 1–6 |
+|                |                                         |
+|----------------|-----------------------------------------|
+| **Actor**      | Passenger                               |
+| **Priority**   | P0 · **Sprint** 1 · **Estimate** 3 days |
+| **Depends on** | UC-P-01                                 |
+| **Criteria**   | See UC-P-02, AC 1–6                     |
 
 **Goal.** See which seats are free on a chosen departure.
 
@@ -164,12 +164,12 @@ Seat states: free (white, dark border), selected (orange fill, white number), ta
 
 # UC-P-03 · Sélectionner un siège et poser une réservation temporaire
 
-| | |
-|---|---|
-| **Actor** | Passenger |
-| **Priority** | P0 · **Sprint** 1 · **Estimate** 5 days |
-| **Depends on** | UC-P-02 |
-| **Criteria** | See UC-P-03, AC 1–9 — **AC-6 is the gate for this sprint** |
+|                |                                                            |
+|----------------|------------------------------------------------------------|
+| **Actor**      | Passenger                                                  |
+| **Priority**   | P0 · **Sprint** 1 · **Estimate** 5 days                    |
+| **Depends on** | UC-P-02                                                    |
+| **Criteria**   | See UC-P-03, AC 1–9 — **AC-6 is the gate for this sprint** |
 
 > The single most important use case in the build. Everything else can be repaired after launch. A double-sold seat cannot.
 
@@ -246,12 +246,12 @@ The countdown is prominent but not alarming — a calm bar reading *« Réservat
 
 # UC-P-04 · Saisir les informations du voyageur
 
-| | |
-|---|---|
-| **Actor** | Passenger |
-| **Priority** | P0 · **Sprint** 1 · **Estimate** 2 days |
-| **Depends on** | UC-P-03 |
-| **Criteria** | See UC-P-04, AC 1–6 |
+|                |                                         |
+|----------------|-----------------------------------------|
+| **Actor**      | Passenger                               |
+| **Priority**   | P0 · **Sprint** 1 · **Estimate** 2 days |
+| **Depends on** | UC-P-03                                 |
+| **Criteria**   | See UC-P-04, AC 1–6                     |
 
 **Goal.** Capture who is travelling and how to reach them.
 
@@ -308,12 +308,12 @@ Updates `booking` (passenger_name, passenger_msisdn, passenger_email); inserts `
 
 # UC-P-05 · Payer par MTN Mobile Money
 
-| | |
-|---|---|
-| **Actor** | Passenger + MTN MoMo |
-| **Priority** | P0 · **Sprint** 2 · **Estimate** 8 days |
-| **Depends on** | UC-P-04; MoMo sandbox credentials |
-| **Criteria** | See UC-P-05, AC 1–10 |
+|                |                                         |
+|----------------|-----------------------------------------|
+| **Actor**      | Passenger + MTN MoMo                    |
+| **Priority**   | P0 · **Sprint** 2 · **Estimate** 8 days |
+| **Depends on** | UC-P-04; MoMo sandbox credentials       |
+| **Criteria**   | See UC-P-05, AC 1–10                    |
 
 > Budget the most time here. The mockup renders this as one button; it is a distributed transaction against a system you do not control.
 
@@ -393,11 +393,11 @@ The pending state is the screen people stare at while anxious. Show elapsed seco
 
 # UC-P-06 · Échec du paiement
 
-| | |
-|---|---|
-| **Actor** | Passenger + MoMo |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Passenger + MoMo                        |
 | **Priority** | P0 · **Sprint** 2 · **Estimate** 2 days |
-| **Criteria** | See UC-P-06, AC 1–6 |
+| **Criteria** | See UC-P-06, AC 1–6                     |
 
 **Goal.** Fail clearly enough that the passenger knows what to do next.
 
@@ -417,15 +417,15 @@ The pending state is the screen people stare at while anxious. Show elapsed seco
 
 - **BR-1** Failure code → message map (extend as the sandbox reveals more):
 
-| Provider reason | French shown to passenger |
-|---|---|
-| `NOT_ENOUGH_FUNDS` | Solde insuffisant sur votre compte MoMo. |
-| `PAYER_LIMIT_REACHED` | Vous avez atteint votre limite de transaction MoMo. |
-| `PAYEE_NOT_FOUND` / config errors | Erreur technique. Contactez-nous sur WhatsApp. |
-| `PAYER_NOT_FOUND` | Ce numéro n'a pas de compte MoMo actif. |
-| `EXPIRED` / no PIN entered | Vous n'avez pas confirmé le paiement à temps. |
-| `REJECTED` | Paiement annulé. |
-| anything unmapped | Le paiement n'a pas abouti. Réessayez. |
+| Provider reason                   | French shown to passenger                           |
+|-----------------------------------|-----------------------------------------------------|
+| `NOT_ENOUGH_FUNDS`                | Solde insuffisant sur votre compte MoMo.            |
+| `PAYER_LIMIT_REACHED`             | Vous avez atteint votre limite de transaction MoMo. |
+| `PAYEE_NOT_FOUND` / config errors | Erreur technique. Contactez-nous sur WhatsApp.      |
+| `PAYER_NOT_FOUND`                 | Ce numéro n'a pas de compte MoMo actif.             |
+| `EXPIRED` / no PIN entered        | Vous n'avez pas confirmé le paiement à temps.       |
+| `REJECTED`                        | Paiement annulé.                                    |
+| anything unmapped                 | Le paiement n'a pas abouti. Réessayez.              |
 
 - **BR-2** Never show the raw provider code. It is meaningless to the passenger and looks like a broken product.
 - **BR-3** Every retry gets a fresh idempotency key (**BR-3 of UC-P-05**).
@@ -445,11 +445,11 @@ The pending state is the screen people stare at while anxious. Show elapsed seco
 
 # UC-P-07 · Délai de paiement dépassé
 
-| | |
-|---|---|
-| **Actor** | Passenger + MoMo |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Passenger + MoMo                        |
 | **Priority** | P0 · **Sprint** 2 · **Estimate** 2 days |
-| **Criteria** | See UC-P-07, AC 1–5 |
+| **Criteria** | See UC-P-07, AC 1–5                     |
 
 > The subtlety: a timeout is **not** a failure. The payment may still succeed. Telling the passenger "payment failed" and then taking their money is how you lose a market's trust permanently.
 
@@ -488,12 +488,12 @@ The pending state is the screen people stare at while anxious. Show elapsed seco
 
 # UC-P-08 · Recevoir le billet
 
-| | |
-|---|---|
-| **Actor** | Passenger + SMS provider |
-| **Priority** | P0 · **Sprint** 3 · **Estimate** 3 days |
-| **Depends on** | UC-P-05, UC-S-05 |
-| **Criteria** | See UC-P-08, AC 1–6 |
+|                |                                         |
+|----------------|-----------------------------------------|
+| **Actor**      | Passenger + SMS provider                |
+| **Priority**   | P0 · **Sprint** 3 · **Estimate** 3 days |
+| **Depends on** | UC-P-05, UC-S-05                        |
+| **Criteria**   | See UC-P-08, AC 1–6                     |
 
 **Goal.** Put a usable ticket in the passenger's hands, including on a phone with no data and no charge.
 
@@ -557,11 +557,11 @@ Writes `boarding_pass` (code_hash, qr_token), `sms_log`.
 
 # UC-P-09 · Retrouver un billet
 
-| | |
-|---|---|
-| **Actor** | Passenger |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Passenger                               |
 | **Priority** | P1 · **Sprint** 3 · **Estimate** 2 days |
-| **Criteria** | See UC-P-09, AC 1–5 |
+| **Criteria** | See UC-P-09, AC 1–5                     |
 
 **Goal.** Recover ticket details after losing the SMS.
 
@@ -598,12 +598,12 @@ Writes `boarding_pass` (code_hash, qr_token), `sms_log`.
 
 # UC-P-10 · Abandon d'une réservation
 
-| | |
-|---|---|
-| **Actor** | Passenger + SYS |
-| **Priority** | P1 · **Sprint** 3 · **Estimate** 1 day |
-| **Depends on** | UC-S-01 |
-| **Criteria** | See UC-P-10, AC 1–3 |
+|                |                                        |
+|----------------|----------------------------------------|
+| **Actor**      | Passenger + SYS                        |
+| **Priority**   | P1 · **Sprint** 3 · **Estimate** 1 day |
+| **Depends on** | UC-S-01                                |
+| **Criteria**   | See UC-P-10, AC 1–3                    |
 
 **Goal.** Ensure abandoned holds never permanently consume inventory.
 
@@ -629,11 +629,11 @@ Writes `boarding_pass` (code_hash, qr_token), `sms_log`.
 
 # UC-P-11 · Changer de langue
 
-| | |
-|---|---|
-| **Actor** | Passenger |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Passenger                               |
 | **Priority** | P2 · **Sprint** 6 · **Estimate** 2 days |
-| **Criteria** | See UC-P-11, AC 1–4 |
+| **Criteria** | See UC-P-11, AC 1–4                     |
 
 **Goal.** Serve anglophone Cameroonians and diaspora users without making French users work for it.
 
@@ -656,11 +656,11 @@ Writes `boarding_pass` (code_hash, qr_token), `sms_log`.
 
 # UC-S-01 · Libérer les réservations expirées
 
-| | |
-|---|---|
-| **Actor** | SYS |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | SYS                                     |
 | **Priority** | P0 · **Sprint** 1 · **Estimate** 2 days |
-| **Criteria** | See UC-S-01, AC 1–5 |
+| **Criteria** | See UC-S-01, AC 1–5                     |
 
 **Goal.** Return abandoned inventory to sale.
 
@@ -692,11 +692,11 @@ Writes `boarding_pass` (code_hash, qr_token), `sms_log`.
 
 # UC-S-02 · Traiter un callback MoMo
 
-| | |
-|---|---|
-| **Actor** | SYS + MoMo |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | SYS + MoMo                              |
 | **Priority** | P0 · **Sprint** 2 · **Estimate** 3 days |
-| **Criteria** | See UC-S-02, AC 1–6 |
+| **Criteria** | See UC-S-02, AC 1–6                     |
 
 **Goal.** Turn a provider notification into a correct state change, exactly once.
 
@@ -737,11 +737,11 @@ Writes `boarding_pass` (code_hash, qr_token), `sms_log`.
 
 # UC-S-03 · Traiter un paiement abouti tardivement
 
-| | |
-|---|---|
-| **Actor** | SYS |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | SYS                                     |
 | **Priority** | P0 · **Sprint** 2 · **Estimate** 3 days |
-| **Criteria** | See UC-S-03, AC 1–5 |
+| **Criteria** | See UC-S-03, AC 1–5                     |
 
 > The scenario: you timed out at 120 s; the payment succeeded at 180 s; you are holding a passenger's money. What happens next determines whether that passenger — and everyone they tell — ever uses JEMIL again.
 
@@ -790,11 +790,11 @@ Writes `boarding_pass` (code_hash, qr_token), `sms_log`.
 
 # UC-S-04 · Rapprochement quotidien des paiements
 
-| | |
-|---|---|
-| **Actor** | SYS + MoMo |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | SYS + MoMo                              |
 | **Priority** | P0 · **Sprint** 2 · **Estimate** 3 days |
-| **Criteria** | See UC-S-04, AC 1–5 |
+| **Criteria** | See UC-S-04, AC 1–5                     |
 
 **Goal.** Detect every discrepancy between what MoMo recorded and what JEMIL recorded, within 24 hours.
 
@@ -812,11 +812,11 @@ Writes `boarding_pass` (code_hash, qr_token), `sms_log`.
 
 - **BR-1** Three buckets, each with a different meaning:
 
-| Bucket | Meaning | Severity |
-|---|---|---|
+| Bucket                | Meaning                                                   | Severity |
+|-----------------------|-----------------------------------------------------------|----------|
 | In MoMo, not in JEMIL | Money taken, no record. **Someone paid and got nothing.** | Critical |
-| In JEMIL, not in MoMo | Local record of a payment that never happened. | High |
-| Amount mismatch | Wrong sum charged. | Critical |
+| In JEMIL, not in MoMo | Local record of a payment that never happened.            | High     |
+| Amount mismatch       | Wrong sum charged.                                        | Critical |
 
 - **BR-2** A non-empty result **alerts**; it does not merely log. A log line nobody reads is not reconciliation.
 - **BR-3** Reports retained 12 months minimum — tax and dispute evidence.
@@ -836,11 +836,11 @@ Writes `boarding_pass` (code_hash, qr_token), `sms_log`.
 
 # UC-S-05 · Envoyer les SMS avec réessai
 
-| | |
-|---|---|
-| **Actor** | SYS + SMS provider |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | SYS + SMS provider                      |
 | **Priority** | P0 · **Sprint** 3 · **Estimate** 3 days |
-| **Criteria** | See UC-S-05, AC 1–6 |
+| **Criteria** | See UC-S-05, AC 1–6                     |
 
 **Goal.** Deliver SMS reliably without coupling delivery to a web request.
 
@@ -877,12 +877,12 @@ Writes `boarding_pass` (code_hash, qr_token), `sms_log`.
 
 # UC-S-06 · Générer les voyages depuis les horaires récurrents
 
-| | |
-|---|---|
-| **Actor** | SYS |
-| **Priority** | P0 · **Sprint** 1 · **Estimate** 2 days |
-| **Depends on** | UC-A-03 |
-| **Criteria** | See UC-S-06, AC 1–4 |
+|                |                                         |
+|----------------|-----------------------------------------|
+| **Actor**      | SYS                                     |
+| **Priority**   | P0 · **Sprint** 1 · **Estimate** 2 days |
+| **Depends on** | UC-A-03                                 |
+| **Criteria**   | See UC-S-06, AC 1–4                     |
 
 **Goal.** Keep a rolling 14-day window of bookable departures without human effort.
 
@@ -917,12 +917,12 @@ Writes `boarding_pass` (code_hash, qr_token), `sms_log`.
 
 ## Sprint summary — Part 1
 
-| Sprint | Use cases | Estimated developer-days |
-|---|---|---|
-| 1 — Inventory | P-01, P-02, P-03, P-04, S-01, S-06 | 17 |
-| 2 — Payment | P-05, P-06, P-07, S-02, S-03, S-04 | 21 |
-| 3 — Ticket delivery | P-08, P-09, P-10, S-05 | 9 |
-| 6 — (deferred) | P-11 | 2 |
+| Sprint              | Use cases                          | Estimated developer-days |
+|---------------------|------------------------------------|--------------------------|
+| 1 — Inventory       | P-01, P-02, P-03, P-04, S-01, S-06 | 17                       |
+| 2 — Payment         | P-05, P-06, P-07, S-02, S-03, S-04 | 21                       |
+| 3 — Ticket delivery | P-08, P-09, P-10, S-05             | 9                        |
+| 6 — (deferred)      | P-11                               | 2                        |
 
 **Part 1 total: ~49 developer-days.** At one developer that is roughly 10 working weeks; at two working in parallel with a clean interface split (one on payment/system, one on passenger UI) roughly 6.
 

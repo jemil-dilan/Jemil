@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
 
-	<changeSet id="JEMIL-3" author="njoupouandom_nfonka">
+	<changeSet id="JEMIL-3:1" author="njoupouandom_nfonka">
 		<!-- Outbox Pattern -->
 		<createTable tableName="outbox_events">
 			<column name="id" type="UUID">
@@ -110,7 +110,35 @@
 				<constraints nullable="false" />
 			</column>
 		</createTable>
-
+	</changeSet>
+	<changeSet id="JEMIL-3:2" author="njoupouandom_nfonka"
+		context="e2e">
+		<insert tableName="t_agency">
+			<column name="c_id"
+				value="a922f29c-5d6b-438d-aa17-a568d3be34c4">
+			</column>
+			<column name="c_name" value="Tresor voyages">
+			</column>
+			<column name="c_status" value="ACTIVE">
+			</column>
+			<column name="c_country_code" value="237" />
+			<column name="c_phone_number" value="699999999" />
+			<column name="c_license_number" value="LIC-29350759" />
+			<column name="c_created_at" value="2025-04-10T11:51:50" />
+		</insert>
+		<insert tableName="t_agency">
+			<column name="c_id"
+				value="dde1751a-04ff-4d46-ae0b-ee9cb16179ff">
+			</column>
+			<column name="c_name" value="General voyages">
+			</column>
+			<column name="c_status" value="ACTIVE">
+			</column>
+			<column name="c_country_code" value="237" />
+			<column name="c_phone_number" value="677999999" />
+			<column name="c_license_number" value="LIC-43350760" />
+			<column name="c_created_at" value="2025-04-10T11:51:50" />
+		</insert>
 	</changeSet>
 
 </databaseChangeLog>

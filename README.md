@@ -2,188 +2,105 @@
 
 Backend for an interurban transport platform in Cameroon.
 
-The current implementation is a **single Spring Boot application** organized as a
-**modular monolith**. The code keeps bounded contexts separated by package so the
-project can grow in one deployable unit first, and only split into services later
-if operational needs justify it.
+**Modular monolith** · Hexagonal / DDD · OpenAPI contract-first · PostgreSQL + Liquibase
 
-## Current Shape
+> Live progress tracker: [`docs/STATUS.md`](docs/STATUS.md)
+
+## Current Status (Sep 2026)
+
+| Phase | Status |
+|-------|--------|
+| Sprint 0 — Foundation | Done |
+| Sprint 1 — Agency & routes | Done (Cucumber e2e green) |
+| **S1.5 — Model correction + trip/booking hold APIs** | **In progress / nearly closed** |
+| Sprint 2 — Payment MoMo | Not started |
+| Sprint 3+ — Ticket, counter, launch | Not started |
+
+### Modules
 
 ```text
 src/main/java/cm/jemil/
-├── agency/       # Implemented reference module
-├── booking/      # Demo/scaffold
-├── payment/      # Demo/scaffold
-├── ticket/       # Demo/scaffold
-├── auth/         # Demo/scaffold
-├── trip/         # Demo/scaffold
-└── shared/       # Cross-cutting primitives and infrastructure
+├── agency/       # Production — agencies, branches, cities, routes, schedules
+├── booking/      # Inventory + trip search + seat hold (payment still scaffold)
+├── auth/         # JWT login/register (roles include CASHIER)
+├── payment/      # Demo scaffold only
+├── ticket/       # Demo scaffold only
+├── trip/         # Demo scaffold only
+└── shared/       # Security, outbox, exceptions, CreatedAt, …
 ```
 
-The `agency` package is the production-quality reference slice. The other
-contexts still contain generated/demo code and should be treated as placeholders
-until their real domain model is implemented.
+## Implemented APIs
+
+### Agency
+- Register / list / get / suspend agency
+- Branches, cities, add routes
+- `GET /routes/search`
+
+### Booking (S1.5)
+- `GET /trips/search?originCityId&destinationCityId&serviceDate`
+- `POST /bookings` — seat hold (409 if seat taken)
+- Partial unique index `seat_once_per_trip` + concurrency test (20 parallel → 1 win)
+
+### Auth
+- Register, login, refresh (JWT multi-role)
 
 ## Architecture
 
-JEMIL uses hexagonal architecture inside each bounded context:
-
 ```text
 cm.jemil.{context}/
-├── domain/                 # Business model, value objects, events, ports
-├── application/            # Use case orchestration
-├── adapter/
-│   ├── inbound/rest/       # REST controllers and DTO mapping
-│   └── outbound/           # Persistence, messaging, external systems
-└── config/                 # Context-specific wiring
+├── domain/
+├── application/
+├── adapter/inbound/rest/
+├── adapter/outbound/
+└── config/
 ```
 
-Important rules:
+- Domain must not depend on Spring/JPA/REST.
+- Controllers call use cases, not repositories.
+- ArchUnit enforces hexagonal + module isolation.
 
-- Domain code must not depend on Spring, JPA, REST DTOs, or generated API code.
-- Controllers call use-case interfaces, not persistence adapters.
-- JPA entities are persistence models, not domain aggregates.
-- Cross-context dependencies should go through `shared` primitives or events,
-  not direct imports from sibling contexts.
+## Stack
 
-These boundaries are partially enforced with ArchUnit tests in
-`src/test/java/cm/jemil/architecture`.
-
-## Implemented Functionality
-
-### Agency
-
-- Register an agency.
-- List agencies, optionally filtered by city.
-- Retrieve an agency by id.
-- Add routes with price and total seat count.
-- Persist agencies, routes, schedules, and outbox events with JPA.
-- Publish domain events through an outbox table.
-
-### Shared Infrastructure
-
-- Spring Security resource-server setup.
-- PostgreSQL + Liquibase migrations.
-- Outbox persistence and scheduled publication.
-- OpenAPI-generated inbound contracts and DTOs.
-- Common value objects and pagination helpers.
-
-## Technology Stack
-
-- Java toolchain 25, compiling with `--release 21`.
-- Spring Boot 4.
-- Gradle Kotlin DSL.
-- PostgreSQL.
-- Liquibase.
-- Spring Data JPA.
-- Spring Security OAuth2 Resource Server.
-- MapStruct.
-- OpenAPI Generator.
-- JUnit 5, AssertJ, Mockito, ArchUnit, Testcontainers.
-- Spotless, Checkstyle, Jacoco, Error Prone, SonarQube.
+Java 25 · Spring Boot 4 · Gradle · PostgreSQL · Liquibase · MapStruct · OpenAPI Generator · Cucumber · Testcontainers · Spotless / Checkstyle / Jacoco
 
 ## Local Development
 
-### Prerequisites
+```bash
+docker compose up -d          # Postgres, Keycloak, Sonar
+./gradlew bootRun             # http://localhost:8080
+```
 
-- JDK 25.
-- Docker and Docker Compose.
-- Gradle wrapper is included.
-
-### Start dependencies
+Swagger: `http://localhost:8080/swagger-ui.html`
 
 ```bash
-docker compose up -d
-```
-
-This starts:
-
-- PostgreSQL on `localhost:5432`.
-- Keycloak on `localhost:8081`.
-- SonarQube on `localhost:9000`.
-
-### Run the application
-
-```bash
-./gradlew bootRun
-```
-
-The application starts on `localhost:8080`.
-
-Swagger UI is available at:
-
-```text
-http://localhost:8080/swagger-ui.html
-```
-
-OpenAPI JSON is available at:
-
-```text
-http://localhost:8080/api-docs
-```
-
-## Useful Commands
-
-```bash
-# Compile and run all verification tasks
-./gradlew build
-
-# Run tests
-./gradlew test
-
-# Apply formatting
+./gradlew test                # unit + integration
+./gradlew e2eTest             # Cucumber (agency + booking)
 ./gradlew spotlessApply
-
-# Check formatting
-./gradlew spotlessCheck
-
-# Generate Jacoco reports
-./gradlew jacocoTestReport
-
-# Run SonarQube analysis after starting docker compose
-./gradlew sonar
+./gradlew build
 ```
+
+## Docs map
+
+| Doc | Purpose |
+|-----|---------|
+| [`docs/STATUS.md`](docs/STATUS.md) | **Progress board — update this first** |
+| [`docs/JEMIL_MVP_Build_Spec.md`](docs/JEMIL_MVP_Build_Spec.md) | MVP product / schema / payment rules |
+| [`docs/JEMIL_Backend_Gap_Analysis.md`](docs/JEMIL_Backend_Gap_Analysis.md) | Defects D1–D7 + revised sprint plan (S1.5…) |
+| [`docs/JEMIL_Use_Cases_Acceptance_Criteria.md`](docs/JEMIL_Use_Cases_Acceptance_Criteria.md) | P0/P1/P2 use cases + AC |
+| [`docs/JEMIL_UC_Detail_Part1_Passenger_System.md`](docs/JEMIL_UC_Detail_Part1_Passenger_System.md) | Passenger/system UC detail |
+| [`docs/JEMIL_UC_Detail_Part2_Staff_Apps.md`](docs/JEMIL_UC_Detail_Part2_Staff_Apps.md) | Counter/controller UC detail |
+| [`docs/sprints/`](docs/sprints/) | Sprint retrospectives |
+| [`specs/adr/`](specs/adr/) | Architecture decision records |
+| [`specs/openapi/`](specs/openapi/) | API contracts (source of truth) |
+| [`specs/documentation/ERROR_CODES.md`](specs/documentation/ERROR_CODES.md) | Error code catalogue |
 
 ## Database
 
-Liquibase migrations live in:
+Migrations: `src/main/resources/db/changelog/` (`v0`…`v9`).  
+`ddl-auto: validate` — schema changes go through Liquibase only.
 
-```text
-src/main/resources/db/changelog/
-```
+## Evolution
 
-The application uses `ddl-auto: validate`, so schema changes must be expressed as
-Liquibase changelogs before the application can start successfully.
-
-## OpenAPI
-
-Inbound API contracts live in:
-
-```text
-specs/openapi/inbound/
-```
-
-Outbound event contracts live in:
-
-```text
-specs/openapi/outbound/
-```
-
-Generated sources are written under `build/generated/sources/openapi` during
-compilation and are not committed.
-
-## Evolution Strategy
-
-The project should grow proportionally:
-
-1. Keep one deployable Spring Boot application while the product is still taking
-   shape.
-2. Build each context as a clean vertical slice: domain, use cases, adapters,
-   migrations, API contract, and tests.
-3. Promote demo/scaffold packages to real modules only when their domain is
-   implemented.
-4. Split into independent services only when there is a concrete reason:
-   separate scaling, independent release cadence, team ownership, or hard runtime
-   isolation.
-
-Until then, a disciplined modular monolith is the better engineering tradeoff.
+1. Stay on one deployable while the product takes shape.
+2. Promote each context as a full vertical slice (domain → API → tests).
+3. Split services only when scaling/ownership requires it.

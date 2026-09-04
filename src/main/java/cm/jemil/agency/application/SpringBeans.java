@@ -6,7 +6,6 @@ import cm.jemil.agency.application.inbound.usecase.AddRouteUseCase;
 import cm.jemil.agency.application.inbound.usecase.AddRouteUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.CreateCityUseCase;
 import cm.jemil.agency.application.inbound.usecase.CreateCityUseCaseImpl;
-import cm.jemil.agency.application.inbound.usecase.CreateDemoUseCase;
 import cm.jemil.agency.application.inbound.usecase.DeleteBranchUseCase;
 import cm.jemil.agency.application.inbound.usecase.DeleteBranchUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.GetAgencyByIdUseCase;
@@ -17,10 +16,8 @@ import cm.jemil.agency.application.inbound.usecase.GetAllBranchesByAgencyUseCase
 import cm.jemil.agency.application.inbound.usecase.GetAllBranchesByAgencyUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.GetAllCitiesUseCase;
 import cm.jemil.agency.application.inbound.usecase.GetAllCitiesUseCaseImpl;
-import cm.jemil.agency.application.inbound.usecase.GetAllDemoUseCase;
 import cm.jemil.agency.application.inbound.usecase.GetBranchByIdUseCase;
 import cm.jemil.agency.application.inbound.usecase.GetBranchByIdUseCaseImpl;
-import cm.jemil.agency.application.inbound.usecase.GetDemoByIdUseCase;
 import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCase;
 import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.SearchRoutesUseCase;
@@ -33,7 +30,6 @@ import cm.jemil.agency.domain.agency.AgencyRegisteredEvent;
 import cm.jemil.agency.domain.agency.AgencyRepository;
 import cm.jemil.agency.domain.branch.BranchRepository;
 import cm.jemil.agency.domain.city.CityRepository;
-import cm.jemil.agency.domain.demo.DemoRepository;
 import cm.jemil.shared.events.DomainEventType;
 import cm.jemil.shared.outbox.OutboxEventPublisher;
 import lombok.RequiredArgsConstructor;
@@ -79,21 +75,6 @@ public class SpringBeans {
     @Bean("agencyRegisteredEventType")
     public DomainEventType agencyRegisteredEventType() {
         return DomainEventType.from(AgencyRegisteredEvent.class);
-    }
-
-    @Bean("agencyCreateDemoUseCase")
-    public CreateDemoUseCase createDemoUseCase(DemoRepository demoRepository) {
-        return new CreateDemoUseCase(demoRepository);
-    }
-
-    @Bean("agencyGetAllDemoUseCase")
-    public GetAllDemoUseCase getAllDemoUseCase(DemoRepository demoRepository) {
-        return new GetAllDemoUseCase(demoRepository);
-    }
-
-    @Bean("agencyGetDemoByIdUseCase")
-    public GetDemoByIdUseCase getDemoByIdUseCase(DemoRepository demoRepository) {
-        return new GetDemoByIdUseCase(demoRepository);
     }
 
     @Bean("createCityUseCase")

@@ -10,16 +10,16 @@
 
 These are the decisions the rest of the document assumes. Change them consciously, not by drift.
 
-| # | Decision | Rationale |
-|---|---|---|
-| D1 | **Scheduled departures only.** No fill-and-go modelling. | A reserved seat is meaningless without a departure time. Launch on VIP/premium classes, which already run to schedule. |
-| D2 | **Counter sales are in the MVP.** The caissier sells through JEMIL. | Without this, online and counter inventory diverge and passengers get refused at boarding. |
-| D3 | **MTN MoMo only.** Orange Money after MVP-1 is validated. | Two payment integrations is two sets of edge cases before you know anyone will book. |
-| D4 | **No accounts, no passwords for passengers.** Phone number is identity. | Removes a signup funnel step in a market with low trust. Lookup = reference + phone. |
-| D5 | **French is the default locale.** English is the toggle. | The corridor is francophone. The current prototype loads in English. |
-| D6 | **Monolith.** One repo, one Postgres, one deploy. | Microservices at 200 tickets/month costs weeks and buys nothing. |
-| D7 | **Controller app is a PWA, not native Android.** | Camera QR + IndexedDB ships in ~1 week vs ~3 for native + SQLite sync. Go native in Phase 2 if the PWA proves insufficient. |
-| D8 | **Keep the created.app site as marketing.** Do not rebuild it. | Point its "Book Now" at the real app. Preserves the work and the demo asset. |
+| #  | Decision                                                                | Rationale                                                                                                                   |
+|----|-------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| D1 | **Scheduled departures only.** No fill-and-go modelling.                | A reserved seat is meaningless without a departure time. Launch on VIP/premium classes, which already run to schedule.      |
+| D2 | **Counter sales are in the MVP.** The caissier sells through JEMIL.     | Without this, online and counter inventory diverge and passengers get refused at boarding.                                  |
+| D3 | **MTN MoMo only.** Orange Money after MVP-1 is validated.               | Two payment integrations is two sets of edge cases before you know anyone will book.                                        |
+| D4 | **No accounts, no passwords for passengers.** Phone number is identity. | Removes a signup funnel step in a market with low trust. Lookup = reference + phone.                                        |
+| D5 | **French is the default locale.** English is the toggle.                | The corridor is francophone. The current prototype loads in English.                                                        |
+| D6 | **Monolith.** One repo, one Postgres, one deploy.                       | Microservices at 200 tickets/month costs weeks and buys nothing.                                                            |
+| D7 | **Controller app is a PWA, not native Android.**                        | Camera QR + IndexedDB ships in ~1 week vs ~3 for native + SQLite sync. Go native in Phase 2 if the PWA proves insufficient. |
+| D8 | **Keep the created.app site as marketing.** Do not rebuild it.          | Point its "Book Now" at the real app. Preserves the work and the demo asset.                                                |
 
 ---
 
@@ -359,16 +359,16 @@ Counter sales are also the agency's *reason to adopt*. Not "we bring you passeng
 
 Boring on purpose.
 
-| Layer | Choice | Note |
-|---|---|---|
-| Frontend | Next.js (React), Tailwind | One codebase, three routes: `/`, `/counter`, `/scan`. Server-render the public pages for 2G. |
-| Backend | Node + Express or Next API routes | Same repo. No separate service. |
-| DB | PostgreSQL 16 | The unique partial index in §3 is load-bearing. |
-| Queue/cron | `pg-boss` or plain `node-cron` | For hold expiry, SMS retry, nightly reconciliation. |
-| Offline | IndexedDB via `idb`, service worker | Controller PWA only. |
-| Hosting | Single VPS (Contabo/Hetzner) or Railway | See §10 on data residency. |
-| Errors | Sentry (free tier) | |
-| Logs | `pino` → file → weekly review | |
+| Layer      | Choice                                  | Note                                                                                         |
+|------------|-----------------------------------------|----------------------------------------------------------------------------------------------|
+| Frontend   | Next.js (React), Tailwind               | One codebase, three routes: `/`, `/counter`, `/scan`. Server-render the public pages for 2G. |
+| Backend    | Node + Express or Next API routes       | Same repo. No separate service.                                                              |
+| DB         | PostgreSQL 16                           | The unique partial index in §3 is load-bearing.                                              |
+| Queue/cron | `pg-boss` or plain `node-cron`          | For hold expiry, SMS retry, nightly reconciliation.                                          |
+| Offline    | IndexedDB via `idb`, service worker     | Controller PWA only.                                                                         |
+| Hosting    | Single VPS (Contabo/Hetzner) or Railway | See §10 on data residency.                                                                   |
+| Errors     | Sentry (free tier)                      |                                                                                              |
+| Logs       | `pino` → file → weekly review           |                                                                                              |
 
 **Performance budget for the passenger app** (this market, not your laptop):
 - First contentful paint under 3s on simulated 3G
@@ -403,12 +403,12 @@ Not lawyer work — engineering work with deadlines.
 
 Ignore GMV. Ignore registered users. Ignore anything with a chart.
 
-| Metric | Target | Why |
-|---|---|---|
-| **JEMIL share of the agency's daily tickets** | >25% by week 4 | 5% means you're a novelty. 40% means you're infrastructure. This is the single health metric. |
-| Payment success rate | >92% | Below this, your MoMo integration or your UX is broken. Investigate every failure individually at this volume. |
-| Passengers refused at boarding | **0** | Non-negotiable. Any occurrence is a P0 incident. |
-| Support contacts per 100 tickets | <10 and falling | Rising means the product is confusing, not that people like talking to you. |
+| Metric                                        | Target          | Why                                                                                                            |
+|-----------------------------------------------|-----------------|----------------------------------------------------------------------------------------------------------------|
+| **JEMIL share of the agency's daily tickets** | >25% by week 4  | 5% means you're a novelty. 40% means you're infrastructure. This is the single health metric.                  |
+| Payment success rate                          | >92%            | Below this, your MoMo integration or your UX is broken. Investigate every failure individually at this volume. |
+| Passengers refused at boarding                | **0**           | Non-negotiable. Any occurrence is a P0 incident.                                                               |
+| Support contacts per 100 tickets              | <10 and falling | Rising means the product is confusing, not that people like talking to you.                                    |
 
 ---
 

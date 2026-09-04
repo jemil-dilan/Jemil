@@ -1,7 +1,8 @@
 package cm.jemil.agency.application.inbound.usecase;
 
 import cm.jemil.agency.application.inbound.usecase.AddRouteUseCaseImpl.Command;
+import java.util.UUID;
 
 public interface AddRouteUseCase {
-    void execute(Command command);
+    UUID execute(Command command);
 }

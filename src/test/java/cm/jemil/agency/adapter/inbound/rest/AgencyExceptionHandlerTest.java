@@ -25,18 +25,6 @@ class AgencyExceptionHandlerTest {
     }
 
     @Test
-    void shouldHandleDemoNotFound() {
-        var ex = new DomainException(AgencyErrorCode.AGENCY_404_002);
-
-        var response = handler.handleDomainException(ex);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody()).containsKey("error");
-        assertThat(response.getBody()).containsEntry("error", AgencyErrorCode.AGENCY_404_002.getCode());
-        assertThat(response.getBody().get("message")).isInstanceOf(String.class);
-    }
-
-    @Test
     void shouldHandleDomainException() {
         var ex = new DomainException(AgencyErrorCode.AGENCY_400_001);
 

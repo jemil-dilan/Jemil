@@ -39,6 +39,16 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void shouldHandleDomainExceptionWith409() {
+        var ex = new DomainException(new TestErrorCode("BOOKING_409_001", "Seat unavailable"));
+
+        var response = handler.handleDomainException(ex);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(response.getBody()).containsEntry("error", "BOOKING_409_001");
+    }
+
+    @Test
     void shouldHandleAccessDenied() {
         var ex = new AccessDeniedException("Forbidden");
 

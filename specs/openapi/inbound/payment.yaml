@@ -1,14 +1,13 @@
 ---
 openapi: "3.0.3"
 info:
-  title: "JEMIL Agency API"
-  description: "API de gestion des agences de transport partenaires JEMIL.
+  title: "JEMIL Payment API"
+  description: "Payment operations for the JEMIL platform.
     
-    Ce contrat est la source de vérité entre le backend et les clients
-    (app mobile Android, dashboard web agence, équipe QA).
+    Placeholder health path retained until payment endpoints are defined.
     
-    **Règle** : toute modification de ce fichier nécessite une revue.
-    Le code est généré depuis ce spec — pas l'inverse."
+    **Rule**: Any modification to this file requires review.
+    Code is generated from this spec — not the other way around."
   version: "2026-W01"
   contact:
     name: "JEMIL Dev Team"
@@ -16,127 +15,21 @@ servers:
 - url: "https"
 - url: "http"
 tags:
-- name: "Demo"
-  description: "Demo operations"
-- name: "Agency"
-  description: "Agencies operations"
+- name: "Health"
+  description: "Service health"
 paths:
-  /demo:
+  /payment/health:
     get:
       tags:
-      - "Demo"
-      summary: "Fetch all Demos"
-      description: "Fetch all Demos"
-      operationId: "fetchAllDemo"
-      security:
-      - oAuth:
-        - "demo:read:all"
-      parameters:
-      - name: "fieldsToExtractCode"
-        in: "query"
-        required: true
-        schema:
-          type: "string"
-        description: "specify the fields that will be present on the response"
+      - "Health"
+      summary: "Payment module health placeholder"
+      description: "Placeholder endpoint until payment APIs are defined."
+      operationId: "paymentHealth"
       responses:
         "200":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/DemoDTO"
-    post:
-      tags:
-      - "Demo"
-      summary: "Create a new Demo"
-      description: "Create a new Demo"
-      operationId: "createDemo"
-      security:
-      - oAuth:
-        - "demo:create"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateDemoDTO"
-      responses:
-        "201":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CreationResponseDTO"
-  /demo/{demoId}:
-    get:
-      tags:
-        - "Demo"
-      summary: "Fetch demo by id"
-      description: "Fetch demo by id"
-      operationId: "fetchDemoById"
-      security:
-        - oAuth:
-            - "demo:read"
-      parameters:
-        - name: "demoId"
-          in: "path"
-          required: true
-          schema:
-            type: "string"
-            format: "uuid"
-          description: "represents the id of demo to fetch."
-        - name: "fieldsToExtractCode"
-          in: "query"
-          required: true
-          schema:
-            type: "string"
-          description: "specify the fields that will be present on the response"
-      responses:
-        "200":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DemoDTO"
-        "404":
-          description: "SPRING_BOOT_TEMPLATE-404-001"
+          description: "Payment module is reachable"
 components:
-#  securitySchemes:
-#    bearerAuth:
-#      type: "http"
-#      scheme: "bearer"
-#      bearerFormat: "JWT"
-#    oAuth:
-#      type: "oauth2"
-#      description: "This API uses OAuth 2 with the Authorization Code grant flow."
-#      flows:
-#        authorizationCode:
-#          authorizationUrl: "https://auth.oauth.lao-sarl.cm"
-#          tokenUrl: "https://token.oauth.lao-sarl.cm"
-#          scopes:
-#            demo:read:all: "Needed to fetch all Demo objects"
-#            demo:create: "Needed when to create a new Demo object"
   schemas:
-    DemoDTO:
-      type: "object"
-      required:
-      - "id"
-      - "name"
-      properties:
-        id:
-          type: "string"
-          format: "uuid"
-        name:
-          type: "string"
-    CreateDemoDTO:
-      type: "object"
-      required:
-      - "name"
-      properties:
-        name:
-          type: "string"
     CreationResponseDTO:
       type: "object"
       required:
@@ -145,31 +38,6 @@ components:
         newId:
           type: "string"
           format: "uuid"
-    PhoneNumberDTO:
-      type: "object"
-      properties:
-        countryCode:
-          type: "string"
-          description: "the international code for the country"
-          example: "237 for Cameroon"
-        number:
-          type: "string"
-          description: "the phone number"
-          example: 653492410
-    AddressDTO:
-      type: "object"
-      properties:
-        city:
-          type: "string"
-          description: "the city of collector"
-        district:
-          type: "string"
-          description: "the district of collector"
-    StatusDTO:
-      enum:
-        - "ACTIVE"
-        - "SUSPENDED"
-        - "INACTIVE"
     ErrorDTO:
       type: "object"
       properties:

@@ -77,9 +77,9 @@ public class JpaAgencyRepository implements AgencyRepository {
     @Override
     public PageData<AgencyView1> loadAllAgency(
             @Nullable CityName cityName, PaginationFetchRequest paginationFetchRequest) {
-        var name = Optional.ofNullable(cityName).map(CityName::value).orElse(null);
+        var city = Optional.ofNullable(cityName).map(CityName::value).orElse(null);
         Pageable pageable = PageRequest.of(paginationFetchRequest.page(), paginationFetchRequest.limit());
-        var allAgencies = agencySpringRepository.findAllAgencies(name, AgencyStatus.ACTIVE, pageable);
+        var allAgencies = agencySpringRepository.findAllAgencies(city, AgencyStatus.ACTIVE, pageable);
 
         var views =
                 allAgencies.getContent().stream().map(jpaMapper::toAgencyView1).toList();

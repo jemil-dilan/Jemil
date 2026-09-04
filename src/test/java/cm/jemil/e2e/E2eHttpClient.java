@@ -35,6 +35,7 @@ public class E2eHttpClient {
     private String accessToken;
 
     @Getter
+    @Setter
     private Response lastResponse;
 
     public void configureRestAssured() {

@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.UUID;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,13 +19,16 @@ class SeatHoldExecutor {
 
     private static final String HELD = "HELD";
     private static final String CHANNEL_WEB = "WEB";
+    private static final int HOLD_MINUTES = 10;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    HoldOutcome hold(UUID tripId, int seatNo, String passengerName) {
+    BookingHoldResult placeHold(
+            UUID tripId, List<Integer> seatNos, String passengerName, String passengerMsisdn, int amountXaf) {
         var now = OffsetDateTime.now(ZoneOffset.UTC);
+        var holdExpiresAt = now.plusMinutes(HOLD_MINUTES);
         var bookingId = UUID.randomUUID();
 
         var booking = new BookingJpa();
@@ -33,20 +37,23 @@ class SeatHoldExecutor {
         booking.setTripId(tripId);
         booking.setChannel(CHANNEL_WEB);
         booking.setPassengerName(passengerName);
-        booking.setAmountXaf(0);
+        booking.setPassengerMsisdn(passengerMsisdn);
+        booking.setAmountXaf(amountXaf);
         booking.setStatus(HELD);
-        booking.setHoldExpiresAt(now.plusMinutes(15));
+        booking.setHoldExpiresAt(holdExpiresAt);
         booking.setCreatedAt(now);
         entityManager.persist(booking);
 
-        var assignment = new SeatAssignmentJpa();
-        assignment.setId(UUID.randomUUID());
-        assignment.setTripId(tripId);
-        assignment.setSeatNo(seatNo);
-        assignment.setBookingId(bookingId);
-        assignment.setStatus(HELD);
-        assignment.setCreatedAt(now);
-        entityManager.persist(assignment);
+        for (int seatNo : seatNos) {
+            var assignment = new SeatAssignmentJpa();
+            assignment.setId(UUID.randomUUID());
+            assignment.setTripId(tripId);
+            assignment.setSeatNo(seatNo);
+            assignment.setBookingId(bookingId);
+            assignment.setStatus(HELD);
+            assignment.setCreatedAt(now);
+            entityManager.persist(assignment);
+        }
 
         try {
             entityManager.flush();
@@ -57,7 +64,8 @@ class SeatHoldExecutor {
             throw ex;
         }
 
-        return HoldOutcome.HELD;
+        return new BookingHoldResult(
+                bookingId, booking.getRef(), tripId, holdExpiresAt, amountXaf, List.copyOf(seatNos));
     }
 
     private static boolean isSeatConflict(Throwable throwable) {

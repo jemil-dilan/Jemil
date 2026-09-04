@@ -22,11 +22,11 @@ Two things to hold in mind while implementing this half:
 
 # UC-C-01 · Connexion du caissier
 
-| | |
-|---|---|
-| **Actor** | Cashier |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Cashier                                 |
 | **Priority** | P0 · **Sprint** 4 · **Estimate** 3 days |
-| **Criteria** | See UC-C-01, AC 1–5 |
+| **Criteria** | See UC-C-01, AC 1–5                     |
 
 **Goal.** Let counter staff into the system quickly, with data isolated to their own agency.
 
@@ -82,11 +82,11 @@ Reads `staff_user`. Writes `audit_log` (sign-in, failure, lockout).
 
 # UC-C-02 · Consulter les départs du jour
 
-| | |
-|---|---|
-| **Actor** | Cashier |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Cashier                                 |
 | **Priority** | P0 · **Sprint** 4 · **Estimate** 2 days |
-| **Criteria** | See UC-C-02, AC 1–4 |
+| **Criteria** | See UC-C-02, AC 1–4                     |
 
 **Goal.** Give the cashier an at-a-glance view of what they are selling today.
 
@@ -130,10 +130,10 @@ Designed for a tablet in landscape on a counter, viewed at arm's length. Large t
 
 # UC-C-03 · Vendre un billet au guichet
 
-| | |
-|---|---|
-| **Actor** | Cashier |
-| **Priority** | P0 · **Sprint** 4 · **Estimate** 5 days |
+|              |                                                               |
+|--------------|---------------------------------------------------------------|
+| **Actor**    | Cashier                                                       |
+| **Priority** | P0 · **Sprint** 4 · **Estimate** 5 days                       |
 | **Criteria** | See UC-C-03, AC 1–8 — **AC-4 (under 30 seconds) is the gate** |
 
 > This use case is the reason the whole system holds together. It is also the one that will be abandoned first if it is slow.
@@ -201,11 +201,11 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-C-04 · Vendre plusieurs places en une transaction
 
-| | |
-|---|---|
-| **Actor** | Cashier |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Cashier                                 |
 | **Priority** | P1 · **Sprint** 4 · **Estimate** 2 days |
-| **Criteria** | See UC-C-04, AC 1–4 |
+| **Criteria** | See UC-C-04, AC 1–4                     |
 
 **Goal.** Serve families and groups without ten separate sales.
 
@@ -236,11 +236,11 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-C-05 · Annuler une réservation
 
-| | |
-|---|---|
-| **Actor** | Cashier + Manager |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Cashier + Manager                       |
 | **Priority** | P1 · **Sprint** 4 · **Estimate** 3 days |
-| **Criteria** | See UC-C-05, AC 1–6 |
+| **Criteria** | See UC-C-05, AC 1–6                     |
 
 **Goal.** Correct mistakes and handle no-shows without letting a cashier quietly void sales.
 
@@ -280,11 +280,11 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-C-06 · Rechercher et renvoyer un code d'embarquement
 
-| | |
-|---|---|
-| **Actor** | Cashier |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Cashier                                 |
 | **Priority** | P1 · **Sprint** 4 · **Estimate** 2 days |
-| **Criteria** | See UC-C-06, AC 1–4 |
+| **Criteria** | See UC-C-06, AC 1–4                     |
 
 **Goal.** Rescue the passenger who lost their SMS — which will be common.
 
@@ -315,11 +315,11 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-C-07 · Totaux de fin de journée
 
-| | |
-|---|---|
-| **Actor** | Cashier |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Cashier                                 |
 | **Priority** | P1 · **Sprint** 4 · **Estimate** 2 days |
-| **Criteria** | See UC-C-07, AC 1–4 |
+| **Criteria** | See UC-C-07, AC 1–4                     |
 
 **Goal.** Let the cashier balance their drawer, and give the manager a figure to check it against.
 
@@ -353,11 +353,11 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-T-01 · Connexion du contrôleur et sélection du voyage
 
-| | |
-|---|---|
-| **Actor** | Controller |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Controller                              |
 | **Priority** | P0 · **Sprint** 5 · **Estimate** 2 days |
-| **Criteria** | See UC-T-01, AC 1–3 |
+| **Criteria** | See UC-T-01, AC 1–3                     |
 
 **Goal.** Get the controller to the right manifest in as few taps as possible, while they are already busy.
 
@@ -388,11 +388,11 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-T-02 · Télécharger le manifeste
 
-| | |
-|---|---|
-| **Actor** | Controller |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Controller                              |
 | **Priority** | P0 · **Sprint** 5 · **Estimate** 3 days |
-| **Criteria** | See UC-T-02, AC 1–6 |
+| **Criteria** | See UC-T-02, AC 1–6                     |
 
 **Goal.** Get everything needed for offline validation onto the device before leaving coverage.
 
@@ -441,11 +441,11 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-T-03 · Valider par scan du QR
 
-| | |
-|---|---|
-| **Actor** | Controller |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Controller                              |
 | **Priority** | P0 · **Sprint** 5 · **Estimate** 4 days |
-| **Criteria** | See UC-T-03, AC 1–6 |
+| **Criteria** | See UC-T-03, AC 1–6                     |
 
 **Goal.** Validate a passenger in under two seconds without a network.
 
@@ -489,11 +489,11 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-T-04 · Valider par code à 6 chiffres
 
-| | |
-|---|---|
-| **Actor** | Controller |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Controller                              |
 | **Priority** | P0 · **Sprint** 5 · **Estimate** 2 days |
-| **Criteria** | See UC-T-04, AC 1–5 |
+| **Criteria** | See UC-T-04, AC 1–5                     |
 
 > Expect this path to carry more traffic than QR. Dead batteries, feature phones, broken screens and bright sunlight are all routine.
 
@@ -529,11 +529,11 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-T-05 · Refuser un billet invalide ou déjà embarqué
 
-| | |
-|---|---|
-| **Actor** | Controller |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Controller                              |
 | **Priority** | P0 · **Sprint** 5 · **Estimate** 2 days |
-| **Criteria** | See UC-T-05, AC 1–5 |
+| **Criteria** | See UC-T-05, AC 1–5                     |
 
 **Goal.** Refuse clearly and safely — including when the controller is being watched by an unhappy passenger.
 
@@ -547,12 +547,12 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 - **BR-1** Three outcomes, three treatments:
 
-| Outcome | Colour | Icon | Message |
-|---|---|---|---|
-| Already boarded | Orange | ⚠ | *Déjà embarqué à 05h42* |
-| Wrong trip | Red | ✕ | *Billet pour DLA→BFS 08h00* |
-| Not found | Red | ✕ | *Billet introuvable* |
-| Cancelled / refunded | Red | ✕ | *Billet annulé* |
+| Outcome              | Colour | Icon | Message                     |
+|----------------------|--------|------|-----------------------------|
+| Already boarded      | Orange | ⚠   | *Déjà embarqué à 05h42*     |
+| Wrong trip           | Red    | ✕   | *Billet pour DLA→BFS 08h00* |
+| Not found            | Red    | ✕   | *Billet introuvable*        |
+| Cancelled / refunded | Red    | ✕   | *Billet annulé*             |
 
 - **BR-2** "Already boarded" is **orange, not red**. It usually means an honest double-scan, not fraud, and the controller's tone toward the passenger should match. This is a small design decision with a real effect on how the product feels at the bus door.
 - **BR-3** The original boarding time is shown for already-boarded — it lets the controller resolve the situation on the spot.
@@ -572,10 +572,10 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-T-06 · Fonctionner entièrement hors ligne
 
-| | |
-|---|---|
-| **Actor** | Controller |
-| **Priority** | P0 · **Sprint** 5 · **Estimate** 5 days |
+|              |                                            |
+|--------------|--------------------------------------------|
+| **Actor**    | Controller                                 |
+| **Priority** | P0 · **Sprint** 5 · **Estimate** 5 days    |
 | **Criteria** | See UC-T-06, AC 1–6 — **AC-4 is the gate** |
 
 > Gares routières have poor coverage, buses board in concrete structures, and networks fail at exactly the busiest moments. Offline is not a degraded mode here; it is the normal mode.
@@ -621,11 +621,11 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-T-07 · Synchroniser les embarquements
 
-| | |
-|---|---|
-| **Actor** | Controller + SYS |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Controller + SYS                        |
 | **Priority** | P0 · **Sprint** 5 · **Estimate** 4 days |
-| **Criteria** | See UC-T-07, AC 1–6 |
+| **Criteria** | See UC-T-07, AC 1–6                     |
 
 **Goal.** Move offline boardings to the server without loss, duplication, or controller involvement.
 
@@ -671,11 +671,11 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-T-08 · Marquer le voyage comme parti
 
-| | |
-|---|---|
-| **Actor** | Controller |
+|              |                                        |
+|--------------|----------------------------------------|
+| **Actor**    | Controller                             |
 | **Priority** | P1 · **Sprint** 5 · **Estimate** 1 day |
-| **Criteria** | See UC-T-08, AC 1–5 |
+| **Criteria** | See UC-T-08, AC 1–5                    |
 
 **Goal.** Produce the one trip-status signal the MVP has — without GPS.
 
@@ -705,11 +705,11 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-A-01 · Consulter la journée de l'agence
 
-| | |
-|---|---|
-| **Actor** | Agency manager |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Agency manager                          |
 | **Priority** | P0 · **Sprint** 6 · **Estimate** 3 days |
-| **Criteria** | See UC-A-01, AC 1–6 |
+| **Criteria** | See UC-A-01, AC 1–6                     |
 
 > One screen. Every instinct will push you to add analytics, charts and history. Do not. The prototype's agency portal has six sections; the MVP has one.
 
@@ -748,11 +748,11 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-A-02 · Consulter et exporter un manifeste
 
-| | |
-|---|---|
-| **Actor** | Agency manager |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Agency manager                          |
 | **Priority** | P0 · **Sprint** 6 · **Estimate** 3 days |
-| **Criteria** | See UC-A-02, AC 1–4 |
+| **Criteria** | See UC-A-02, AC 1–4                     |
 
 **Goal.** Produce the paper manifest the agency's existing process still requires — and which the police at road checkpoints may ask for.
 
@@ -788,12 +788,12 @@ Optimise ruthlessly for repetition. Name field autofocused. Phone keyboard numer
 
 # UC-A-03 · Définir un horaire récurrent
 
-| | |
-|---|---|
-| **Actor** | Agency manager or Operator |
-| **Priority** | P0 · **Sprint** 1 · **Estimate** 4 days |
-| **Depends on** | — (blocks everything; build first) |
-| **Criteria** | See UC-A-03, AC 1–6 |
+|                |                                         |
+|----------------|-----------------------------------------|
+| **Actor**      | Agency manager or Operator              |
+| **Priority**   | P0 · **Sprint** 1 · **Estimate** 4 days |
+| **Depends on** | — (blocks everything; build first)      |
+| **Criteria**   | See UC-A-03, AC 1–6                     |
 
 > Sequenced into **Sprint 1** despite being an agency feature: nothing else can be tested until trips exist.
 
@@ -849,11 +849,11 @@ Writes `schedule_template`; triggers `trip` generation (UC-S-06).
 
 # UC-A-04 · Annuler un départ
 
-| | |
-|---|---|
-| **Actor** | Agency manager |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Agency manager                          |
 | **Priority** | P1 · **Sprint** 6 · **Estimate** 3 days |
-| **Criteria** | See UC-A-04, AC 1–6 |
+| **Criteria** | See UC-A-04, AC 1–6                     |
 
 **Goal.** Handle a breakdown or cancellation so that every affected passenger is told before they travel to the gare.
 
@@ -888,11 +888,11 @@ Writes `schedule_template`; triggers `trip` generation (UC-S-06).
 
 # UC-O-01 · Intégrer une nouvelle agence
 
-| | |
-|---|---|
-| **Actor** | Operator |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Operator                                |
 | **Priority** | P2 · **Sprint** 6 · **Estimate** 2 days |
-| **Criteria** | See UC-O-01, AC 1–4 |
+| **Criteria** | See UC-O-01, AC 1–4                     |
 
 **Goal.** Bring an agency live in under an hour, without an admin UI.
 
@@ -925,11 +925,11 @@ Writes `schedule_template`; triggers `trip` generation (UC-S-06).
 
 # UC-O-02 · Effectuer un remboursement
 
-| | |
-|---|---|
-| **Actor** | Operator |
+|              |                                         |
+|--------------|-----------------------------------------|
+| **Actor**    | Operator                                |
 | **Priority** | P2 · **Sprint** 6 · **Estimate** 2 days |
-| **Criteria** | See UC-O-02, AC 1–4 |
+| **Criteria** | See UC-O-02, AC 1–4                     |
 
 **Goal.** Return money reliably, and be able to prove you did.
 
@@ -964,24 +964,24 @@ Writes `schedule_template`; triggers `trip` generation (UC-S-06).
 
 ## Sprint summary — Part 2
 
-| Sprint | Use cases | Estimated developer-days |
-|---|---|---|
-| 1 (pulled forward) | A-03 | 4 |
-| 4 — Counter | C-01 … C-07 | 19 |
-| 5 — Controller | T-01 … T-08 | 23 |
-| 6 — Launch | A-01, A-02, A-04, O-01, O-02 | 13 |
+| Sprint             | Use cases                    | Estimated developer-days |
+|--------------------|------------------------------|--------------------------|
+| 1 (pulled forward) | A-03                         | 4                        |
+| 4 — Counter        | C-01 … C-07                  | 19                       |
+| 5 — Controller     | T-01 … T-08                  | 23                       |
+| 6 — Launch         | A-01, A-02, A-04, O-01, O-02 | 13                       |
 
 **Part 2 total: ~59 developer-days.**
 
 ## Combined estimate
 
-| | Developer-days |
-|---|---|
-| Part 1 (passenger + system) | 49 |
-| Part 2 (staff applications) | 59 |
-| **Subtotal** | **108** |
-| Integration, review, and unestimated work (+30%) | 32 |
-| **Total** | **~140 developer-days** |
+|                                                  | Developer-days          |
+|--------------------------------------------------|-------------------------|
+| Part 1 (passenger + system)                      | 49                      |
+| Part 2 (staff applications)                      | 59                      |
+| **Subtotal**                                     | **108**                 |
+| Integration, review, and unestimated work (+30%) | 32                      |
+| **Total**                                        | **~140 developer-days** |
 
 Which is roughly **28 working weeks for one developer**, or **14–16 weeks for two** working in parallel with a clean split — one owning payments and system jobs, the other owning the passenger and staff interfaces.
 
