@@ -15,24 +15,24 @@
 
 ### Priority tiers
 
-| Tier | Meaning | Count |
-|---|---|---|
-| **P0** | No ticket can be sold without it. The product does not exist. | 14 |
-| **P1** | Launch is unsafe, or the agency will not adopt, without it. | 12 |
-| **P2** | Needed before public launch, but can be done manually during the pilot. | 7 |
-| **P3** | Backlog. Explicitly not in MVP. | — |
+| Tier   | Meaning                                                                 | Count |
+|--------|-------------------------------------------------------------------------|-------|
+| **P0** | No ticket can be sold without it. The product does not exist.           | 14    |
+| **P1** | Launch is unsafe, or the agency will not adopt, without it.             | 12    |
+| **P2** | Needed before public launch, but can be done manually during the pilot. | 7     |
+| **P3** | Backlog. Explicitly not in MVP.                                         | —     |
 
 ### Actors
 
-| Code | Actor |
-|---|---|
-| PAS | Passenger (no account; phone number is identity) |
-| CAI | Cashier / caissier at the agency counter |
-| CTR | Controller / contrôleur at boarding |
-| MGR | Agency manager |
-| OPS | Platform operator (you) |
-| SYS | Background job / system process |
-| EXT | External service (MTN MoMo, SMS provider) |
+| Code | Actor                                            |
+|------|--------------------------------------------------|
+| PAS  | Passenger (no account; phone number is identity) |
+| CAI  | Cashier / caissier at the agency counter         |
+| CTR  | Controller / contrôleur at boarding              |
+| MGR  | Agency manager                                   |
+| OPS  | Platform operator (you)                          |
+| SYS  | Background job / system process                  |
+| EXT  | External service (MTN MoMo, SMS provider)        |
 
 ---
 
@@ -40,17 +40,17 @@
 
 Applies to **every** use case. A use case with all its specific criteria passing but any of these failing is **not done**.
 
-| # | Criterion |
-|---|---|
-| G1 | Works on a 4-year-old Android device, Chrome, 360 px viewport width. |
-| G2 | All user-facing text exists in French and English. **French is the default.** No untranslated string reaches the user. |
-| G3 | Every error path displays a human-readable message in the user's language. No raw stack traces, no "Error 500", no silent failures. |
+| #  | Criterion                                                                                                                            |
+|----|--------------------------------------------------------------------------------------------------------------------------------------|
+| G1 | Works on a 4-year-old Android device, Chrome, 360 px viewport width.                                                                 |
+| G2 | All user-facing text exists in French and English. **French is the default.** No untranslated string reaches the user.               |
+| G3 | Every error path displays a human-readable message in the user's language. No raw stack traces, no "Error 500", no silent failures.  |
 | G4 | Server validates all input. Prices, amounts, trip IDs and seat availability are derived server-side and never taken from the client. |
-| G5 | Phone numbers are masked in all application logs (`+2376XXXXX53`). |
-| G6 | The happy path and at least one failure path have an automated test that runs in CI. |
-| G7 | Any state change touching money or seat inventory writes an `audit_log` row (actor, action, before, after). |
-| G8 | Manually executed once on a real phone, on a real Cameroonian mobile network, before the use case is closed. |
-| G9 | No new dependency added without a one-line justification in the commit message. |
+| G5 | Phone numbers are masked in all application logs (`+2376XXXXX53`).                                                                   |
+| G6 | The happy path and at least one failure path have an automated test that runs in CI.                                                 |
+| G7 | Any state change touching money or seat inventory writes an `audit_log` row (actor, action, before, after).                          |
+| G8 | Manually executed once on a real phone, on a real Cameroonian mobile network, before the use case is closed.                         |
+| G9 | No new dependency added without a one-line justification in the commit message.                                                      |
 
 ---
 
@@ -566,15 +566,15 @@ Applies to **every** use case. A use case with all its specific criteria passing
 
 ## 8. Traceability
 
-| Sprint | Use cases |
-|---|---|
-| **Sprint 0** (non-code, parallel) | UC-O-01 prerequisites; MoMo and SMS account applications |
-| **Sprint 1** — Inventory | UC-P-01, UC-P-02, UC-P-03, UC-P-04, UC-A-03, UC-S-01, UC-S-06 |
-| **Sprint 2** — Payment | UC-P-05, UC-P-06, UC-P-07, UC-S-02, UC-S-03, UC-S-04 |
-| **Sprint 3** — Ticket delivery | UC-P-08, UC-P-09, UC-P-10, UC-S-05 |
-| **Sprint 4** — Counter | UC-C-01 … UC-C-07 |
-| **Sprint 5** — Controller | UC-T-01 … UC-T-08 |
-| **Sprint 6** — Launch | UC-A-01, UC-A-02, UC-A-04, UC-P-11, UC-O-01, UC-O-02 |
+| Sprint                            | Use cases                                                     |
+|-----------------------------------|---------------------------------------------------------------|
+| **Sprint 0** (non-code, parallel) | UC-O-01 prerequisites; MoMo and SMS account applications      |
+| **Sprint 1** — Inventory          | UC-P-01, UC-P-02, UC-P-03, UC-P-04, UC-A-03, UC-S-01, UC-S-06 |
+| **Sprint 2** — Payment            | UC-P-05, UC-P-06, UC-P-07, UC-S-02, UC-S-03, UC-S-04          |
+| **Sprint 3** — Ticket delivery    | UC-P-08, UC-P-09, UC-P-10, UC-S-05                            |
+| **Sprint 4** — Counter            | UC-C-01 … UC-C-07                                             |
+| **Sprint 5** — Controller         | UC-T-01 … UC-T-08                                             |
+| **Sprint 6** — Launch             | UC-A-01, UC-A-02, UC-A-04, UC-P-11, UC-O-01, UC-O-02          |
 
 ---
 
@@ -582,19 +582,19 @@ Applies to **every** use case. A use case with all its specific criteria passing
 
 Before the first real passenger, these must all be true. Not "mostly true."
 
-| # | Check | Status |
-|---|---|---|
-| 1 | Every P0 use case closed, all criteria passing | ☐ |
-| 2 | The 20-parallel-request concurrency test (UC-P-03 AC6) green in CI | ☐ |
-| 3 | The 30-transaction payment test (Build Spec §4) passing | ☐ |
-| 4 | 20 boardings validated offline and synced with zero loss (UC-T-06, UC-T-07) | ☐ |
-| 5 | A real SMS received on both an MTN and an Orange handset in Cameroon | ☐ |
-| 6 | A cashier who has never seen the system sells 3 tickets unaided (UC-C-03 AC4) | ☐ |
-| 7 | Booking flow completed end-to-end on a 4-year-old Android on 3G | ☐ |
-| 8 | Nightly reconciliation has run successfully for 7 consecutive days | ☐ |
-| 9 | Consent capture live and storing policy version (UC-P-04 AC6) | ☐ |
-| 10 | Refund procedure executed at least once, on a test booking | ☐ |
-| 11 | WhatsApp support number live, staffed, and printed on every ticket | ☐ |
-| 12 | Rollback plan written: how the agency reverts to paper if JEMIL is down | ☐ |
+| #  | Check                                                                         | Status |
+|----|-------------------------------------------------------------------------------|--------|
+| 1  | Every P0 use case closed, all criteria passing                                | ☐     |
+| 2  | The 20-parallel-request concurrency test (UC-P-03 AC6) green in CI            | ☐     |
+| 3  | The 30-transaction payment test (Build Spec §4) passing                       | ☐     |
+| 4  | 20 boardings validated offline and synced with zero loss (UC-T-06, UC-T-07)   | ☐     |
+| 5  | A real SMS received on both an MTN and an Orange handset in Cameroon          | ☐     |
+| 6  | A cashier who has never seen the system sells 3 tickets unaided (UC-C-03 AC4) | ☐     |
+| 7  | Booking flow completed end-to-end on a 4-year-old Android on 3G               | ☐     |
+| 8  | Nightly reconciliation has run successfully for 7 consecutive days            | ☐     |
+| 9  | Consent capture live and storing policy version (UC-P-04 AC6)                 | ☐     |
+| 10 | Refund procedure executed at least once, on a test booking                    | ☐     |
+| 11 | WhatsApp support number live, staffed, and printed on every ticket            | ☐     |
+| 12 | Rollback plan written: how the agency reverts to paper if JEMIL is down       | ☐     |
 
 > Item 12 is not pessimism. The agency will ask you this question in the first meeting, and having a good answer is a large part of why they will say yes.

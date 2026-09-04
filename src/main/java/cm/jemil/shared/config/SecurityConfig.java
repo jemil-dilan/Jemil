@@ -42,7 +42,15 @@ public class SecurityConfig {
                                 "/swagger-ui.html")
                         .permitAll()
                         .requestMatchers(
-                                HttpMethod.GET, "/agency", "/agency/**", "/routes/search", "/cities", "/cities/**")
+                                HttpMethod.GET,
+                                "/agency",
+                                "/agency/**",
+                                "/routes/search",
+                                "/cities",
+                                "/cities/**",
+                                "/trips/search")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/bookings")
                         .permitAll()
                         .anyRequest()
                         .authenticated())

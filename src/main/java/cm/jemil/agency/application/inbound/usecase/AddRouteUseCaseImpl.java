@@ -13,10 +13,12 @@ public class AddRouteUseCaseImpl implements AddRouteUseCase {
     private final AgencyRepository agencyRepository;
 
     @Override
-    public void execute(Command command) {
+    public UUID execute(Command command) {
         var agency = agencyRepository.loadById(command.getAgencyId());
-        agency.addRoute(command.departure(), command.arrival(), command.getPrice(), command.getTotalSeats());
+        UUID routeId =
+                agency.addRoute(command.departure(), command.arrival(), command.getPrice(), command.getTotalSeats());
         agencyRepository.update(agency);
+        return routeId;
     }
 
     public record Command(UUID agencyId, UUID originCityId, UUID destinationCityId, int priceXaf, int totalSeats) {

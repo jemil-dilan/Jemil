@@ -7,7 +7,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: "validate"
-    show-sql: false
+    show-sql: true
   liquibase:
     enabled: true
     change-log: "classpath:/db/changelog/db.changelog-master.xml"
@@ -34,4 +34,8 @@ logging:
     root: "INFO"
     cm.jemil: "DEBUG"
     org.springframework: "INFO"
+    org.hibernate.SQL: "DEBUG"
+    org.hibernate.orm.jdbc.bind: "TRACE"
     org.hibernate: "INFO"
+    org.springframework.security: "TRACE"
+    net.ttddyy.dsproxy.listener: "DEBUG"

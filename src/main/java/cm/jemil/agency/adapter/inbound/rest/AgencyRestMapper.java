@@ -1,6 +1,7 @@
 package cm.jemil.agency.adapter.inbound.rest;
 
 import cm.jemil.agency.application.inbound.usecase.AddBranchUseCaseImpl;
+import cm.jemil.agency.application.inbound.usecase.AddRouteUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.GetAllAgenciesUseCaseImpl.Response;
 import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCaseImpl;
 import cm.jemil.agency.domain.agency.Route;
@@ -10,9 +11,11 @@ import cm.jemil.agency.domain.agency.views.AgencyView.BranchView;
 import cm.jemil.agency.domain.agency.views.RouteSearchView;
 import cm.jemil.agency.domain.branch.BranchAddress;
 import cm.jemil.agency.domain.branch.BranchName;
+import cm.jemil.generated.agency.adapter.rest.inbound.dto.AddRouteDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.AddressDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.AgencyBranchDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.AgencyDTO;
+import cm.jemil.generated.agency.adapter.rest.inbound.dto.AgencyPaginationDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreateAgencyDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreateBranchDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreationResponseDTO;
@@ -52,7 +55,7 @@ public interface AgencyRestMapper {
     @Mapping(target = "branches", source = "branches")
     @Mapping(target = "routeCount", ignore = true)
     @Mapping(target = "addbranchesItem", ignore = true)
-    AgencyDTO toDto(AgencyView1 agencyView1);
+    AgencyDTO toPaginationDTO(AgencyView1 agencyView1);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id.value")
@@ -62,14 +65,21 @@ public interface AgencyRestMapper {
     @Mapping(target = "isActive", source = "active")
     @Mapping(target = "cityId", source = "cityId.value")
     @Mapping(target = "agencyId", source = "agencyId.value")
-    AgencyBranchDTO toDto(BranchView branch);
+    AgencyBranchDTO toPaginationDTO(BranchView branch);
 
     @Mapping(target = "content", source = "allAgencies")
     @Mapping(target = "number", source = "pageNumber")
     @Mapping(target = "size", source = "size")
     @Mapping(target = "totalElements", source = "totalElements")
     @Mapping(target = "totalPages", source = "totalPages")
-    PageResponseDTO toDto(Response response);
+    PageResponseDTO toPaginationDTO(Response response);
+
+    @Mapping(target = "content", source = "allAgencies")
+    @Mapping(target = "number", source = "pageNumber")
+    @Mapping(target = "size", source = "size")
+    @Mapping(target = "totalElements", source = "totalElements")
+    @Mapping(target = "totalPages", source = "totalPages")
+    AgencyPaginationDTO toDTO(Response response);
 
     default String map(BranchName value) {
         return value == null ? null : value.value();
@@ -156,4 +166,12 @@ public interface AgencyRestMapper {
     @Mapping(target = "address", source = "createBranchDTO.address")
     @Mapping(target = "agencyId", source = "agencyId")
     AddBranchUseCaseImpl.Command toCommand(UUID agencyId, CreateBranchDTO createBranchDTO);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "originCityId", source = "addRouteDTO.originCityId")
+    @Mapping(target = "destinationCityId", source = "addRouteDTO.destinationCityId")
+    @Mapping(target = "priceXaf", source = "addRouteDTO.price")
+    @Mapping(target = "totalSeats", source = "addRouteDTO.totalSeats")
+    @Mapping(target = "agencyId", source = "agencyId")
+    AddRouteUseCaseImpl.Command toCommand(UUID agencyId, AddRouteDTO addRouteDTO);
 }

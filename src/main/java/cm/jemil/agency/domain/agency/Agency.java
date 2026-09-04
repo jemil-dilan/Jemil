@@ -43,9 +43,10 @@ public class Agency {
         this.status = AgencyStatus.ACTIVE;
     }
 
-    public void addRoute(CityId departure, CityId arrival, RoutePrice price, TotalSeats totalSeats) {
+    public UUID addRoute(CityId departure, CityId arrival, RoutePrice price, TotalSeats totalSeats) {
         Route route = Route.create(departure, arrival, price, totalSeats);
         routes.add(route);
+        return route.id();
     }
 
     public UUID id() {

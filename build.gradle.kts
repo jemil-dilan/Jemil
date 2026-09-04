@@ -85,6 +85,8 @@ dependencies {
     testImplementation(libs.testcontainers.postgresql)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.junit.platform:junit-platform-suite")
+
+    implementation("net.ttddyy:datasource-proxy:1.11.0")
 }
 
 // ── Spotless ─────────────────────────────────────────────────
@@ -236,6 +238,8 @@ fun registerOpenApiGenerateTask(
     taskModelNamePrefix: String? = null,
     taskApiNameSuffix: String? = null,
     extraConfigOptions: Map<String, String> = emptyMap(),
+    extraTypeMappings: Map<String, String> = emptyMap(),
+    extraImportMappings: Map<String, String> = emptyMap(),
 ) {
     tasks.register<GenerateTask>(taskName) {
         group = "openapi"
@@ -271,8 +275,9 @@ fun registerOpenApiGenerateTask(
         typeMappings.set(
             mapOf(
                 "time" to "java.time.LocalTime",
-            ),
+            ) + extraTypeMappings,
         )
+        importMappings.set(extraImportMappings)
         inputs.file(inputSpec)
         inputs.dir(templateDir)
         outputs.dir(outputDir)
@@ -319,6 +324,14 @@ registerOpenApiGenerateTask(
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
+        ),
+    extraTypeMappings =
+        mapOf(
+            "DateTime" to "OffsetDateTime",
+        ),
+    extraImportMappings =
+        mapOf(
+            "OffsetDateTime" to "java.time.OffsetDateTime",
         ),
 )
 

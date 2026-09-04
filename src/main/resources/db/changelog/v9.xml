@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+	<changeSet id="JEMIL-28-seed-mvp-trip-douala-yaounde"
+		author="codex">
+		<comment>Seed one OPEN trip on the Douala-Yaoundé route for trip
+			search E2E</comment>
+		<insert tableName="buses">
+			<column name="id" value="cccccccc-cccc-cccc-cccc-cccccccccccc" />
+			<column name="agency_id"
+				value="99999999-9999-9999-9999-999999999999" />
+			<column name="label" value="Seed Express" />
+			<column name="plate" value="CM-SEED-99" />
+			<column name="seat_count" valueNumeric="40" />
+			<column name="seat_layout" value="2-2" />
+		</insert>
+		<insert tableName="trips">
+			<column name="id" value="dddddddd-dddd-dddd-dddd-dddddddddddd" />
+			<column name="agency_id"
+				value="99999999-9999-9999-9999-999999999999" />
+			<column name="route_id"
+				value="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" />
+			<column name="bus_id"
+				value="cccccccc-cccc-cccc-cccc-cccccccccccc" />
+			<column name="departure_at"
+				valueComputed="(CURRENT_TIMESTAMP AT TIME ZONE 'UTC') + INTERVAL '7 days'" />
+			<column name="service_date"
+				valueComputed="((CURRENT_TIMESTAMP AT TIME ZONE 'UTC') + INTERVAL '7 days')::date" />
+			<column name="price_xaf" valueNumeric="5000" />
+			<column name="travel_class" value="STANDARD" />
+			<column name="status" value="OPEN" />
+			<column name="seats_total" valueNumeric="40" />
+			<column name="seats_sold" valueNumeric="0" />
+		</insert>
+	</changeSet>
+
+</databaseChangeLog>

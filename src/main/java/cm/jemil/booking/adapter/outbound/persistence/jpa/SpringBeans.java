@@ -1,22 +1,10 @@
 package cm.jemil.booking.adapter.outbound.persistence.jpa;
 
-import cm.jemil.booking.adapter.outbound.persistence.jpa.repository.BookingDemoSpringRepository;
-import cm.jemil.booking.adapter.outbound.persistence.jpa.repository.JpaDemoRepository;
-import cm.jemil.booking.adapter.outbound.persistence.jpa.repository.mapper.BookingDemoJpaMapper;
-import cm.jemil.booking.demo.DemoRepository;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration("bookingPersistenceBeans")
 @EntityScan(basePackages = {"cm.jemil.booking.adapter.outbound.persistence.jpa.entity"})
 @EnableJpaRepositories(basePackages = {"cm.jemil.booking.adapter.outbound.persistence.jpa.repository"})
-public class SpringBeans {
-
-    @Bean("bookingDemoRepository")
-    public DemoRepository demoRepository(
-            BookingDemoSpringRepository demoSpringRepository, BookingDemoJpaMapper demoJpaMapper) {
-        return new JpaDemoRepository(demoSpringRepository, demoJpaMapper);
-    }
-}
+public class SpringBeans {}

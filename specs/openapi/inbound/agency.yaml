@@ -20,8 +20,6 @@ servers:
     description: "Production"
 
 tags:
-- name: "Demo"
-  description: "Demo operations"
 - name: "City"
   description: "Cities management"
 - name: "Agency"
@@ -71,88 +69,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreationResponseDTO'
-
-  /demo:
-    get:
-      tags:
-      - "Demo"
-      summary: "Fetch all Demos"
-      description: "Fetch all Demos"
-      operationId: "fetchAllDemo"
-      security:
-      - oAuth:
-        - "demo:read:all"
-      parameters:
-      - name: "fieldsToExtractCode"
-        in: "query"
-        required: true
-        schema:
-          type: "string"
-        description: "specify the fields that will be present on the response"
-      responses:
-        "200":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/DemoDTO"
-    post:
-      tags:
-      - "Demo"
-      summary: "Create a new Demo"
-      description: "Create a new Demo"
-      operationId: "createDemo"
-      security:
-      - oAuth:
-        - "demo:create"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateDemoDTO"
-      responses:
-        "201":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CreationResponseDTO"
-  /demo/{demoId}:
-    get:
-      tags:
-        - "Demo"
-      summary: "Fetch demo by id"
-      description: "Fetch demo by id"
-      operationId: "fetchDemoById"
-      security:
-        - oAuth:
-            - "demo:read"
-      parameters:
-        - name: "demoId"
-          in: "path"
-          required: true
-          schema:
-            type: "string"
-            format: "uuid"
-          description: "represents the id of demo to fetch."
-        - name: "fieldsToExtractCode"
-          in: "query"
-          required: true
-          schema:
-            type: "string"
-          description: "specify the fields that will be present on the response"
-      responses:
-        "200":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DemoDTO"
-        "404":
-          description: "SPRING_BOOT_TEMPLATE-404-001"
   /agency:
     post:
       tags:
@@ -211,7 +127,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageResponseDTO'
+                $ref: '#/components/schemas/AgencyPaginationDTO'
 
   /agency/{agencyId}:
     get:
@@ -443,6 +359,10 @@ paths:
       responses:
         '201':
           description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreationResponseDTO'
         '400':
           description: "Invalid data provided"
           content:
@@ -487,24 +407,6 @@ paths:
 
 components:
   schemas:
-    DemoDTO:
-      type: "object"
-      required:
-      - "id"
-      - "name"
-      properties:
-        id:
-          type: "string"
-          format: "uuid"
-        name:
-          type: "string"
-    CreateDemoDTO:
-      type: "object"
-      required:
-      - "name"
-      properties:
-        name:
-          type: "string"
     CreationResponseDTO:
       type: "object"
       required:
@@ -531,6 +433,26 @@ components:
           type: "array"
           items:
             type: "object"
+          description: "The actual data items"
+        totalElements:
+          type: "integer"
+          description: "Total number of items available"
+        totalPages:
+          type: "integer"
+          description: "Total number of pages"
+        size:
+          type: "integer"
+          description: "Number of items per page"
+        number:
+          type: "integer"
+          description: "Current page number (0-based)"
+    AgencyPaginationDTO:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/AgencyDTO"
           description: "The actual data items"
         totalElements:
           type: "integer"

@@ -16,40 +16,40 @@ This guide provides step-by-step instructions for deploying the **Sprint 1 featu
 ## 🎯 Features Included in Sprint 1
 
 ### Agency Management
-| Feature | Endpoint | Method | Description | Role Required |
-|---------|----------|--------|-------------|---------------|
-| Create Agency | `/agency` | POST | Register a new transport agency | ADMIN |
-| Get All Agencies | `/agency` | GET | List all agencies (with city filter) | Any |
-| Get Agency by ID | `/agency/{agencyId}` | GET | Get agency details with branches | Any |
-| Suspend Agency | `/agency/{agencyId}` | PATCH | Suspend an agency | ADMIN |
+| Feature          | Endpoint             | Method | Description                          | Role Required |
+|------------------|----------------------|--------|--------------------------------------|---------------|
+| Create Agency    | `/agency`            | POST   | Register a new transport agency      | ADMIN         |
+| Get All Agencies | `/agency`            | GET    | List all agencies (with city filter) | Any           |
+| Get Agency by ID | `/agency/{agencyId}` | GET    | Get agency details with branches     | Any           |
+| Suspend Agency   | `/agency/{agencyId}` | PATCH  | Suspend an agency                    | ADMIN         |
 
 ### Branch Management
-| Feature | Endpoint | Method | Description | Role Required |
-|---------|----------|--------|-------------|---------------|
-| Add Branch | `/agency/{agencyId}/branches` | POST | Add physical location to agency | ADMIN or AGENCY_MANAGER |
-| Get Branch by ID | `/branches/{branchId}` | GET | Get branch details | Any |
-| Update Branch | `/branches/{branchId}` | PATCH | Update branch information | ADMIN or AGENCY_MANAGER |
-| Delete Branch | `/branches/{branchId}` | DELETE | Remove a branch | ADMIN or AGENCY_MANAGER |
-| Get Agency Branches | `/agency/{agencyId}/branches` | GET | List all branches for agency | Any |
+| Feature             | Endpoint                      | Method | Description                     | Role Required           |
+|---------------------|-------------------------------|--------|---------------------------------|-------------------------|
+| Add Branch          | `/agency/{agencyId}/branches` | POST   | Add physical location to agency | ADMIN or AGENCY_MANAGER |
+| Get Branch by ID    | `/branches/{branchId}`        | GET    | Get branch details              | Any                     |
+| Update Branch       | `/branches/{branchId}`        | PATCH  | Update branch information       | ADMIN or AGENCY_MANAGER |
+| Delete Branch       | `/branches/{branchId}`        | DELETE | Remove a branch                 | ADMIN or AGENCY_MANAGER |
+| Get Agency Branches | `/agency/{agencyId}/branches` | GET    | List all branches for agency    | Any                     |
 
 ### Route Management
-| Feature | Endpoint | Method | Description | Role Required |
-|---------|----------|--------|-------------|---------------|
-| Add Route | `/agency/{agencyId}/routes` | POST | Add a route to an agency | ADMIN or AGENCY_MANAGER |
-| Search Routes | `/routes/search` | GET | Search routes by origin/destination | Any |
+| Feature       | Endpoint                    | Method | Description                         | Role Required           |
+|---------------|-----------------------------|--------|-------------------------------------|-------------------------|
+| Add Route     | `/agency/{agencyId}/routes` | POST   | Add a route to an agency            | ADMIN or AGENCY_MANAGER |
+| Search Routes | `/routes/search`            | GET    | Search routes by origin/destination | Any                     |
 
 ---
 
 ## 📦 Prerequisites
 
 ### Software Requirements
-| Component | Version | Purpose |
-|-----------|---------|---------|
-| Java | JDK 25 | Application runtime |
-| Docker | 24.x | Container runtime |
-| Docker Compose | 2.x | Multi-container orchestration |
-| PostgreSQL | 15.x | Database |
-| Node.js | 18.x | Optional (for OpenAPI generation) |
+| Component      | Version | Purpose                           |
+|----------------|---------|-----------------------------------|
+| Java           | JDK 25  | Application runtime               |
+| Docker         | 24.x    | Container runtime                 |
+| Docker Compose | 2.x     | Multi-container orchestration     |
+| PostgreSQL     | 15.x    | Database                          |
+| Node.js        | 18.x    | Optional (for OpenAPI generation) |
 
 ### Infrastructure Requirements
 - **Memory:** 4GB minimum (8GB recommended for production)
@@ -146,11 +146,11 @@ java -jar build/libs/jemil-backend-*.jar \
 
 ### Application Profiles
 
-| Profile | Purpose | Configuration File |
-|---------|---------|---------------------|
-| `dev` | Local development | `application-dev.yml` |
+| Profile   | Purpose             | Configuration File        |
+|-----------|---------------------|---------------------------|
+| `dev`     | Local development   | `application-dev.yml`     |
 | `staging` | Staging environment | `application-staging.yml` |
-| `prod` | Production | `application-prod.yml` |
+| `prod`    | Production          | `application-prod.yml`    |
 
 ### Environment Variables
 
@@ -204,17 +204,17 @@ jwt:
 
 ### OAuth2 Scopes (Required for Endpoints)
 
-| Endpoint | Required Scope |
-|----------|----------------|
-| POST /agency | `agency:admin` |
-| PATCH /agency/{id} | `agency:admin` |
-| POST /agency/{id}/routes | `agency:admin` OR `agency:manager` |
+| Endpoint                   | Required Scope                     |
+|----------------------------|------------------------------------|
+| POST /agency               | `agency:admin`                     |
+| PATCH /agency/{id}         | `agency:admin`                     |
+| POST /agency/{id}/routes   | `agency:admin` OR `agency:manager` |
 | POST /agency/{id}/branches | `agency:admin` OR `agency:manager` |
-| PATCH /branches/{id} | `agency:admin` OR `agency:manager` |
-| DELETE /branches/{id} | `agency:admin` OR `agency:manager` |
-| GET /agency* | `agency:read` |
-| GET /branches* | `agency:read` |
-| GET /routes/search | `agency:read` |
+| PATCH /branches/{id}       | `agency:admin` OR `agency:manager` |
+| DELETE /branches/{id}      | `agency:admin` OR `agency:manager` |
+| GET /agency*               | `agency:read`                      |
+| GET /branches*             | `agency:read`                      |
+| GET /routes/search         | `agency:read`                      |
 
 ---
 
@@ -236,13 +236,13 @@ Download raw OpenAPI spec at:
 
 ### Actuator Endpoints
 
-| Endpoint | Description | Access |
-|----------|-------------|--------|
-| GET /actuator/health | Basic health check | Public |
-| GET /actuator/info | Application info | Public |
-| GET /actuator/metrics | Metrics | Authenticated |
-| GET /actuator/env | Environment | Authenticated |
-| GET /actuator/loggers | Loggers | Authenticated |
+| Endpoint              | Description        | Access        |
+|-----------------------|--------------------|---------------|
+| GET /actuator/health  | Basic health check | Public        |
+| GET /actuator/info    | Application info   | Public        |
+| GET /actuator/metrics | Metrics            | Authenticated |
+| GET /actuator/env     | Environment        | Authenticated |
+| GET /actuator/loggers | Loggers            | Authenticated |
 
 **Example health check:**
 ```bash
@@ -256,28 +256,28 @@ curl http://localhost:8080/actuator/health
 
 ### Tables Created in Sprint 1
 
-| Table | Description | Created By |
-|-------|-------------|------------|
-| `t_agency` | Agency legal entities | V1__Initial_schema.xml |
-| `t_agency_branch` | Physical locations | V1__Initial_schema.xml |
-| `t_routes` | Transport routes | V1__Initial_schema.xml |
-| `schedules` | Route schedules | V1__Initial_schema.xml |
-| `t_city` | Cities | V1__Initial_schema.xml |
-| `t_demo` | Demo entities | V1__Initial_schema.xml |
-| `outbox_events` | Outbox pattern | V1__Initial_schema.xml |
-| `users` | User accounts | S0 migrations |
+| Table             | Description           | Created By             |
+|-------------------|-----------------------|------------------------|
+| `t_agency`        | Agency legal entities | V1__Initial_schema.xml |
+| `t_agency_branch` | Physical locations    | V1__Initial_schema.xml |
+| `t_routes`        | Transport routes      | V1__Initial_schema.xml |
+| `schedules`       | Route schedules       | V1__Initial_schema.xml |
+| `t_city`          | Cities                | V1__Initial_schema.xml |
+| `t_demo`          | Demo entities         | V1__Initial_schema.xml |
+| `outbox_events`   | Outbox pattern        | V1__Initial_schema.xml |
+| `users`           | User accounts         | S0 migrations          |
 
 ### Liquibase Changelogs
 
-| Version | Description | Applied |
-|---------|-------------|---------|
-| V1 | Initial schema | ✅ Yes |
-| V2 | Agency improvements | ✅ Yes |
-| V3 | Schedules table | ✅ Yes |
-| V4 | Outbox events | ✅ Yes |
-| V5 | User roles | ✅ Yes |
-| V6 | Phone number constraints | ✅ Yes |
-| V7 | Route search indexes | ✅ Yes |
+| Version | Description              | Applied |
+|---------|--------------------------|---------|
+| V1      | Initial schema           | ✅ Yes  |
+| V2      | Agency improvements      | ✅ Yes  |
+| V3      | Schedules table          | ✅ Yes  |
+| V4      | Outbox events            | ✅ Yes  |
+| V5      | User roles               | ✅ Yes  |
+| V6      | Phone number constraints | ✅ Yes  |
+| V7      | Route search indexes     | ✅ Yes  |
 
 **Note:** Liquibase runs automatically on startup with `ddl-auto: validate`.
 
@@ -439,11 +439,11 @@ docker run -e JAVA_OPTS="-Xmx2g -Xms512m" jemil-backend:sprint-1
 
 ## 📞 Support & Contacts
 
-| Role | Contact | Responsibility |
-|------|---------|----------------|
-| Backend Developer | dev@jemil.cm | Code, Deployment |
-| DevOps | devops@jemil.cm | Infrastructure |
-| Product Owner | product@jemil.cm | Requirements |
+| Role              | Contact          | Responsibility   |
+|-------------------|------------------|------------------|
+| Backend Developer | dev@jemil.cm     | Code, Deployment |
+| DevOps            | devops@jemil.cm  | Infrastructure   |
+| Product Owner     | product@jemil.cm | Requirements     |
 
 ---
 

@@ -8,13 +8,13 @@
 
 ## 1. Honest status
 
-| Claim in your documents | Reality |
-|---|---|
-| "Production-ready" agency module | Accurate. Real domain, real adapters, real migrations. |
-| "Exemplary engineering discipline" | Half true. The *structure* is excellent. 17 test files against 197 source files, with a Definition of Done demanding ≥70% coverage, is not. |
-| "Ready for rapid feature development" | Only after the model defects in §2 are fixed. Building booking on the current `Schedule` will require reworking it later. |
-| "8–11 weeks to MVP" | Backend-only, and roughly right. Excludes all client applications. See §5. |
-| 9 modules | 1 implemented, 8 scaffolds. |
+| Claim in your documents               | Reality                                                                                                                                     |
+|---------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| "Production-ready" agency module      | Accurate. Real domain, real adapters, real migrations.                                                                                      |
+| "Exemplary engineering discipline"    | Half true. The *structure* is excellent. 17 test files against 197 source files, with a Definition of Done demanding ≥70% coverage, is not. |
+| "Ready for rapid feature development" | Only after the model defects in §2 are fixed. Building booking on the current `Schedule` will require reworking it later.                   |
+| "8–11 weeks to MVP"                   | Backend-only, and roughly right. Excludes all client applications. See §5.                                                                  |
+| 9 modules                             | 1 implemented, 8 scaffolds.                                                                                                                 |
 
 **What you have actually built:** a very good skeleton, one complete vertical slice, and the CI/quality apparatus of a much larger project.
 

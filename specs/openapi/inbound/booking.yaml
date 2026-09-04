@@ -1,175 +1,205 @@
 ---
 openapi: "3.0.3"
 info:
-  title: "JEMIL Agency API"
-  description: "API de gestion des agences de transport partenaires JEMIL.
-    
-    Ce contrat est la source de vérité entre le backend et les clients
-    (app mobile Android, dashboard web agence, équipe QA).
-    
-    **Règle** : toute modification de ce fichier nécessite une revue.
-    Le code est généré depuis ce spec — pas l'inverse."
-  version: "2026-W01"
+  title: "JEMIL Booking API"
+  description: "Trip search and passenger booking hold operations."
+  version: "2026-W03"
   contact:
     name: "JEMIL Dev Team"
+
 servers:
-- url: "https"
-- url: "http"
+  - url: "http://localhost:8080"
+    description: "Local development"
+  - url: "https://api.jemil.cm"
+    description: "Production"
+
 tags:
-- name: "Demo"
-  description: "Demo operations"
-- name: "Agency"
-  description: "Agencies operations"
+  - name: "Trip"
+    description: "Scheduled departures search"
+  - name: "Booking"
+    description: "Passenger booking holds"
+
 paths:
-  /demo:
+  /trips/search:
     get:
       tags:
-      - "Demo"
-      summary: "Fetch all Demos"
-      description: "Fetch all Demos"
-      operationId: "fetchAllDemo"
-      security:
-      - oAuth:
-        - "demo:read:all"
+        - "Trip"
+      summary: "Search scheduled trips by route and date"
+      operationId: "searchTrips"
       parameters:
-      - name: "fieldsToExtractCode"
-        in: "query"
-        required: true
-        schema:
-          type: "string"
-        description: "specify the fields that will be present on the response"
+        - name: "originCityId"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+        - name: "destinationCityId"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+        - name: "serviceDate"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+            format: "date"
       responses:
         "200":
-          description: "successful operation"
+          description: "Matching trips"
           content:
             application/json:
               schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/DemoDTO"
+                $ref: "#/components/schemas/TripSearchResponseDTO"
+        "400":
+          description: "Invalid search parameters"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+
+  /bookings:
     post:
       tags:
-      - "Demo"
-      summary: "Create a new Demo"
-      description: "Create a new Demo"
-      operationId: "createDemo"
-      security:
-      - oAuth:
-        - "demo:create"
+        - "Booking"
+      summary: "Place a seat hold on a trip"
+      operationId: "createBookingHold"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateDemoDTO"
+              $ref: "#/components/schemas/CreateBookingHoldDTO"
       responses:
         "201":
-          description: "successful operation"
+          description: "Hold created"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CreationResponseDTO"
-  /demo/{demoId}:
-    get:
-      tags:
-        - "Demo"
-      summary: "Fetch demo by id"
-      description: "Fetch demo by id"
-      operationId: "fetchDemoById"
-      security:
-        - oAuth:
-            - "demo:read"
-      parameters:
-        - name: "demoId"
-          in: "path"
-          required: true
-          schema:
-            type: "string"
-            format: "uuid"
-          description: "represents the id of demo to fetch."
-        - name: "fieldsToExtractCode"
-          in: "query"
-          required: true
-          schema:
-            type: "string"
-          description: "specify the fields that will be present on the response"
-      responses:
-        "200":
-          description: "successful operation"
+                $ref: "#/components/schemas/BookingHoldResponseDTO"
+        "400":
+          description: "Invalid request"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DemoDTO"
+                $ref: "#/components/schemas/ErrorDTO"
         "404":
-          description: "SPRING_BOOT_TEMPLATE-404-001"
+          description: "Trip not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+        "409":
+          description: "Seat unavailable"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+
 components:
-#  securitySchemes:
-#    bearerAuth:
-#      type: "http"
-#      scheme: "bearer"
-#      bearerFormat: "JWT"
-#    oAuth:
-#      type: "oauth2"
-#      description: "This API uses OAuth 2 with the Authorization Code grant flow."
-#      flows:
-#        authorizationCode:
-#          authorizationUrl: "https://auth.oauth.lao-sarl.cm"
-#          tokenUrl: "https://token.oauth.lao-sarl.cm"
-#          scopes:
-#            demo:read:all: "Needed to fetch all Demo objects"
-#            demo:create: "Needed when to create a new Demo object"
   schemas:
-    DemoDTO:
+    TripSearchResponseDTO:
       type: "object"
-      required:
-      - "id"
-      - "name"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TripDTO"
+        totalElements:
+          type: "integer"
+
+    TripDTO:
+      type: "object"
       properties:
         id:
           type: "string"
           format: "uuid"
-        name:
+        agencyId:
           type: "string"
-    CreateDemoDTO:
+          format: "uuid"
+        agencyName:
+          type: "string"
+        routeId:
+          type: "string"
+          format: "uuid"
+        originCityId:
+          type: "string"
+          format: "uuid"
+        destinationCityId:
+          type: "string"
+          format: "uuid"
+        departureAt:
+          type: "string"
+          format: "date-time"
+        serviceDate:
+          type: "string"
+          format: "date"
+        priceXaf:
+          type: "integer"
+        travelClass:
+          type: "string"
+        status:
+          type: "string"
+        seatsTotal:
+          type: "integer"
+        seatsRemaining:
+          type: "integer"
+
+    CreateBookingHoldDTO:
       type: "object"
       required:
-      - "name"
+        - "tripId"
+        - "seatNos"
+        - "passengerName"
       properties:
-        name:
+        tripId:
           type: "string"
+          format: "uuid"
+        seatNos:
+          type: "array"
+          minItems: 1
+          maxItems: 5
+          items:
+            type: "integer"
+            minimum: 1
+        passengerName:
+          type: "string"
+          maxLength: 160
+        passengerMsisdn:
+          type: "string"
+          maxLength: 32
+
+    BookingHoldResponseDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        ref:
+          type: "string"
+        tripId:
+          type: "string"
+          format: "uuid"
+        holdExpiresAt:
+          type: "string"
+          format: "date-time"
+        amountXaf:
+          type: "integer"
+        seatNos:
+          type: "array"
+          items:
+            type: "integer"
+
     CreationResponseDTO:
       type: "object"
       required:
-      - "newId"
+        - "newId"
       properties:
         newId:
           type: "string"
           format: "uuid"
-    PhoneNumberDTO:
-      type: "object"
-      properties:
-        countryCode:
-          type: "string"
-          description: "the international code for the country"
-          example: "237 for Cameroon"
-        number:
-          type: "string"
-          description: "the phone number"
-          example: 653492410
-    AddressDTO:
-      type: "object"
-      properties:
-        city:
-          type: "string"
-          description: "the city of collector"
-        district:
-          type: "string"
-          description: "the district of collector"
-    StatusDTO:
-      enum:
-        - "ACTIVE"
-        - "SUSPENDED"
-        - "INACTIVE"
+
     ErrorDTO:
       type: "object"
       properties:
@@ -180,9 +210,5 @@ components:
           type: "integer"
         error:
           type: "string"
-          description: "Code d'erreur technique"
-          example: "DOMAIN_RULE_VIOLATION"
         message:
           type: "string"
-          description: "Message lisible par un humain"
-          example: "Le nom de l'agence est obligatoire."

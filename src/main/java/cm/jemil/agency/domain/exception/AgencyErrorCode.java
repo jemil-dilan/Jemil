@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AgencyErrorCode implements ErrorCode {
     AGENCY_404_001("AGENCY_404_001", "Agency not found"),
-    AGENCY_404_002("AGENCY_404_002", "Demo not found"),
     AGENCY_400_001("AGENCY_400_001", "Invalid agency state"),
     AGENCY_400_002("AGENCY_400_002", "Not enough seats available"),
     AGENCY_400_003("AGENCY_400_003", "Agency name is required"),
