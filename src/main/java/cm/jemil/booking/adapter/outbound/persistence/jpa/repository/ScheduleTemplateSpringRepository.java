@@ -2,6 +2,7 @@ package cm.jemil.booking.adapter.outbound.persistence.jpa.repository;
 
 import cm.jemil.booking.adapter.outbound.persistence.jpa.entity.ScheduleTemplateJpa;
 import cm.jemil.booking.domain.trip.ActiveScheduleTemplate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,7 +34,7 @@ public interface ScheduleTemplateSpringRepository extends JpaRepository<Schedule
                         UUID.fromString(row.getRouteId()),
                         UUID.fromString(row.getBusId()),
                         UUID.fromString(row.getAgencyId()),
-                        row.getDepartureTime().toLocalTime(),
+                        row.getDepartureTime(),
                         row.getDaysOfWeek(),
                         row.getPriceXaf(),
                         row.getTravelClass(),
@@ -50,7 +51,7 @@ public interface ScheduleTemplateSpringRepository extends JpaRepository<Schedule
 
         String getAgencyId();
 
-        java.sql.Time getDepartureTime();
+        LocalTime getDepartureTime();
 
         Short getDaysOfWeek();
 
