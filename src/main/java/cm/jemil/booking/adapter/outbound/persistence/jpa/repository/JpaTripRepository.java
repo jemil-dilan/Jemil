@@ -2,6 +2,7 @@ package cm.jemil.booking.adapter.outbound.persistence.jpa.repository;
 
 import cm.jemil.booking.domain.trip.TripRepository;
 import cm.jemil.booking.domain.trip.TripSearchView;
+import cm.jemil.booking.domain.trip.TripSeatMap;
 import cm.jemil.booking.domain.trip.TripToCreate;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Repository;
 public class JpaTripRepository implements TripRepository {
 
     private final TripSpringRepository tripSpringRepository;
+    private final BusSpringRepository busSpringRepository;
+    private final SeatAssignmentSpringRepository seatAssignmentSpringRepository;
     private final JdbcClient jdbcClient;
 
     @Override
@@ -30,6 +33,17 @@ public class JpaTripRepository implements TripRepository {
         return tripSpringRepository
                 .findById(tripId)
                 .map(trip -> new TripDetails(trip.getId(), trip.getPriceXaf(), trip.getSeatsTotal(), trip.getStatus()));
+    }
+
+    @Override
+    public Optional<TripSeatMap> findSeatMap(UUID tripId) {
+        return tripSpringRepository.findById(tripId).flatMap(trip -> busSpringRepository
+                .findById(trip.getBusId())
+                .map(bus -> new TripSeatMap(
+                        trip.getId(),
+                        bus.getSeatCount(),
+                        bus.getSeatLayout(),
+                        List.copyOf(seatAssignmentSpringRepository.findTakenSeatNosByTripId(tripId)))));
     }
 
     @Override

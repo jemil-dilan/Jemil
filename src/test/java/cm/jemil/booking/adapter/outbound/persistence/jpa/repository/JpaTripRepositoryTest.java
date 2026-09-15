@@ -8,10 +8,14 @@ import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import cm.jemil.booking.adapter.outbound.persistence.jpa.entity.BusJpa;
+import cm.jemil.booking.adapter.outbound.persistence.jpa.entity.TripJpa;
 import cm.jemil.booking.domain.trip.TripToCreate;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +29,12 @@ class JpaTripRepositoryTest {
     private TripSpringRepository tripSpringRepository;
 
     @Mock
+    private BusSpringRepository busSpringRepository;
+
+    @Mock
+    private SeatAssignmentSpringRepository seatAssignmentSpringRepository;
+
+    @Mock
     private JdbcClient jdbcClient;
 
     @Mock
@@ -35,7 +45,8 @@ class JpaTripRepositoryTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        repository = new JpaTripRepository(tripSpringRepository, jdbcClient);
+        repository = new JpaTripRepository(
+                tripSpringRepository, busSpringRepository, seatAssignmentSpringRepository, jdbcClient);
         when(jdbcClient.sql(anyString())).thenReturn(statementSpec);
         when(statementSpec.param(any())).thenReturn(statementSpec);
         when(statementSpec.param(anyInt())).thenReturn(statementSpec);
@@ -74,5 +85,35 @@ class JpaTripRepositoryTest {
         boolean inserted = repository.tryInsertTrip(sampleTrip());
 
         assertThat(inserted).isFalse();
+    }
+
+    @Test
+    void findSeatMapReturnsBusLayoutAndTakenSeats() {
+        var tripId = UUID.randomUUID();
+        var busId = UUID.randomUUID();
+        var trip = new TripJpa();
+        trip.setId(tripId);
+        trip.setBusId(busId);
+        var bus = new BusJpa();
+        bus.setId(busId);
+        bus.setSeatCount(70);
+        bus.setSeatLayout("2-2");
+        when(tripSpringRepository.findById(tripId)).thenReturn(Optional.of(trip));
+        when(busSpringRepository.findById(busId)).thenReturn(Optional.of(bus));
+        when(seatAssignmentSpringRepository.findTakenSeatNosByTripId(tripId)).thenReturn(List.of(3, 15));
+
+        var seatMap = repository.findSeatMap(tripId);
+
+        assertThat(seatMap).isPresent();
+        assertThat(seatMap.get().seatCount()).isEqualTo(70);
+        assertThat(seatMap.get().layout()).isEqualTo("2-2");
+        assertThat(seatMap.get().taken()).containsExactly(3, 15);
+    }
+
+    @Test
+    void findSeatMapEmptyWhenTripMissing() {
+        when(tripSpringRepository.findById(any())).thenReturn(Optional.empty());
+
+        assertThat(repository.findSeatMap(UUID.randomUUID())).isEmpty();
     }
 }

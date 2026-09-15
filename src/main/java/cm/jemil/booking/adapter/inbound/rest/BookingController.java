@@ -1,11 +1,13 @@
 package cm.jemil.booking.adapter.inbound.rest;
 
+import cm.jemil.booking.application.inbound.usecase.GetTripSeatMapUseCase;
 import cm.jemil.booking.application.inbound.usecase.PlaceBookingHoldUseCase;
 import cm.jemil.booking.application.inbound.usecase.SearchTripsUseCase;
 import cm.jemil.generated.booking.adapter.rest.inbound.api.BookingApi;
 import cm.jemil.generated.booking.adapter.rest.inbound.api.TripApi;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.CreateBookingHoldDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSearchResponseDTO;
+import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSeatMapDTO;
 import java.time.LocalDate;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookingController implements TripApi, BookingApi {
 
     private final SearchTripsUseCase searchTripsUseCase;
+    private final GetTripSeatMapUseCase getTripSeatMapUseCase;
     private final PlaceBookingHoldUseCase placeBookingHoldUseCase;
     private final BookingRestMapper restMapper;
 
@@ -26,6 +29,11 @@ public class BookingController implements TripApi, BookingApi {
             UUID originCityId, UUID destinationCityId, LocalDate serviceDate) {
         var trips = searchTripsUseCase.execute(originCityId, destinationCityId, serviceDate);
         return ResponseEntity.ok(restMapper.toTripSearchResponse(trips));
+    }
+
+    @Override
+    public ResponseEntity<TripSeatMapDTO> getTripSeats(UUID tripId) {
+        return ResponseEntity.ok(restMapper.toTripSeatMap(getTripSeatMapUseCase.execute(tripId)));
     }
 
     @Override
