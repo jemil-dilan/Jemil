@@ -48,7 +48,8 @@ public class SecurityConfig {
                                 "/routes/search",
                                 "/cities",
                                 "/cities/**",
-                                "/trips/search")
+                                "/trips/search",
+                                "/trips/*/seats")
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/bookings")
                         .permitAll()

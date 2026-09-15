@@ -12,6 +12,9 @@ public interface TripRepository {
 
     Optional<TripDetails> findById(UUID tripId);
 
+    /** Seat map for UC-P-02; empty when the trip does not exist. */
+    Optional<TripSeatMap> findSeatMap(UUID tripId);
+
     /**
      * Persists a newly materialised trip. Returns {@code false} when a matching trip already
      * exists for the same template and service date (unique index {@code trip_once_per_template_date}).

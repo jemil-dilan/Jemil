@@ -8,6 +8,7 @@ import cm.jemil.generated.booking.adapter.rest.inbound.dto.BookingHoldResponseDT
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.CreateBookingHoldDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSearchResponseDTO;
+import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSeatMapDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.En;
 import io.restassured.http.ContentType;
@@ -27,6 +28,7 @@ public class BookingStep implements En {
     private final E2eHttpClient httpClient;
     private TripSearchResponseDTO tripSearchResponseDTO;
     private BookingHoldResponseDTO bookingHoldResponseDTO;
+    private TripSeatMapDTO tripSeatMapDTO;
 
     public BookingStep(JdbcClient jdbcClient, E2eHttpClient e2eHttpClient, ScenarioContext scenarioContext) {
         this.httpClient = e2eHttpClient;
@@ -134,6 +136,38 @@ public class BookingStep implements En {
             assertThat(this.bookingHoldResponseDTO).isNotNull();
             assertThat(this.bookingHoldResponseDTO.getRef()).startsWith("JML-");
             assertThat(this.bookingHoldResponseDTO.getSeatNos()).contains(Integer.parseInt(map.get("seatNos")));
+        });
+
+        When("I fetch the seat map for trip {string}", (String tripId) -> {
+            this.tripSeatMapDTO = given().header("Authorization", "Bearer " + httpClient.getAccessToken())
+                    .when()
+                    .get("/trips/{tripId}/seats", UUID.fromString(tripId))
+                    .then()
+                    .statusCode(200)
+                    .extract()
+                    .as(TripSeatMapDTO.class);
+        });
+
+        When("I try to fetch the seat map for trip {string}", (String tripId) -> {
+            Response response = given().header("Authorization", "Bearer " + httpClient.getAccessToken())
+                    .when()
+                    .get("/trips/{tripId}/seats", UUID.fromString(tripId));
+            httpClient.setLastResponse(response);
+        });
+
+        Then("the seat map has seat count {int} and layout {string}", (Integer seatCount, String layout) -> {
+            assertThat(this.tripSeatMapDTO).isNotNull();
+            assertThat(this.tripSeatMapDTO.getSeatCount()).isEqualTo(seatCount);
+            assertThat(this.tripSeatMapDTO.getLayout()).isEqualTo(layout);
+            assertThat(this.tripSeatMapDTO.getTripId()).isEqualTo(SEED_TRIP_ID);
+        });
+
+        And("the seat map taken seats include", (DataTable dataTable) -> {
+            assertThat(this.tripSeatMapDTO).isNotNull();
+            var expected = dataTable.asMaps().stream()
+                    .map(row -> Integer.parseInt(row.get("seatNo")))
+                    .toList();
+            assertThat(this.tripSeatMapDTO.getTaken()).containsAll(expected);
         });
     }
 
