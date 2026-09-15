@@ -13,7 +13,7 @@
 | **S0** Foundation | Hexagonal monolith, Liquibase, JWT, ArchUnit, OpenAPI | Done | |
 | **S1** Agency | CRUD agencies, routes, branches, cities, search, suspend | Done | Cucumber agency e2e |
 | **S1.5** Model correction | Inventory, XAF, concurrency, trip/hold APIs, tripgen | **Closed** (known debts below) | Exit criteria met |
-| **S2** Booking UX complete | Seat map, passenger details, hold expiry job real | Not started | UC-P-02, UC-P-04, UC-S-01 |
+| **S2** Booking UX complete | Seat map, passenger details, hold expiry payment-aware | In progress | UC-P-02, UC-P-04; UC-S-01 core done |
 | **S3** Payment MoMo | Initiate / callback / timeout / late success | Not started | UC-P-05…07 |
 | **S4** Ticket + SMS | Boarding pass, SMS queue | Not started | UC-P-08, UC-S-05 |
 | **S5** Counter | Cashier PIN, cash booking | Not started | UC-C-* |
@@ -34,7 +34,7 @@ Canonical plan: [`JEMIL_Backend_Gap_Analysis.md`](JEMIL_Backend_Gap_Analysis.md)
 | S1.5-05 | `Instant` everywhere; `Clock`; `CreatedAt.reconstitute()` | Partial — `reconstitute()` + `Clock` on trip search; still `LocalDateTime` |
 | S1.5-06 | `buses` / `staff_users` tables | Tables yes; staff domain deferred |
 | S1.5-07 | `CASHIER` + multi-role JWT only | Yes |
-| S1.5-08 | Nightly trip generation 14-day (Africa/Douala) | Yes — service + cron scheduler + unit tests + seed template (v11) |
+| S1.5-08 | Nightly trip generation 14-day (Africa/Douala) | Yes — service + cron + unit + Cucumber simulated tick + seed (v11) |
 | S1.5-09 | Purge Demo scaffolds | Yes — code/OpenAPI gone; v10 drops demo tables |
 | Exit | `GET /trips/search` | Yes |
 | Exit | `POST /bookings` hold + 409 | Yes (10 min hold) |
@@ -45,7 +45,7 @@ Canonical plan: [`JEMIL_Backend_Gap_Analysis.md`](JEMIL_Backend_Gap_Analysis.md)
 
 - Legacy agency `schedules` vs MVP `trips` still both present.
 - `CreatedAt` / timestamps not fully on `Instant`.
-- `BookingExpiryScheduler` is still a stub → **S2 / UC-S-01**.
+- Hold expiry skips in-flight payments (INITIATED/PENDING) deferred until payment module → **S2 / UC-S-01 AC**.
 - No seat-map API yet → **S2 / UC-P-02**.
 - No `staff_users` domain/API yet → counter sprint.
 
@@ -63,8 +63,8 @@ Canonical plan: [`JEMIL_Backend_Gap_Analysis.md`](JEMIL_Backend_Gap_Analysis.md)
 | UC-P-06 | Payment fail | No |
 | UC-P-07 | Payment timeout | No |
 | UC-P-08 | Ticket / SMS | No |
-| UC-S-01 | Hold expiry | Stub only |
-| UC-S-06 | Trip generation | Yes |
+| UC-S-01 | Hold expiry | Yes — job + Cucumber simulated tick; payment-aware skip deferred |
+| UC-S-06 | Trip generation | Yes — + Cucumber simulated tick / idempotent |
 | UC-C-* | Counter | No |
 
 Full AC: [`JEMIL_Use_Cases_Acceptance_Criteria.md`](JEMIL_Use_Cases_Acceptance_Criteria.md).
@@ -82,6 +82,6 @@ Full AC: [`JEMIL_Use_Cases_Acceptance_Criteria.md`](JEMIL_Use_Cases_Acceptance_C
 
 ## Next up
 
-1. **S2** — seat map (UC-P-02) + real hold expiry that never releases in-flight payments (UC-S-01).
+1. **S2** — seat map (UC-P-02); payment-aware hold expiry skip once payments land.
 2. Passenger details + consent (UC-P-04).
 3. Parallel non-code: MoMo merchant + SMS provider (Build Spec §7 Sprint 0).

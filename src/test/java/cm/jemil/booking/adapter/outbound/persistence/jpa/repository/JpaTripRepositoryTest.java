@@ -2,10 +2,12 @@ package cm.jemil.booking.adapter.outbound.persistence.jpa.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import cm.jemil.booking.adapter.outbound.persistence.jpa.entity.TripJpa;
 import cm.jemil.booking.domain.trip.TripToCreate;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -13,22 +15,30 @@ import java.time.ZoneOffset;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.core.simple.JdbcClient;
 
 class JpaTripRepositoryTest {
 
     @Mock
     private TripSpringRepository tripSpringRepository;
 
+    @Mock
+    private JdbcClient jdbcClient;
+
+    @Mock
+    private JdbcClient.StatementSpec statementSpec;
+
     private JpaTripRepository repository;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        repository = new JpaTripRepository(tripSpringRepository);
+        repository = new JpaTripRepository(tripSpringRepository, jdbcClient);
+        when(jdbcClient.sql(anyString())).thenReturn(statementSpec);
+        when(statementSpec.param(any())).thenReturn(statementSpec);
+        when(statementSpec.param(anyInt())).thenReturn(statementSpec);
     }
 
     private TripToCreate sampleTrip() {
@@ -48,40 +58,21 @@ class JpaTripRepositoryTest {
     }
 
     @Test
-    void tryInsertTripMapsDomainFieldsAndSaves() {
-        var trip = sampleTrip();
-        when(tripSpringRepository.saveAndFlush(any(TripJpa.class))).thenAnswer(inv -> inv.getArgument(0));
+    void tryInsertTripReturnsTrueWhenRowInserted() {
+        when(statementSpec.update()).thenReturn(1);
 
-        boolean inserted = repository.tryInsertTrip(trip);
+        boolean inserted = repository.tryInsertTrip(sampleTrip());
 
         assertThat(inserted).isTrue();
-        var captor = ArgumentCaptor.forClass(TripJpa.class);
-        verify(tripSpringRepository).saveAndFlush(captor.capture());
-
-        TripJpa saved = captor.getValue();
-        assertThat(saved.getId()).isEqualTo(trip.id());
-        assertThat(saved.getTemplateId()).isEqualTo(trip.templateId());
-        assertThat(saved.getAgencyId()).isEqualTo(trip.agencyId());
-        assertThat(saved.getRouteId()).isEqualTo(trip.routeId());
-        assertThat(saved.getBusId()).isEqualTo(trip.busId());
-        assertThat(saved.getDepartureAt()).isEqualTo(trip.departureAt());
-        assertThat(saved.getServiceDate()).isEqualTo(trip.serviceDate());
-        assertThat(saved.getPriceXaf()).isEqualTo(trip.priceXaf());
-        assertThat(saved.getTravelClass()).isEqualTo(trip.travelClass());
-        assertThat(saved.getStatus()).isEqualTo(trip.status());
-        assertThat(saved.getSeatsTotal()).isEqualTo(trip.seatsTotal());
-        assertThat(saved.getSeatsSold()).isEqualTo(trip.seatsSold());
+        verify(jdbcClient).sql(contains("ON CONFLICT"));
     }
 
     @Test
-    void tryInsertTripReturnsFalseOnUniqueConstraintViolation() {
-        var trip = sampleTrip();
-        when(tripSpringRepository.saveAndFlush(any(TripJpa.class)))
-                .thenThrow(new DataIntegrityViolationException("duplicate"));
+    void tryInsertTripReturnsFalseWhenConflictSkipped() {
+        when(statementSpec.update()).thenReturn(0);
 
-        boolean inserted = repository.tryInsertTrip(trip);
+        boolean inserted = repository.tryInsertTrip(sampleTrip());
 
         assertThat(inserted).isFalse();
-        verify(tripSpringRepository).saveAndFlush(any(TripJpa.class));
     }
 }

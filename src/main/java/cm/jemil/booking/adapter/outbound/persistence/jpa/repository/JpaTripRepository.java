@@ -1,6 +1,5 @@
 package cm.jemil.booking.adapter.outbound.persistence.jpa.repository;
 
-import cm.jemil.booking.adapter.outbound.persistence.jpa.entity.TripJpa;
 import cm.jemil.booking.domain.trip.TripRepository;
 import cm.jemil.booking.domain.trip.TripSearchView;
 import cm.jemil.booking.domain.trip.TripToCreate;
@@ -10,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Repository;
 public class JpaTripRepository implements TripRepository {
 
     private final TripSpringRepository tripSpringRepository;
+    private final JdbcClient jdbcClient;
 
     @Override
     public List<TripSearchView> search(
@@ -34,24 +34,33 @@ public class JpaTripRepository implements TripRepository {
 
     @Override
     public boolean tryInsertTrip(TripToCreate trip) {
-        try {
-            var entity = new TripJpa();
-            entity.setId(trip.id());
-            entity.setTemplateId(trip.templateId());
-            entity.setAgencyId(trip.agencyId());
-            entity.setRouteId(trip.routeId());
-            entity.setBusId(trip.busId());
-            entity.setDepartureAt(trip.departureAt());
-            entity.setServiceDate(trip.serviceDate());
-            entity.setPriceXaf(trip.priceXaf());
-            entity.setTravelClass(trip.travelClass());
-            entity.setStatus(trip.status());
-            entity.setSeatsTotal(trip.seatsTotal());
-            entity.setSeatsSold(trip.seatsSold());
-            tripSpringRepository.saveAndFlush(entity);
-            return true;
-        } catch (DataIntegrityViolationException ex) {
-            return false;
-        }
+        // ON CONFLICT avoids aborting the surrounding Postgres transaction on duplicate
+        // (catching DataIntegrityViolationException is not enough under PG).
+        int inserted = jdbcClient
+                .sql(
+                        """
+                        INSERT INTO trips (
+                            id, template_id, agency_id, route_id, bus_id,
+                            departure_at, service_date, price_xaf, travel_class,
+                            status, seats_total, seats_sold
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ON CONFLICT (template_id, service_date)
+                            WHERE template_id IS NOT NULL
+                        DO NOTHING
+                        """)
+                .param(trip.id())
+                .param(trip.templateId())
+                .param(trip.agencyId())
+                .param(trip.routeId())
+                .param(trip.busId())
+                .param(trip.departureAt())
+                .param(trip.serviceDate())
+                .param(trip.priceXaf())
+                .param(trip.travelClass())
+                .param(trip.status())
+                .param(trip.seatsTotal())
+                .param(trip.seatsSold())
+                .update();
+        return inserted > 0;
     }
 }
