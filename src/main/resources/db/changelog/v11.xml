@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+	<changeSet id="JEMIL-29-seed-schedule-template-douala-yaounde"
+		author="codex">
+		<comment>Seed an active daily schedule template so UC-S-06 trip
+			generation has work to do (bitmask 127 = Mon-Sun).</comment>
+		<insert tableName="schedule_templates">
+			<column name="id"
+				value="eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee" />
+			<column name="route_id"
+				value="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" />
+			<column name="bus_id"
+				value="cccccccc-cccc-cccc-cccc-cccccccccccc" />
+			<column name="departure_time" value="08:00:00" />
+			<column name="days_of_week" valueNumeric="127" />
+			<column name="price_xaf" valueNumeric="5000" />
+			<column name="travel_class" value="STANDARD" />
+			<column name="active" valueBoolean="true" />
+		</insert>
+	</changeSet>
+
+</databaseChangeLog>
