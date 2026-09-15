@@ -1,7 +1,6 @@
 package cm.jemil.booking.application.expiry;
 
-import cm.jemil.booking.adapter.outbound.persistence.jpa.repository.BookingSpringRepository;
-import cm.jemil.booking.adapter.outbound.persistence.jpa.repository.SeatAssignmentSpringRepository;
+import cm.jemil.booking.domain.booking.BookingExpiryRepository;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -19,26 +18,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class BookingExpiryService {
 
-    private static final String HELD = "HELD";
-    private static final String EXPIRED = "EXPIRED";
-
-    private final BookingSpringRepository bookingSpringRepository;
-    private final SeatAssignmentSpringRepository seatAssignmentSpringRepository;
+    private final BookingExpiryRepository bookingExpiryRepository;
     private final Clock clock;
 
     @Transactional
     public int expireHolds() {
         var now = OffsetDateTime.now(clock.withZone(ZoneOffset.UTC));
-        var expired = bookingSpringRepository.findExpiredHolds(now);
+        var expiredIds = bookingExpiryRepository.findExpiredHeldBookingIds(now);
         int released = 0;
 
-        for (var booking : expired) {
-            if (!HELD.equals(booking.getStatus())) {
-                continue;
-            }
-            booking.setStatus(EXPIRED);
-            bookingSpringRepository.save(booking);
-            seatAssignmentSpringRepository.releaseHeldSeatsForBooking(booking.getId());
+        for (var bookingId : expiredIds) {
+            bookingExpiryRepository.expireHold(bookingId);
             released++;
         }
 

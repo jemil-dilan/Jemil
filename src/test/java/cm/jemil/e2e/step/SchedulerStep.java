@@ -26,21 +26,22 @@ public class SchedulerStep implements En {
             BookingExpiryScheduler bookingExpiryScheduler,
             JdbcClient jdbcClient) {
 
-        Given("I remember how many trips exist for the seeded schedule template", () -> rememberedTemplateTripCount.set(
-                countTemplateTrips(jdbcClient)));
+        Given(
+                "I remember how many trips exist for the seeded schedule template",
+                () -> rememberedTemplateTripCount.set(countTemplateTrips(jdbcClient)));
 
         When("the trip generation scheduler tick is simulated", tripGenerationScheduler::generateRollingWindow);
 
-        When(
-                "the trip generation scheduler tick is simulated again",
-                tripGenerationScheduler::generateRollingWindow);
+        When("the trip generation scheduler tick is simulated again", tripGenerationScheduler::generateRollingWindow);
 
-        Then("trips generated from the seeded schedule template cover at least {int} service dates", (Integer minDays) -> {
-            int count = countTemplateTrips(jdbcClient);
-            assertThat(count)
-                    .as("generated trips for template %s", SEED_TEMPLATE_ID)
-                    .isGreaterThanOrEqualTo(minDays);
-        });
+        Then(
+                "trips generated from the seeded schedule template cover at least {int} service dates",
+                (Integer minDays) -> {
+                    int count = countTemplateTrips(jdbcClient);
+                    assertThat(count)
+                            .as("generated trips for template %s", SEED_TEMPLATE_ID)
+                            .isGreaterThanOrEqualTo(minDays);
+                });
 
         Then("the trip count for the seeded schedule template did not increase", () -> {
             int count = countTemplateTrips(jdbcClient);
@@ -49,8 +50,9 @@ public class SchedulerStep implements En {
                     .isEqualTo(rememberedTemplateTripCount.get());
         });
 
-        And("I remember the trip count for the seeded schedule template", () -> rememberedTemplateTripCount.set(
-                countTemplateTrips(jdbcClient)));
+        And(
+                "I remember the trip count for the seeded schedule template",
+                () -> rememberedTemplateTripCount.set(countTemplateTrips(jdbcClient)));
 
         And("I backdate the hold expiry of booking ref {string} to the past", (String refPrefix) -> {
             // Prefer exact last created hold on seeded trip if ref is "last"
@@ -73,14 +75,11 @@ public class SchedulerStep implements En {
                         .single();
             }
 
-            int updated = jdbcClient
-                    .sql("""
+            int updated = jdbcClient.sql("""
                             UPDATE bookings
                             SET hold_expires_at = (CURRENT_TIMESTAMP AT TIME ZONE 'UTC') - INTERVAL '1 minute'
                             WHERE id = ?
-                            """)
-                    .param(lastBookingId)
-                    .update();
+                            """).param(lastBookingId).update();
             assertThat(updated).isEqualTo(1);
         });
 
