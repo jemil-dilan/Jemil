@@ -12,20 +12,21 @@ Backend for an interurban transport platform in Cameroon.
 |-------|--------|
 | Sprint 0 — Foundation | Done |
 | Sprint 1 — Agency & routes | Done (Cucumber e2e green) |
-| **S1.5 — Model correction + trip/booking hold APIs** | **In progress / nearly closed** |
-| Sprint 2 — Payment MoMo | Not started |
-| Sprint 3+ — Ticket, counter, launch | Not started |
+| **S1.5 — Model correction + trip/hold + tripgen** | **Closed** (see [`docs/STATUS.md`](docs/STATUS.md)) |
+| Sprint 2 — Seat map + hold expiry | Not started |
+| Sprint 3 — Payment MoMo | Not started |
+| Sprint 4+ — Ticket, counter, launch | Not started |
 
 ### Modules
 
 ```text
 src/main/java/cm/jemil/
 ├── agency/       # Production — agencies, branches, cities, routes, schedules
-├── booking/      # Inventory + trip search + seat hold (payment still scaffold)
+├── booking/      # Trips search, seat hold, trip generation (payment not yet)
 ├── auth/         # JWT login/register (roles include CASHIER)
-├── payment/      # Demo scaffold only
-├── ticket/       # Demo scaffold only
-├── trip/         # Demo scaffold only
+├── payment/      # Empty shell (demo purged)
+├── ticket/       # Empty shell (demo purged)
+├── trip/         # Empty shell (demo purged)
 └── shared/       # Security, outbox, exceptions, CreatedAt, …
 ```
 
@@ -38,7 +39,8 @@ src/main/java/cm/jemil/
 
 ### Booking (S1.5)
 - `GET /trips/search?originCityId&destinationCityId&serviceDate`
-- `POST /bookings` — seat hold (409 if seat taken)
+- `POST /bookings` — seat hold (409 if seat taken, 10 min TTL)
+- Nightly trip generation from `schedule_templates` (Africa/Douala, 14-day window)
 - Partial unique index `seat_once_per_trip` + concurrency test (20 parallel → 1 win)
 
 ### Auth
