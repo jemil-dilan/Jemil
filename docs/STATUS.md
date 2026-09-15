@@ -46,7 +46,6 @@ Canonical plan: [`JEMIL_Backend_Gap_Analysis.md`](JEMIL_Backend_Gap_Analysis.md)
 - Legacy agency `schedules` vs MVP `trips` still both present.
 - `CreatedAt` / timestamps not fully on `Instant`.
 - Hold expiry skips in-flight payments (INITIATED/PENDING) deferred until payment module → **S2 / UC-S-01 AC**.
-- No seat-map API yet → **S2 / UC-P-02**.
 - No `staff_users` domain/API yet → counter sprint.
 
 ---
@@ -56,7 +55,7 @@ Canonical plan: [`JEMIL_Backend_Gap_Analysis.md`](JEMIL_Backend_Gap_Analysis.md)
 | UC | Title | Backend |
 |----|-------|---------|
 | UC-P-01 | Search departure | Partial — `GET /trips/search` |
-| UC-P-02 | Seat map | No |
+| UC-P-02 | Seat map | Yes — `GET /trips/{id}/seats` |
 | UC-P-03 | Place hold | Partial — API + DB concurrency |
 | UC-P-04 | Passenger details | No |
 | UC-P-05 | MoMo pay | No |
@@ -82,6 +81,6 @@ Full AC: [`JEMIL_Use_Cases_Acceptance_Criteria.md`](JEMIL_Use_Cases_Acceptance_C
 
 ## Next up
 
-1. **S2** — seat map (UC-P-02); payment-aware hold expiry skip once payments land.
-2. Passenger details + consent (UC-P-04).
-3. Parallel non-code: MoMo merchant + SMS provider (Build Spec §7 Sprint 0).
+1. **S2** — passenger details + consent (UC-P-04); payment-aware hold expiry skip once payments land.
+2. Parallel non-code: MoMo merchant + SMS provider (Build Spec §7 Sprint 0).
+3. Optional: `GET /trips/{id}` trip detail if clients need sticky summary without search cache.

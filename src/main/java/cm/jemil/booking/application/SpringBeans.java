@@ -1,5 +1,7 @@
 package cm.jemil.booking.application;
 
+import cm.jemil.booking.application.inbound.usecase.GetTripSeatMapUseCase;
+import cm.jemil.booking.application.inbound.usecase.GetTripSeatMapUseCaseImpl;
 import cm.jemil.booking.application.inbound.usecase.PlaceBookingHoldUseCase;
 import cm.jemil.booking.application.inbound.usecase.PlaceBookingHoldUseCaseImpl;
 import cm.jemil.booking.application.inbound.usecase.SearchTripsUseCase;
@@ -24,6 +26,11 @@ public class SpringBeans {
             TripRepository tripRepository,
             @org.springframework.beans.factory.annotation.Qualifier("bookingClock") Clock bookingClock) {
         return new SearchTripsUseCaseImpl(tripRepository, bookingClock);
+    }
+
+    @Bean
+    GetTripSeatMapUseCase getTripSeatMapUseCase(TripRepository tripRepository) {
+        return new GetTripSeatMapUseCaseImpl(tripRepository);
     }
 
     @Bean
