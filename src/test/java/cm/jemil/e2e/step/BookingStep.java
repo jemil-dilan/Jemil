@@ -1,12 +1,19 @@
 package cm.jemil.e2e.step;
 
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import cm.jemil.e2e.E2eHttpClient;
+import cm.jemil.generated.booking.adapter.rest.inbound.dto.BookingHoldResponseDTO;
+import cm.jemil.generated.booking.adapter.rest.inbound.dto.CreateBookingHoldDTO;
+import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripDTO;
+import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSearchResponseDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java8.En;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -18,11 +25,11 @@ public class BookingStep implements En {
     private static final UUID SEED_TRIP_ID = UUID.fromString("dddddddd-dddd-dddd-dddd-dddddddddddd");
 
     private final E2eHttpClient httpClient;
-    private final ScenarioContext context;
+    private TripSearchResponseDTO tripSearchResponseDTO;
+    private BookingHoldResponseDTO bookingHoldResponseDTO;
 
     public BookingStep(JdbcClient jdbcClient, E2eHttpClient e2eHttpClient, ScenarioContext scenarioContext) {
         this.httpClient = e2eHttpClient;
-        this.context = scenarioContext;
 
         And("I assume that the trips with the following data are inside the database", (DataTable dataTable) -> {
             List<TripData> resultUnderTest = jdbcClient
@@ -64,31 +71,33 @@ public class BookingStep implements En {
             final var serviceDate = "seeded".equalsIgnoreCase(map.get("serviceDate"))
                     ? seededServiceDate(jdbcClient)
                     : LocalDate.parse(map.get("serviceDate"));
-            httpClient.get(
-                    "/trips/search",
-                    Map.of(
-                            "originCityId", map.get("originCityId"),
-                            "destinationCityId", map.get("destinationCityId"),
-                            "serviceDate", serviceDate.toString()));
+
+            this.tripSearchResponseDTO = given().header("Authorization", "Bearer " + httpClient.getAccessToken())
+                    .queryParam("originCityId", UUID.fromString(map.get("originCityId")))
+                    .queryParam("destinationCityId", UUID.fromString(map.get("destinationCityId")))
+                    .queryParam("serviceDate", serviceDate.toString())
+                    .when()
+                    .get("/trips/search")
+                    .then()
+                    .statusCode(200)
+                    .extract()
+                    .as(TripSearchResponseDTO.class);
         });
 
         And("I should see that trips that has been fetched with the following data", (DataTable dataTable) -> {
             final var map = dataTable.asMaps().getFirst();
-            Response response = httpClient.getLastResponse();
-            assertThat(response.statusCode()).isEqualTo(200);
-            Integer total = response.jsonPath().getInt("totalElements");
-            assertThat(total).as("response should contain totalElements").isNotNull();
-            assertThat(total).isGreaterThanOrEqualTo(Integer.parseInt(map.get("count")));
+            assertThat(this.tripSearchResponseDTO).isNotNull();
+            assertThat(this.tripSearchResponseDTO.getTotalElements())
+                    .isGreaterThanOrEqualTo(Integer.parseInt(map.get("count")));
         });
 
         And("I should see that the following trips have been fetched", (DataTable dataTable) -> {
-            Response response = httpClient.getLastResponse();
-            assertThat(response.statusCode()).isEqualTo(200);
-            List<Map<String, Object>> content = response.jsonPath().getList("content");
+            assertThat(this.tripSearchResponseDTO).isNotNull();
+            List<TripDTO> content = this.tripSearchResponseDTO.getContent();
             dataTable.asMaps().forEach(expected -> {
                 boolean match = content.stream()
-                        .anyMatch(trip -> String.valueOf(expected.get("id")).equals(String.valueOf(trip.get("id")))
-                                && String.valueOf(expected.get("status")).equals(String.valueOf(trip.get("status"))));
+                        .anyMatch(trip -> UUID.fromString(expected.get("id")).equals(trip.getId())
+                                && expected.get("status").equals(trip.getStatus()));
                 assertThat(match)
                         .as(
                                 "trip %s with status %s should be amongst the fetched ones",
@@ -98,22 +107,33 @@ public class BookingStep implements En {
         });
 
         When("I place a booking hold with the following data", (DataTable dataTable) -> {
-            context.setRequestBody(bookingHoldJson(dataTable.asMaps().getFirst()));
-            httpClient.post("/bookings", context.getRequestBody());
+            var createDto = createBookingHoldDto(dataTable.asMaps().getFirst());
+            this.bookingHoldResponseDTO = given().contentType(ContentType.JSON)
+                    .header("Authorization", "Bearer " + httpClient.getAccessToken())
+                    .body(createDto)
+                    .when()
+                    .post("/bookings")
+                    .then()
+                    .statusCode(201)
+                    .extract()
+                    .as(BookingHoldResponseDTO.class);
         });
 
         When("I try to place a booking hold with the following data", (DataTable dataTable) -> {
-            context.setRequestBody(bookingHoldJson(dataTable.asMaps().getFirst()));
-            httpClient.post("/bookings", context.getRequestBody());
+            var createDto = createBookingHoldDto(dataTable.asMaps().getFirst());
+            Response response = given().contentType(ContentType.JSON)
+                    .header("Authorization", "Bearer " + httpClient.getAccessToken())
+                    .body(createDto)
+                    .when()
+                    .post("/bookings");
+            httpClient.setLastResponse(response);
         });
 
         And("the hold response contains a booking reference for the following data", (DataTable dataTable) -> {
             final var map = dataTable.asMaps().getFirst();
-            Response response = httpClient.getLastResponse();
-            assertThat(response.statusCode()).isEqualTo(201);
-            assertThat(response.jsonPath().getString("ref")).startsWith("JML-");
-            List<Integer> seatNos = response.jsonPath().getList("seatNos", Integer.class);
-            assertThat(seatNos).contains(Integer.parseInt(map.get("seatNos")));
+            assertThat(this.bookingHoldResponseDTO).isNotNull();
+            assertThat(this.bookingHoldResponseDTO.getRef()).startsWith("JML-");
+            assertThat(this.bookingHoldResponseDTO.getSeatNos()).contains(Integer.parseInt(map.get("seatNos")));
         });
     }
 
@@ -127,16 +147,19 @@ public class BookingStep implements En {
         return serviceDate.orElseThrow();
     }
 
-    private String bookingHoldJson(Map<String, String> map) {
-        return """
-                {
-                    "tripId": "%s",
-                    "seatNos": [%s],
-                    "passengerName": "%s",
-                    "passengerMsisdn": "%s"
-                }
-                """.formatted(
-                        map.get("tripId"), map.get("seatNos"), map.get("passengerName"), map.get("passengerMsisdn"));
+    private CreateBookingHoldDTO createBookingHoldDto(Map<String, String> map) {
+        return new CreateBookingHoldDTO()
+                .tripId(UUID.fromString(map.get("tripId")))
+                .seatNos(parseSeatNos(map.get("seatNos")))
+                .passengerName(map.get("passengerName"))
+                .passengerMsisdn(map.get("passengerMsisdn"));
+    }
+
+    private List<Integer> parseSeatNos(String value) {
+        return Arrays.stream(value.split(","))
+                .map(String::trim)
+                .map(Integer::parseInt)
+                .toList();
     }
 
     @Builder

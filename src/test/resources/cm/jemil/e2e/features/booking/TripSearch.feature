@@ -12,7 +12,6 @@ Feature: Trip Search
     When I search trips with the following data
       | originCityId                         | destinationCityId                    | serviceDate |
       | 11111111-1111-1111-1111-111111111111 | 22222222-2222-2222-2222-222222222222 | seeded      |
-    Then the response status is 200
     And I should see that trips that has been fetched with the following data
       | count |
       | 1     |
