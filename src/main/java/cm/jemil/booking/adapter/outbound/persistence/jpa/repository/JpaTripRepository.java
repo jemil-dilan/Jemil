@@ -37,8 +37,7 @@ public class JpaTripRepository implements TripRepository {
         // ON CONFLICT avoids aborting the surrounding Postgres transaction on duplicate
         // (catching DataIntegrityViolationException is not enough under PG).
         int inserted = jdbcClient
-                .sql(
-                        """
+                .sql("""
                         INSERT INTO trips (
                             id, template_id, agency_id, route_id, bus_id,
                             departure_at, service_date, price_xaf, travel_class,
