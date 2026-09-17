@@ -105,6 +105,7 @@ class JpaTripRepositoryTest {
         var seatMap = repository.findSeatMap(tripId);
 
         assertThat(seatMap).isPresent();
+        assertThat(seatMap.get().tripId()).isEqualTo(tripId);
         assertThat(seatMap.get().seatCount()).isEqualTo(70);
         assertThat(seatMap.get().layout()).isEqualTo("2-2");
         assertThat(seatMap.get().taken()).containsExactly(3, 15);

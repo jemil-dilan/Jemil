@@ -54,7 +54,7 @@ class SeatAssignmentConcurrencyIntegrationTest {
     }
 
     @Autowired
-    private SeatHoldService seatHoldService;
+    private cm.jemil.booking.application.inventory.SeatHoldService seatHoldService;
 
     @Autowired
     private BusSpringRepository busSpringRepository;
@@ -107,7 +107,7 @@ class SeatAssignmentConcurrencyIntegrationTest {
                 .mapToObj(i -> (Callable<Void>) () -> {
                     startGate.await();
                     var outcome = seatHoldService.tryHoldSeat(tripId, 12, "Passenger " + i);
-                    if (outcome == HoldOutcome.HELD) {
+                    if (outcome == cm.jemil.booking.application.inventory.HoldOutcome.HELD) {
                         successes.incrementAndGet();
                     } else {
                         conflicts.incrementAndGet();
