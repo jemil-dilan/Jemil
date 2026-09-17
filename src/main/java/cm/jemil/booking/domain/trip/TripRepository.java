@@ -21,5 +21,5 @@ public interface TripRepository {
      */
     boolean tryInsertTrip(TripToCreate trip);
 
-    record TripDetails(UUID id, int priceXaf, int seatsTotal, String status) {}
+    record TripDetails(UUID id, int priceXaf, int seatsTotal, TripStatus status) {}
 }
