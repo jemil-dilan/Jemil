@@ -1,4 +1,4 @@
-package cm.jemil.booking.inventory;
+package cm.jemil.booking.application.inventory;
 
 public enum HoldOutcome {
     HELD,

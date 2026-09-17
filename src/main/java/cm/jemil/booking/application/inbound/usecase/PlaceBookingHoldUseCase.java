@@ -1,6 +1,6 @@
 package cm.jemil.booking.application.inbound.usecase;
 
-import cm.jemil.booking.inventory.BookingHoldResult;
+import cm.jemil.booking.application.inventory.BookingHoldResult;
 import java.util.UUID;
 
 public interface PlaceBookingHoldUseCase {

@@ -1,4 +1,4 @@
-package cm.jemil.booking.inventory;
+package cm.jemil.booking.application.inventory;
 
 import java.time.OffsetDateTime;
 import java.util.List;

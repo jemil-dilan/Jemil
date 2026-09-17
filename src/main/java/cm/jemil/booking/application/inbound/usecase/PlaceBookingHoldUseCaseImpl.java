@@ -1,12 +1,15 @@
 package cm.jemil.booking.application.inbound.usecase;
 
+import cm.jemil.booking.application.inventory.BookingHoldResult;
+import cm.jemil.booking.application.inventory.SeatHoldExecutor;
+import cm.jemil.booking.application.inventory.SeatHoldService;
 import cm.jemil.booking.domain.exception.BookingErrorCode;
 import cm.jemil.booking.domain.exception.TripNotFoundException;
 import cm.jemil.booking.domain.trip.TripRepository;
-import cm.jemil.booking.inventory.BookingHoldResult;
-import cm.jemil.booking.inventory.SeatHoldService;
+import cm.jemil.booking.domain.trip.TripStatus;
 import cm.jemil.shared.exception.DomainException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @RequiredArgsConstructor
 public class PlaceBookingHoldUseCaseImpl implements PlaceBookingHoldUseCase {
@@ -27,7 +30,7 @@ public class PlaceBookingHoldUseCaseImpl implements PlaceBookingHoldUseCase {
         }
 
         var trip = tripRepository.findById(command.tripId()).orElseThrow(TripNotFoundException::new);
-        if (!"OPEN".equals(trip.status())) {
+        if (trip.status() != TripStatus.OPEN) {
             throw new DomainException(BookingErrorCode.BOOKING_409_001);
         }
 
@@ -42,7 +45,14 @@ public class PlaceBookingHoldUseCaseImpl implements PlaceBookingHoldUseCase {
         }
 
         int amountXaf = trip.priceXaf() * distinctSeats.size();
-        return seatHoldService.placeHold(
-                command.tripId(), distinctSeats, command.passengerName(), command.passengerMsisdn(), amountXaf);
+        try {
+            return seatHoldService.placeHold(
+                    command.tripId(), distinctSeats, command.passengerName(), command.passengerMsisdn(), amountXaf);
+        } catch (DataIntegrityViolationException ex) {
+            if (SeatHoldExecutor.isSeatConflict(ex)) {
+                throw new DomainException(BookingErrorCode.BOOKING_409_001);
+            }
+            throw ex;
+        }
     }
 }

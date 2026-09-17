@@ -1,6 +1,7 @@
 package cm.jemil.booking.application.inbound.usecase;
 
 import cm.jemil.booking.domain.exception.BookingErrorCode;
+import cm.jemil.booking.domain.trip.CityDuplicationException;
 import cm.jemil.booking.domain.trip.TripRepository;
 import cm.jemil.booking.domain.trip.TripSearchView;
 import cm.jemil.shared.exception.DomainException;
@@ -23,7 +24,7 @@ public class SearchTripsUseCaseImpl implements SearchTripsUseCase {
     @Override
     public List<TripSearchView> execute(UUID originCityId, UUID destinationCityId, LocalDate serviceDate) {
         if (Objects.equals(originCityId, destinationCityId)) {
-            throw new DomainException(BookingErrorCode.BOOKING_400_001);
+            throw new CityDuplicationException();
         }
         var today = LocalDate.now(clock);
         if (serviceDate.isBefore(today)) {
