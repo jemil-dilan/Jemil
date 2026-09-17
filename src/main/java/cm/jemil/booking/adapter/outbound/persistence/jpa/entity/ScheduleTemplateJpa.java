@@ -41,4 +41,7 @@ public class ScheduleTemplateJpa {
 
     @Column(nullable = false)
     private boolean active;
+
+    @Column(name = "created_at", nullable = false)
+    private java.time.OffsetDateTime createdAt;
 }

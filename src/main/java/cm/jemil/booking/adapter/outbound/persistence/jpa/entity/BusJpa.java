@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
+import java.time.OffsetDateTime;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,4 +35,7 @@ public class BusJpa {
 
     @Column(name = "seat_layout", nullable = false, length = 32)
     private String seatLayout;
+
+    @Column(name = "created_at", nullable = false)
+    private OffsetDateTime createdAt;
 }

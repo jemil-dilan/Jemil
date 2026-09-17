@@ -1,8 +1,8 @@
 package cm.jemil.booking.adapter.inbound.rest;
 
+import cm.jemil.booking.application.inventory.BookingHoldResult;
 import cm.jemil.booking.domain.trip.TripSearchView;
 import cm.jemil.booking.domain.trip.TripSeatMap;
-import cm.jemil.booking.inventory.BookingHoldResult;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.BookingHoldResponseDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSearchResponseDTO;
