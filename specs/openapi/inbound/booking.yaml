@@ -2,8 +2,8 @@
 openapi: "3.0.3"
 info:
   title: "JEMIL Booking API"
-  description: "Trip search and passenger booking hold operations."
-  version: "2026-W03"
+  description: "Trip search, seat map, and passenger booking hold operations."
+  version: "2026-W04"
   contact:
     name: "JEMIL Dev Team"
 
@@ -54,6 +54,36 @@ paths:
                 $ref: "#/components/schemas/TripSearchResponseDTO"
         "400":
           description: "Invalid search parameters"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+
+  /trips/{tripId}/seats:
+    get:
+      tags:
+        - "Trip"
+      summary: "Seat map availability for a trip (UC-P-02)"
+      description: >
+        Returns the bus layout and seat numbers that are currently HELD or SOLD.
+        Clients poll this endpoint (e.g. every 20s) to refresh availability.
+      operationId: "getTripSeats"
+      parameters:
+        - name: "tripId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "Seat map snapshot"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TripSeatMapDTO"
+        "404":
+          description: "Trip not found"
           content:
             application/json:
               schema:
@@ -145,6 +175,32 @@ components:
           type: "integer"
         seatsRemaining:
           type: "integer"
+
+    TripSeatMapDTO:
+      type: "object"
+      required:
+        - "tripId"
+        - "seatCount"
+        - "layout"
+        - "taken"
+      properties:
+        tripId:
+          type: "string"
+          format: "uuid"
+        seatCount:
+          type: "integer"
+          description: "Physical seat count from bus.seat_count"
+          minimum: 1
+        layout:
+          type: "string"
+          description: "Bus layout encoding, e.g. 2-2 or 2+2"
+          maxLength: 32
+        taken:
+          type: "array"
+          description: "Seat numbers currently HELD or SOLD (not selectable)"
+          items:
+            type: "integer"
+            minimum: 1
 
     CreateBookingHoldDTO:
       type: "object"

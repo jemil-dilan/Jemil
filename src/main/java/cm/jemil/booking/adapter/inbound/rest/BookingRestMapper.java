@@ -1,10 +1,12 @@
 package cm.jemil.booking.adapter.inbound.rest;
 
+import cm.jemil.booking.application.inventory.BookingHoldResult;
 import cm.jemil.booking.domain.trip.TripSearchView;
-import cm.jemil.booking.inventory.BookingHoldResult;
+import cm.jemil.booking.domain.trip.TripSeatMap;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.BookingHoldResponseDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSearchResponseDTO;
+import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSeatMapDTO;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -38,6 +40,15 @@ public interface BookingRestMapper {
         dto.setStatus(view.status());
         dto.setSeatsTotal(view.seatsTotal());
         dto.setSeatsRemaining(view.seatsRemaining());
+        return dto;
+    }
+
+    default TripSeatMapDTO toTripSeatMap(TripSeatMap seatMap) {
+        var dto = new TripSeatMapDTO();
+        dto.setTripId(seatMap.tripId());
+        dto.setSeatCount(seatMap.seatCount());
+        dto.setLayout(seatMap.layout());
+        dto.setTaken(seatMap.taken());
         return dto;
     }
 

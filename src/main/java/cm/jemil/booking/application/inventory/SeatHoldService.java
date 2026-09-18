@@ -1,4 +1,4 @@
-package cm.jemil.booking.inventory;
+package cm.jemil.booking.application.inventory;
 
 import cm.jemil.booking.domain.exception.BookingErrorCode;
 import cm.jemil.shared.exception.DomainException;
@@ -26,6 +26,14 @@ public class SeatHoldService {
         try {
             placeHold(tripId, List.of(seatNo), passengerName, null, 0);
             return HoldOutcome.HELD;
+        } catch (org.springframework.dao.DataIntegrityViolationException ex) {
+            // Check if this is a seat conflict
+            if (SeatHoldExecutor.isSeatConflict(ex)) {
+                return HoldOutcome.SEAT_UNAVAILABLE;
+            }
+            throw ex;
+        } catch (SeatHoldExecutor.SeatUnavailableException ex) {
+            return HoldOutcome.SEAT_UNAVAILABLE;
         } catch (DomainException ex) {
             if (BookingErrorCode.BOOKING_409_001.getCode().equals(ex.getCode())) {
                 return HoldOutcome.SEAT_UNAVAILABLE;

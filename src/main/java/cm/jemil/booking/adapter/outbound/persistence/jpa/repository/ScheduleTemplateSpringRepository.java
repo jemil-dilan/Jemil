@@ -1,7 +1,6 @@
 package cm.jemil.booking.adapter.outbound.persistence.jpa.repository;
 
 import cm.jemil.booking.adapter.outbound.persistence.jpa.entity.ScheduleTemplateJpa;
-import cm.jemil.booking.domain.trip.ActiveScheduleTemplate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
@@ -9,6 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ScheduleTemplateSpringRepository extends JpaRepository<ScheduleTemplateJpa, UUID> {
+
+    List<ScheduleTemplateJpa> findByActive(boolean active);
+
+    List<ScheduleTemplateJpa> findByRouteId(UUID routeId);
+
+    List<ScheduleTemplateJpa> findByBusId(UUID busId);
 
     @Query(value = """
                     SELECT CAST(st.id AS varchar) AS id,
@@ -27,9 +32,9 @@ public interface ScheduleTemplateSpringRepository extends JpaRepository<Schedule
                     """, nativeQuery = true)
     List<ActiveTemplateProjection> findActiveTemplateRows();
 
-    default List<ActiveScheduleTemplate> findActiveTemplates() {
+    default List<cm.jemil.booking.domain.trip.ActiveScheduleTemplate> findActiveTemplates() {
         return findActiveTemplateRows().stream()
-                .map(row -> new ActiveScheduleTemplate(
+                .map(row -> new cm.jemil.booking.domain.trip.ActiveScheduleTemplate(
                         UUID.fromString(row.getId()),
                         UUID.fromString(row.getRouteId()),
                         UUID.fromString(row.getBusId()),

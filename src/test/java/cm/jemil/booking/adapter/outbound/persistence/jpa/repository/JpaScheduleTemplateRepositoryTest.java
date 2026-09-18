@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import cm.jemil.booking.adapter.outbound.persistence.jpa.repository.mapper.ScheduleTemplateJpaMapper;
 import cm.jemil.booking.domain.trip.ActiveScheduleTemplate;
 import java.time.LocalTime;
 import java.util.List;
@@ -18,12 +19,15 @@ class JpaScheduleTemplateRepositoryTest {
     @Mock
     private ScheduleTemplateSpringRepository scheduleTemplateSpringRepository;
 
+    @Mock
+    private ScheduleTemplateJpaMapper jpaMapper;
+
     private JpaScheduleTemplateRepository repository;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        repository = new JpaScheduleTemplateRepository(scheduleTemplateSpringRepository);
+        repository = new JpaScheduleTemplateRepository(scheduleTemplateSpringRepository, jpaMapper);
     }
 
     @Test

@@ -74,13 +74,8 @@ public class AgencyController implements AgencyApi {
 
     @Override
     public ResponseEntity<RouteSearchResponseDTO> searchRoutes(UUID originCityId, UUID destinationCityId) {
-        var routes = searchRoutesUseCase.execute(originCityId, destinationCityId).stream()
-                .map(restMapper::toRouteSearchDto)
-                .toList();
-        var response = new RouteSearchResponseDTO();
-        response.setContent(routes);
-        response.setTotalElements(routes.size());
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        var routes = searchRoutesUseCase.execute(originCityId, destinationCityId);
+        return ResponseEntity.status(HttpStatus.OK).body(restMapper.toDTO(routes));
     }
 
     @Override
