@@ -21,6 +21,7 @@ import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreateBranchDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.CreationResponseDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.PageResponseDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.RouteDTO;
+import cm.jemil.generated.agency.adapter.rest.inbound.dto.RouteSearchResponseDTO;
 import cm.jemil.generated.agency.adapter.rest.inbound.dto.ScheduleDTO;
 import java.util.List;
 import java.util.Objects;
@@ -174,4 +175,11 @@ public interface AgencyRestMapper {
     @Mapping(target = "totalSeats", source = "addRouteDTO.totalSeats")
     @Mapping(target = "agencyId", source = "agencyId")
     AddRouteUseCaseImpl.Command toCommand(UUID agencyId, AddRouteDTO addRouteDTO);
+
+
+    default RouteSearchResponseDTO toDTO(List<RouteSearchView> routeSearchViews){
+        return new RouteSearchResponseDTO()
+                .content(routeSearchViews.stream().map(this::toRouteSearchDto).toList())
+                .totalElements(routeSearchViews.size());
+    }
 }
