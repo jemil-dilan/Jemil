@@ -1,10 +1,8 @@
 package cm.jemil.auth.application.inbound.usecase;
 
-import static cm.jemil.auth.domain.exception.AuthErrorCode.AUTH_401_002;
-
+import cm.jemil.auth.domain.exception.InvalidRefreshTokenException;
 import cm.jemil.auth.domain.user.UserRepository;
 import cm.jemil.shared.config.jwt.JwtService;
-import cm.jemil.shared.exception.DomainException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -15,12 +13,12 @@ public class RefreshTokenUseCase {
 
     public Result execute(String refreshToken) {
         if (!jwtService.isValid(refreshToken)) {
-            throw new DomainException(AUTH_401_002);
+            throw new InvalidRefreshTokenException();
         }
         String userId = jwtService.extractUserId(refreshToken);
         var user = userRepository
                 .findById(new cm.jemil.auth.domain.user.UserId(java.util.UUID.fromString(userId)))
-                .orElseThrow(() -> new DomainException(AUTH_401_002));
+                .orElseThrow(InvalidRefreshTokenException::new);
 
         var roleNames = user.getRoles().stream()
                 .map(cm.jemil.auth.domain.user.UserRole::name)

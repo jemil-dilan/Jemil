@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,5 +44,5 @@ public class ScheduleTemplateJpa {
     private boolean active;
 
     @Column(name = "created_at", nullable = false)
-    private java.time.OffsetDateTime createdAt;
+    private OffsetDateTime createdAt;
 }

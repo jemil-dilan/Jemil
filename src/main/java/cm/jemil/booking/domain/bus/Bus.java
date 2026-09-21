@@ -3,14 +3,19 @@ package cm.jemil.booking.domain.bus;
 import cm.jemil.booking.domain.trip.BusId;
 import cm.jemil.shared.utils.CreatedAt;
 import java.util.Objects;
+import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Domain entity representing a bus.
  */
+@Getter
+@Setter
 public class Bus {
 
     private final BusId id;
-    private final java.util.UUID agencyId;
+    private final UUID agencyId;
     private final String label;
     private final String plate;
     private final int seatCount;
@@ -19,7 +24,7 @@ public class Bus {
 
     private Bus(
             BusId id,
-            java.util.UUID agencyId,
+            UUID agencyId,
             String label,
             String plate,
             int seatCount,
@@ -39,41 +44,8 @@ public class Bus {
     }
 
     public static Bus create(
-            java.util.UUID agencyId,
-            String label,
-            String plate,
-            int seatCount,
-            String seatLayout,
-            CreatedAt createdAt) {
+            UUID agencyId, String label, String plate, int seatCount, String seatLayout, CreatedAt createdAt) {
         return new Bus(BusId.generate(), agencyId, label, plate, seatCount, seatLayout, createdAt);
-    }
-
-    public BusId getId() {
-        return id;
-    }
-
-    public java.util.UUID getAgencyId() {
-        return agencyId;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public String getPlate() {
-        return plate;
-    }
-
-    public int getSeatCount() {
-        return seatCount;
-    }
-
-    public String getSeatLayout() {
-        return seatLayout;
-    }
-
-    public CreatedAt getCreatedAt() {
-        return createdAt;
     }
 
     @Override
@@ -87,16 +59,5 @@ public class Bus {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Bus{" + "id="
-                + id + ", agencyId="
-                + agencyId + ", label='"
-                + label + '\'' + ", plate='"
-                + plate + '\'' + ", seatCount="
-                + seatCount + ", seatLayout='"
-                + seatLayout + '\'' + '}';
     }
 }

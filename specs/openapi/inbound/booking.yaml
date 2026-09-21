@@ -107,7 +107,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BookingHoldResponseDTO"
+                $ref: "#/components/schemas/CreationResponseDTO"
         "400":
           description: "Invalid request"
           content:

@@ -4,14 +4,19 @@ import cm.jemil.booking.domain.bus.BusId;
 import cm.jemil.shared.utils.CreatedAt;
 import java.time.LocalTime;
 import java.util.Objects;
+import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Domain entity representing a schedule template.
  */
+@Getter
+@Setter
 public class ScheduleTemplate {
 
     private final ScheduleTemplateId id;
-    private final java.util.UUID routeId;
+    private final UUID routeId;
     private final BusId busId;
     private final LocalTime departureTime;
     private final short daysOfWeek;
@@ -22,7 +27,7 @@ public class ScheduleTemplate {
 
     private ScheduleTemplate(
             ScheduleTemplateId id,
-            java.util.UUID routeId,
+            UUID routeId,
             BusId busId,
             LocalTime departureTime,
             short daysOfWeek,
@@ -42,7 +47,7 @@ public class ScheduleTemplate {
     }
 
     public static ScheduleTemplate create(
-            java.util.UUID routeId,
+            UUID routeId,
             BusId busId,
             LocalTime departureTime,
             short daysOfWeek,
@@ -62,48 +67,18 @@ public class ScheduleTemplate {
                 createdAt);
     }
 
-    public ScheduleTemplateId getId() {
-        return id;
-    }
-
-    public java.util.UUID getRouteId() {
-        return routeId;
-    }
-
-    public BusId getBusId() {
-        return busId;
-    }
-
-    public LocalTime getDepartureTime() {
-        return departureTime;
-    }
-
-    public short getDaysOfWeek() {
-        return daysOfWeek;
-    }
-
-    public PriceXaf getPriceXaf() {
-        return priceXaf;
-    }
-
-    public int getPriceXafValue() {
-        return priceXaf.amount();
-    }
-
-    public TravelClass getTravelClass() {
-        return travelClass;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public CreatedAt getCreatedAt() {
-        return createdAt;
+    public static ScheduleTemplate reconstitute(
+            ScheduleTemplateId id,
+            UUID routeId,
+            BusId busId,
+            LocalTime departureTime,
+            short daysOfWeek,
+            PriceXaf priceXaf,
+            TravelClass travelClass,
+            boolean active,
+            CreatedAt createdAt) {
+        return new ScheduleTemplate(
+                id, routeId, busId, departureTime, daysOfWeek, priceXaf, travelClass, active, createdAt);
     }
 
     @Override
@@ -117,18 +92,5 @@ public class ScheduleTemplate {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "ScheduleTemplate{" + "id="
-                + id + ", routeId="
-                + routeId + ", busId="
-                + busId + ", departureTime="
-                + departureTime + ", daysOfWeek="
-                + daysOfWeek + ", priceXaf="
-                + priceXaf + ", travelClass="
-                + travelClass + ", active="
-                + active + '}';
     }
 }

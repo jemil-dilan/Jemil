@@ -6,7 +6,6 @@ import cm.jemil.agency.adapter.outbound.persistence.jpa.entity.AgencyJpa;
 import cm.jemil.agency.adapter.outbound.persistence.jpa.entity.RouteJpa;
 import cm.jemil.agency.adapter.outbound.persistence.jpa.entity.ScheduleJpa;
 import cm.jemil.agency.domain.agency.Agency;
-import cm.jemil.agency.domain.agency.AgencyId;
 import cm.jemil.agency.domain.agency.AgencyName;
 import cm.jemil.agency.domain.agency.AgencyStatus;
 import cm.jemil.agency.domain.agency.AvailableSeats;
@@ -138,13 +137,12 @@ class AgencyJpaMapperTest {
     @Test
     void shouldMapAgencyIdToUuid() {
         var uuid = UUID.randomUUID();
-        var id = new AgencyId(uuid);
 
-        assertThat(mapper.map(id)).isEqualTo(uuid);
+        assertThat(mapper.mapToAgencyId(uuid).value()).isEqualTo(uuid);
     }
 
     @Test
     void shouldMapNullAgencyIdToNull() {
-        assertThat(mapper.map((AgencyId) null)).isNull();
+        assertThat(mapper.mapToAgencyId(null)).isNull();
     }
 }

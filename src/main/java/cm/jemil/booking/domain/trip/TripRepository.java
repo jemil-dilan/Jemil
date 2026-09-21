@@ -3,17 +3,18 @@ package cm.jemil.booking.domain.trip;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface TripRepository {
     List<TripSearchView> search(
             UUID originCityId, UUID destinationCityId, LocalDate serviceDate, OffsetDateTime earliestDeparture);
 
-    Optional<TripDetails> findById(UUID tripId);
+    TripDetails findById(UUID tripId);
 
-    /** Seat map for UC-P-02; empty when the trip does not exist. */
-    Optional<TripSeatMap> findSeatMap(UUID tripId);
+    /**
+     * Seat map for UC-P-02; empty when the trip does not exist.
+     */
+    TripSeatMap findSeatMap(UUID tripId);
 
     /**
      * Persists a newly materialised trip. Returns {@code false} when a matching trip already

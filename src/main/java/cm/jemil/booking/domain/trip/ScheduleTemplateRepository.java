@@ -12,7 +12,7 @@ public interface ScheduleTemplateRepository {
     /**
      * Save a schedule template.
      */
-    ScheduleTemplate save(ScheduleTemplate scheduleTemplate);
+    void save(ScheduleTemplate scheduleTemplate);
 
     /**
      * Find a schedule template by ID.

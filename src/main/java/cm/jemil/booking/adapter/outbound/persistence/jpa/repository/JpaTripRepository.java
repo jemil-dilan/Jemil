@@ -1,5 +1,6 @@
 package cm.jemil.booking.adapter.outbound.persistence.jpa.repository;
 
+import cm.jemil.booking.domain.exception.TripNotFoundException;
 import cm.jemil.booking.domain.trip.TripRepository;
 import cm.jemil.booking.domain.trip.TripSearchView;
 import cm.jemil.booking.domain.trip.TripSeatMap;
@@ -8,7 +9,6 @@ import cm.jemil.booking.domain.trip.TripToCreate;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -30,15 +30,16 @@ public class JpaTripRepository implements TripRepository {
     }
 
     @Override
-    public Optional<TripDetails> findById(UUID tripId) {
+    public TripDetails findById(UUID tripId) {
         return tripSpringRepository
                 .findById(tripId)
                 .map(trip -> new TripDetails(
-                        trip.getId(), trip.getPriceXaf(), trip.getSeatsTotal(), TripStatus.valueOf(trip.getStatus())));
+                        trip.getId(), trip.getPriceXaf(), trip.getSeatsTotal(), TripStatus.valueOf(trip.getStatus())))
+                .orElseThrow(TripNotFoundException::new);
     }
 
     @Override
-    public Optional<TripSeatMap> findSeatMap(UUID tripId) {
+    public TripSeatMap findSeatMap(UUID tripId) {
         return tripSpringRepository
                 .findById(tripId)
                 .flatMap(trip -> busSpringRepository
@@ -47,7 +48,8 @@ public class JpaTripRepository implements TripRepository {
                                 trip.getId(),
                                 bus.getSeatCount(),
                                 bus.getSeatLayout(),
-                                List.copyOf(seatAssignmentSpringRepository.findTakenSeatNosByTripId(tripId)))));
+                                List.copyOf(seatAssignmentSpringRepository.findTakenSeatNosByTripId(tripId)))))
+                .orElseThrow(TripNotFoundException::new);
     }
 
     @Override

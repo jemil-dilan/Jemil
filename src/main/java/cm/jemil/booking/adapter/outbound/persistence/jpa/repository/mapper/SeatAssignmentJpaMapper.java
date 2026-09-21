@@ -3,36 +3,37 @@ package cm.jemil.booking.adapter.outbound.persistence.jpa.repository.mapper;
 import cm.jemil.booking.adapter.outbound.persistence.jpa.entity.SeatAssignmentJpa;
 import cm.jemil.booking.domain.booking.BookingId;
 import cm.jemil.booking.domain.booking.SeatAssignment;
+import cm.jemil.booking.domain.booking.SeatAssignmentId;
 import cm.jemil.booking.domain.seat.SeatNumber;
 import cm.jemil.booking.domain.seat.SeatStatus;
 import cm.jemil.booking.domain.trip.TripId;
 import cm.jemil.shared.utils.CreatedAt;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
-import org.springframework.stereotype.Component;
+import java.util.UUID;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
 
 /**
  * Mapper between SeatAssignment domain entity and SeatAssignmentJpa entity.
  */
-@Component
-public class SeatAssignmentJpaMapper {
+@Mapper(
+        componentModel = "spring",
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface SeatAssignmentJpaMapper {
 
-    public SeatAssignmentJpa toJpa(SeatAssignment domain) {
-        Objects.requireNonNull(domain, "SeatAssignment domain entity cannot be null");
+    SeatAssignmentJpa toJpa(SeatAssignment domain);
 
-        SeatAssignmentJpa jpa = new SeatAssignmentJpa();
-        jpa.setId(domain.getId().value());
-        jpa.setTripId(domain.getTripId().value());
-        jpa.setSeatNo(domain.getSeatNo().value());
-        jpa.setBookingId(domain.getBookingId().value());
-        jpa.setStatus(domain.getStatus().name());
-        jpa.setCreatedAt(domain.getCreatedAt().value().atOffset(java.time.ZoneOffset.UTC));
-        return jpa;
-    }
-
-    public SeatAssignment toDomain(SeatAssignmentJpa jpa) {
+    default SeatAssignment toDomain(SeatAssignmentJpa jpa) {
         Objects.requireNonNull(jpa, "SeatAssignmentJpa entity cannot be null");
 
-        return SeatAssignment.create(
+        return SeatAssignment.reconstitute(
+                new SeatAssignmentId(jpa.getId()),
                 new TripId(jpa.getTripId()),
                 new SeatNumber(jpa.getSeatNo()),
                 new BookingId(jpa.getBookingId()),
@@ -40,11 +41,29 @@ public class SeatAssignmentJpaMapper {
                 CreatedAt.reconstitute(jpa.getCreatedAt().toLocalDateTime()));
     }
 
-    public void fromDomain(SeatAssignmentJpa jpa, SeatAssignment domain) {
-        Objects.requireNonNull(jpa, "SeatAssignmentJpa entity cannot be null");
-        Objects.requireNonNull(domain, "SeatAssignment domain entity cannot be null");
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tripId", ignore = true)
+    @Mapping(target = "bookingId", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    void fromDomain(@MappingTarget SeatAssignmentJpa jpa, SeatAssignment domain);
 
-        jpa.setSeatNo(domain.getSeatNo().value());
-        jpa.setStatus(domain.getStatus().name());
+    default UUID map(SeatAssignmentId value) {
+        return value == null ? null : value.value();
+    }
+
+    default UUID map(TripId value) {
+        return value == null ? null : value.value();
+    }
+
+    default int map(SeatNumber value) {
+        return value == null ? 0 : value.value();
+    }
+
+    default UUID map(BookingId value) {
+        return value == null ? null : value.value();
+    }
+
+    default OffsetDateTime map(CreatedAt value) {
+        return value == null ? null : value.value().atOffset(ZoneOffset.UTC);
     }
 }

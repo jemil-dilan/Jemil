@@ -1,10 +1,10 @@
 package cm.jemil.booking.application.inbound.usecase;
 
-import cm.jemil.booking.application.inventory.BookingHoldResult;
+import java.util.List;
 import java.util.UUID;
 
 public interface PlaceBookingHoldUseCase {
-    BookingHoldResult execute(Command command);
+    UUID execute(Command command);
 
-    record Command(UUID tripId, java.util.List<Integer> seatNos, String passengerName, String passengerMsisdn) {}
+    record Command(UUID tripId, List<Integer> seatNos, String passengerName, String passengerMsisdn) {}
 }

@@ -4,7 +4,6 @@ import cm.jemil.agency.application.inbound.usecase.AddBranchUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.AddRouteUseCaseImpl;
 import cm.jemil.agency.application.inbound.usecase.GetAllAgenciesUseCaseImpl.Response;
 import cm.jemil.agency.application.inbound.usecase.RegisterAgencyUseCaseImpl;
-import cm.jemil.agency.domain.agency.Route;
 import cm.jemil.agency.domain.agency.RoutePrice;
 import cm.jemil.agency.domain.agency.views.AgencyView.AgencyView1;
 import cm.jemil.agency.domain.agency.views.AgencyView.BranchView;
@@ -103,51 +102,22 @@ public interface AgencyRestMapper {
     @Mapping(target = "newId", source = "id")
     CreationResponseDTO toCreationResponse(UUID id);
 
-    default RouteDTO toRouteDto(UUID agencyId, UUID originCityId, UUID destinationCityId, Route route) {
-        var dto = new RouteDTO();
-        dto.setId(route.getId().value());
-        dto.setAgencyId(agencyId);
-        dto.setOriginCityId(originCityId);
-        dto.setDestinationCityId(destinationCityId);
-        dto.setOriginCityId(route.getDeparture().value());
-        dto.setOriginCityId(route.getArrival().value());
-        dto.setPrice((double) route.getPrice().amountXaf());
-        return dto;
-    }
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id.value")
+    @Mapping(target = "agencyId", source = "agencyId.value")
+    @Mapping(target = "originCityId", source = "originCityId.value")
+    @Mapping(target = "destinationCityId", source = "destinationCityId.value")
+    @Mapping(target = "price", source = "price")
+    @Mapping(target = "totalSeats", source = "totalSeats")
+    @Mapping(target = "availableSchedules", source = "availableSchedules")
+    RouteDTO toRouteSearchDto(RouteSearchView view);
 
-    default RouteDTO toRouteSearchDto(RouteSearchView view) {
-        var dto = new RouteDTO();
-        dto.setId(view.id().value());
-        dto.setAgencyId(view.agencyId().value());
-        dto.setOriginCityId(view.originCityId().value());
-        dto.setDestinationCityId(view.destinationCityId().value());
-        dto.setPrice(view.price() == null ? 0 : (double) view.price().amountXaf());
-        dto.setTotalSeats(view.totalSeats() == null ? 0 : view.totalSeats().value());
-        dto.setAvailableSchedules(toScheduleDTO(view.availableSchedules()));
-        return dto;
-    }
-
-    private List<ScheduleDTO> toScheduleDTO(List<RouteSearchView.ScheduleView> schedules) {
-        if (schedules == null) {
-            return List.of();
-        }
-        return schedules.stream()
-                .map(schedule -> {
-                    var dto = new ScheduleDTO();
-                    dto.setId(schedule.id().value());
-                    dto.setDepartureTime(schedule.departureTime());
-                    dto.setTotalSeats(
-                            schedule.totalSeats() == null
-                                    ? 0
-                                    : schedule.totalSeats().value());
-                    dto.setAvailableSeats(
-                            schedule.availableSeats() == null
-                                    ? 0
-                                    : schedule.availableSeats().value());
-                    return dto;
-                })
-                .toList();
-    }
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id.value")
+    @Mapping(target = "departureTime", source = "departureTime")
+    @Mapping(target = "totalSeats", source = "totalSeats")
+    @Mapping(target = "availableSeats", source = "availableSeats")
+    ScheduleDTO toScheduleDTO(RouteSearchView.ScheduleView scheduleView);
 
     default double map(RoutePrice price) {
         return Objects.isNull(price) ? 0 : price.amountXaf();
@@ -176,8 +146,7 @@ public interface AgencyRestMapper {
     @Mapping(target = "agencyId", source = "agencyId")
     AddRouteUseCaseImpl.Command toCommand(UUID agencyId, AddRouteDTO addRouteDTO);
 
-
-    default RouteSearchResponseDTO toDTO(List<RouteSearchView> routeSearchViews){
+    default RouteSearchResponseDTO toDTO(List<RouteSearchView> routeSearchViews) {
         return new RouteSearchResponseDTO()
                 .content(routeSearchViews.stream().map(this::toRouteSearchDto).toList())
                 .totalElements(routeSearchViews.size());

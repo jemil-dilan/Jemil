@@ -4,8 +4,8 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import cm.jemil.e2e.E2eHttpClient;
-import cm.jemil.generated.booking.adapter.rest.inbound.dto.BookingHoldResponseDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.CreateBookingHoldDTO;
+import cm.jemil.generated.booking.adapter.rest.inbound.dto.CreationResponseDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSearchResponseDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSeatMapDTO;
@@ -27,7 +27,7 @@ public class BookingStep implements En {
 
     private final E2eHttpClient httpClient;
     private TripSearchResponseDTO tripSearchResponseDTO;
-    private BookingHoldResponseDTO bookingHoldResponseDTO;
+    private CreationResponseDTO creationResponseDTO;
     private TripSeatMapDTO tripSeatMapDTO;
 
     public BookingStep(JdbcClient jdbcClient, E2eHttpClient e2eHttpClient, ScenarioContext scenarioContext) {
@@ -110,7 +110,7 @@ public class BookingStep implements En {
 
         When("I place a booking hold with the following data", (DataTable dataTable) -> {
             var createDto = createBookingHoldDto(dataTable.asMaps().getFirst());
-            this.bookingHoldResponseDTO = given().contentType(ContentType.JSON)
+            this.creationResponseDTO = given().contentType(ContentType.JSON)
                     .header("Authorization", "Bearer " + httpClient.getAccessToken())
                     .body(createDto)
                     .when()
@@ -118,7 +118,7 @@ public class BookingStep implements En {
                     .then()
                     .statusCode(201)
                     .extract()
-                    .as(BookingHoldResponseDTO.class);
+                    .as(CreationResponseDTO.class);
         });
 
         When("I try to place a booking hold with the following data", (DataTable dataTable) -> {
@@ -133,9 +133,23 @@ public class BookingStep implements En {
 
         And("the hold response contains a booking reference for the following data", (DataTable dataTable) -> {
             final var map = dataTable.asMaps().getFirst();
-            assertThat(this.bookingHoldResponseDTO).isNotNull();
-            assertThat(this.bookingHoldResponseDTO.getRef()).startsWith("JML-");
-            assertThat(this.bookingHoldResponseDTO.getSeatNos()).contains(Integer.parseInt(map.get("seatNos")));
+            assertThat(this.creationResponseDTO).isNotNull();
+            var newId = this.creationResponseDTO.getNewId();
+            assertThat(newId).as("created booking id").isNotNull();
+
+            var ref = jdbcClient
+                    .sql("SELECT ref FROM bookings WHERE id = ?")
+                    .param(newId)
+                    .query((rs, rowNum) -> rs.getString("ref"))
+                    .single();
+            assertThat(ref).startsWith("JML-");
+
+            var heldSeatNos = jdbcClient
+                    .sql("SELECT seat_no FROM seat_assignments WHERE booking_id = ? AND status = 'HELD'")
+                    .param(newId)
+                    .query((rs, rowNum) -> rs.getInt("seat_no"))
+                    .list();
+            assertThat(heldSeatNos).contains(Integer.parseInt(map.get("seatNos")));
         });
 
         When("I fetch the seat map for trip {string}", (String tripId) -> {

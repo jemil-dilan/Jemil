@@ -1,12 +1,10 @@
 package cm.jemil.auth.application.inbound.usecase;
 
-import static cm.jemil.auth.domain.exception.AuthErrorCode.AUTH_401_001;
-
+import cm.jemil.auth.domain.exception.InvalidCredentialsException;
 import cm.jemil.auth.domain.user.User;
 import cm.jemil.auth.domain.user.UserRepository;
 import cm.jemil.auth.domain.user.UserRole;
 import cm.jemil.shared.config.jwt.JwtService;
-import cm.jemil.shared.exception.DomainException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -19,14 +17,14 @@ public class LoginUseCaseImpl implements LoginUseCase {
 
     @Override
     public Result execute(Command command) {
-        User user = userRepository.findByEmail(command.email()).orElseThrow(() -> new DomainException(AUTH_401_001));
+        User user = userRepository.findByEmail(command.email()).orElseThrow(InvalidCredentialsException::new);
 
         if (!passwordEncoder.matches(command.password(), user.getPasswordHash())) {
-            throw new DomainException(AUTH_401_001);
+            throw new InvalidCredentialsException();
         }
 
         if (!user.isActive()) {
-            throw new DomainException(AUTH_401_001);
+            throw new InvalidCredentialsException();
         }
 
         var roleNames = user.getRoles().stream().map(UserRole::name).collect(java.util.stream.Collectors.toSet());

@@ -1,12 +1,9 @@
 package cm.jemil.agency.application.inbound.usecase;
 
-import static cm.jemil.agency.domain.exception.AgencyErrorCode.AGENCY_400_012;
-
 import cm.jemil.agency.domain.agency.AgencyRepository;
 import cm.jemil.agency.domain.agency.views.RouteSearchView;
 import cm.jemil.agency.domain.city.CityId;
 import cm.jemil.agency.domain.exception.SameOriginAndDestinationException;
-import cm.jemil.shared.exception.DomainException;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
