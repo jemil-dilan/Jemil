@@ -20,10 +20,8 @@ public class JpaScheduleTemplateRepository implements ScheduleTemplateRepository
     private final ScheduleTemplateJpaMapper jpaMapper;
 
     @Override
-    public ScheduleTemplate save(ScheduleTemplate scheduleTemplate) {
-        var jpa = jpaMapper.toJpa(scheduleTemplate);
-        var saved = scheduleTemplateSpringRepository.save(jpa);
-        return jpaMapper.toDomain(saved);
+    public void save(ScheduleTemplate scheduleTemplate) {
+        scheduleTemplateSpringRepository.save(jpaMapper.toJpa(scheduleTemplate));
     }
 
     @Override

@@ -4,36 +4,36 @@ import cm.jemil.booking.adapter.outbound.persistence.jpa.entity.ScheduleTemplate
 import cm.jemil.booking.domain.bus.BusId;
 import cm.jemil.booking.domain.trip.PriceXaf;
 import cm.jemil.booking.domain.trip.ScheduleTemplate;
+import cm.jemil.booking.domain.trip.ScheduleTemplateId;
 import cm.jemil.booking.domain.trip.TravelClass;
 import cm.jemil.shared.utils.CreatedAt;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
-import org.springframework.stereotype.Component;
+import java.util.UUID;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
 
 /**
  * Mapper between ScheduleTemplate domain entity and ScheduleTemplateJpa entity.
  */
-@Component
-public class ScheduleTemplateJpaMapper {
+@Mapper(
+        componentModel = "spring",
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface ScheduleTemplateJpaMapper {
 
-    public ScheduleTemplateJpa toJpa(ScheduleTemplate domain) {
-        Objects.requireNonNull(domain, "ScheduleTemplate domain entity cannot be null");
+    @Mapping(target = "createdAt", ignore = true)
+    ScheduleTemplateJpa toJpa(ScheduleTemplate domain);
 
-        ScheduleTemplateJpa jpa = new ScheduleTemplateJpa();
-        jpa.setId(domain.getId().value());
-        jpa.setRouteId(domain.getRouteId());
-        jpa.setBusId(domain.getBusId().value());
-        jpa.setDepartureTime(domain.getDepartureTime());
-        jpa.setDaysOfWeek(domain.getDaysOfWeek());
-        jpa.setPriceXaf(domain.getPriceXafValue());
-        jpa.setTravelClass(domain.getTravelClass().name());
-        jpa.setActive(domain.isActive());
-        return jpa;
-    }
-
-    public ScheduleTemplate toDomain(ScheduleTemplateJpa jpa) {
+    default ScheduleTemplate toDomain(ScheduleTemplateJpa jpa) {
         Objects.requireNonNull(jpa, "ScheduleTemplateJpa entity cannot be null");
 
-        return ScheduleTemplate.create(
+        return ScheduleTemplate.reconstitute(
+                new ScheduleTemplateId(jpa.getId()),
                 jpa.getRouteId(),
                 new BusId(jpa.getBusId()),
                 jpa.getDepartureTime(),
@@ -44,16 +44,23 @@ public class ScheduleTemplateJpaMapper {
                 CreatedAt.reconstitute(jpa.getCreatedAt().toLocalDateTime()));
     }
 
-    public void fromDomain(ScheduleTemplateJpa jpa, ScheduleTemplate domain) {
-        Objects.requireNonNull(jpa, "ScheduleTemplateJpa entity cannot be null");
-        Objects.requireNonNull(domain, "ScheduleTemplate domain entity cannot be null");
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    void fromDomain(@MappingTarget ScheduleTemplateJpa jpa, ScheduleTemplate domain);
 
-        jpa.setRouteId(domain.getRouteId());
-        jpa.setBusId(domain.getBusId().value());
-        jpa.setDepartureTime(domain.getDepartureTime());
-        jpa.setDaysOfWeek(domain.getDaysOfWeek());
-        jpa.setPriceXaf(domain.getPriceXafValue());
-        jpa.setTravelClass(domain.getTravelClass().name());
-        jpa.setActive(domain.isActive());
+    default UUID map(ScheduleTemplateId value) {
+        return value == null ? null : value.value();
+    }
+
+    default UUID map(BusId value) {
+        return value == null ? null : value.value();
+    }
+
+    default int map(PriceXaf value) {
+        return value == null ? 0 : value.amount();
+    }
+
+    default OffsetDateTime map(CreatedAt value) {
+        return value == null ? null : value.value().atOffset(ZoneOffset.UTC);
     }
 }

@@ -1,6 +1,7 @@
 package cm.jemil.booking.adapter.outbound.persistence.jpa.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -10,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import cm.jemil.booking.adapter.outbound.persistence.jpa.entity.BusJpa;
 import cm.jemil.booking.adapter.outbound.persistence.jpa.entity.TripJpa;
+import cm.jemil.booking.domain.exception.TripNotFoundException;
 import cm.jemil.booking.domain.trip.TripToCreate;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -104,17 +106,17 @@ class JpaTripRepositoryTest {
 
         var seatMap = repository.findSeatMap(tripId);
 
-        assertThat(seatMap).isPresent();
-        assertThat(seatMap.get().tripId()).isEqualTo(tripId);
-        assertThat(seatMap.get().seatCount()).isEqualTo(70);
-        assertThat(seatMap.get().layout()).isEqualTo("2-2");
-        assertThat(seatMap.get().taken()).containsExactly(3, 15);
+        assertThat(seatMap.tripId()).isEqualTo(tripId);
+        assertThat(seatMap.seatCount()).isEqualTo(70);
+        assertThat(seatMap.layout()).isEqualTo("2-2");
+        assertThat(seatMap.taken()).containsExactly(3, 15);
     }
 
     @Test
-    void findSeatMapEmptyWhenTripMissing() {
+    void findSeatMapThrowsWhenTripMissing() {
+        UUID tripId = UUID.randomUUID();
         when(tripSpringRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThat(repository.findSeatMap(UUID.randomUUID())).isEmpty();
+        assertThatThrownBy(() -> repository.findSeatMap(tripId)).isInstanceOf(TripNotFoundException.class);
     }
 }

@@ -4,10 +4,14 @@ import cm.jemil.booking.domain.trip.TripId;
 import cm.jemil.shared.utils.CreatedAt;
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Domain entity representing a booking.
  */
+@Getter
+@Setter
 public class Booking {
 
     private final BookingId id;
@@ -77,58 +81,6 @@ public class Booking {
         return new Booking(id, ref, tripId, channel, passengerInfo, amountXaf, status, holdExpiresAt, createdAt);
     }
 
-    public BookingId getId() {
-        return id;
-    }
-
-    public BookingReference getRef() {
-        return ref;
-    }
-
-    public TripId getTripId() {
-        return tripId;
-    }
-
-    public Channel getChannel() {
-        return channel;
-    }
-
-    public PassengerInfo getPassengerInfo() {
-        return passengerInfo;
-    }
-
-    public String getPassengerName() {
-        return passengerInfo.name();
-    }
-
-    public String getPassengerMsisdn() {
-        return passengerInfo.phoneNumber().number();
-    }
-
-    public int getAmountXaf() {
-        return amountXaf;
-    }
-
-    public BookingStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(BookingStatus status) {
-        this.status = Objects.requireNonNull(status, "Booking status cannot be null");
-    }
-
-    public OffsetDateTime getHoldExpiresAt() {
-        return holdExpiresAt;
-    }
-
-    public void setHoldExpiresAt(OffsetDateTime holdExpiresAt) {
-        this.holdExpiresAt = holdExpiresAt;
-    }
-
-    public CreatedAt getCreatedAt() {
-        return createdAt;
-    }
-
     public boolean isExpired(OffsetDateTime now) {
         return holdExpiresAt != null && now.isAfter(holdExpiresAt);
     }
@@ -144,17 +96,5 @@ public class Booking {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Booking{" + "id="
-                + id + ", ref="
-                + ref + ", tripId="
-                + tripId + ", channel="
-                + channel + ", passengerName="
-                + passengerInfo.name() + ", amountXaf="
-                + amountXaf + ", status="
-                + status + '}';
     }
 }

@@ -1,14 +1,18 @@
 package cm.jemil.booking.adapter.inbound.rest;
 
-import cm.jemil.booking.application.inventory.BookingHoldResult;
+import cm.jemil.booking.application.inbound.usecase.PlaceBookingHoldUseCase;
 import cm.jemil.booking.domain.trip.TripSearchView;
 import cm.jemil.booking.domain.trip.TripSeatMap;
-import cm.jemil.generated.booking.adapter.rest.inbound.dto.BookingHoldResponseDTO;
+import cm.jemil.generated.booking.adapter.rest.inbound.dto.CreateBookingHoldDTO;
+import cm.jemil.generated.booking.adapter.rest.inbound.dto.CreationResponseDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSearchResponseDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSeatMapDTO;
+import java.util.UUID;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
@@ -16,6 +20,16 @@ import org.mapstruct.ReportingPolicy;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BookingRestMapper {
+
+    @Mapping(target = "passengerMsisdn", source = "passengerMsisdn")
+    @Mapping(target = "passengerName", source = "passengerName")
+    @Mapping(target = "seatNos", source = "seatNos")
+    @Mapping(target = "tripId", source = "tripId")
+    PlaceBookingHoldUseCase.Command toCommand(CreateBookingHoldDTO createBookingHoldDTO);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "newId", source = "id")
+    CreationResponseDTO toCreationResponse(UUID id);
 
     default TripSearchResponseDTO toTripSearchResponse(java.util.List<TripSearchView> trips) {
         var response = new TripSearchResponseDTO();
@@ -25,41 +39,7 @@ public interface BookingRestMapper {
         return response;
     }
 
-    default TripDTO toTripDto(TripSearchView view) {
-        var dto = new TripDTO();
-        dto.setId(view.id());
-        dto.setAgencyId(view.agencyId());
-        dto.setAgencyName(view.agencyName());
-        dto.setRouteId(view.routeId());
-        dto.setOriginCityId(view.originCityId());
-        dto.setDestinationCityId(view.destinationCityId());
-        dto.setDepartureAt(view.departureAt());
-        dto.setServiceDate(view.serviceDate());
-        dto.setPriceXaf(view.priceXaf());
-        dto.setTravelClass(view.travelClass());
-        dto.setStatus(view.status());
-        dto.setSeatsTotal(view.seatsTotal());
-        dto.setSeatsRemaining(view.seatsRemaining());
-        return dto;
-    }
+    TripDTO toTripDto(TripSearchView view);
 
-    default TripSeatMapDTO toTripSeatMap(TripSeatMap seatMap) {
-        var dto = new TripSeatMapDTO();
-        dto.setTripId(seatMap.tripId());
-        dto.setSeatCount(seatMap.seatCount());
-        dto.setLayout(seatMap.layout());
-        dto.setTaken(seatMap.taken());
-        return dto;
-    }
-
-    default BookingHoldResponseDTO toBookingHoldResponse(BookingHoldResult result) {
-        var dto = new BookingHoldResponseDTO();
-        dto.setId(result.id());
-        dto.setRef(result.ref());
-        dto.setTripId(result.tripId());
-        dto.setHoldExpiresAt(result.holdExpiresAt());
-        dto.setAmountXaf(result.amountXaf());
-        dto.setSeatNos(result.seatNos());
-        return dto;
-    }
+    TripSeatMapDTO toTripSeatMap(TripSeatMap seatMap);
 }

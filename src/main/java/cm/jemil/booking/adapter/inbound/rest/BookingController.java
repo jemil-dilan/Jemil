@@ -6,6 +6,7 @@ import cm.jemil.booking.application.inbound.usecase.SearchTripsUseCase;
 import cm.jemil.generated.booking.adapter.rest.inbound.api.BookingApi;
 import cm.jemil.generated.booking.adapter.rest.inbound.api.TripApi;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.CreateBookingHoldDTO;
+import cm.jemil.generated.booking.adapter.rest.inbound.dto.CreationResponseDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSearchResponseDTO;
 import cm.jemil.generated.booking.adapter.rest.inbound.dto.TripSeatMapDTO;
 import java.time.LocalDate;
@@ -37,13 +38,8 @@ public class BookingController implements TripApi, BookingApi {
     }
 
     @Override
-    public ResponseEntity<cm.jemil.generated.booking.adapter.rest.inbound.dto.BookingHoldResponseDTO> createBookingHold(
-            CreateBookingHoldDTO createBookingHoldDTO) {
-        var result = placeBookingHoldUseCase.execute(new PlaceBookingHoldUseCase.Command(
-                createBookingHoldDTO.getTripId(),
-                createBookingHoldDTO.getSeatNos(),
-                createBookingHoldDTO.getPassengerName(),
-                createBookingHoldDTO.getPassengerMsisdn()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(restMapper.toBookingHoldResponse(result));
+    public ResponseEntity<CreationResponseDTO> createBookingHold(CreateBookingHoldDTO createBookingHoldDTO) {
+        var result = placeBookingHoldUseCase.execute(restMapper.toCommand(createBookingHoldDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(restMapper.toCreationResponse(result));
     }
 }

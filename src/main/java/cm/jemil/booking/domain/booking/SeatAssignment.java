@@ -5,10 +5,14 @@ import cm.jemil.booking.domain.seat.SeatStatus;
 import cm.jemil.booking.domain.trip.TripId;
 import cm.jemil.shared.utils.CreatedAt;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Domain entity representing a seat assignment for a booking.
  */
+@Getter
+@Setter
 public class SeatAssignment {
 
     private final SeatAssignmentId id;
@@ -38,32 +42,14 @@ public class SeatAssignment {
         return new SeatAssignment(SeatAssignmentId.generate(), tripId, seatNo, bookingId, status, createdAt);
     }
 
-    public SeatAssignmentId getId() {
-        return id;
-    }
-
-    public TripId getTripId() {
-        return tripId;
-    }
-
-    public SeatNumber getSeatNo() {
-        return seatNo;
-    }
-
-    public BookingId getBookingId() {
-        return bookingId;
-    }
-
-    public SeatStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(SeatStatus status) {
-        this.status = Objects.requireNonNull(status, "Seat status cannot be null");
-    }
-
-    public CreatedAt getCreatedAt() {
-        return createdAt;
+    public static SeatAssignment reconstitute(
+            SeatAssignmentId id,
+            TripId tripId,
+            SeatNumber seatNo,
+            BookingId bookingId,
+            SeatStatus status,
+            CreatedAt createdAt) {
+        return new SeatAssignment(id, tripId, seatNo, bookingId, status, createdAt);
     }
 
     @Override
@@ -77,15 +63,5 @@ public class SeatAssignment {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "SeatAssignment{" + "id="
-                + id + ", tripId="
-                + tripId + ", seatNo="
-                + seatNo + ", bookingId="
-                + bookingId + ", status="
-                + status + '}';
     }
 }

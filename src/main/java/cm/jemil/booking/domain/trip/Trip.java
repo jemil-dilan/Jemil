@@ -5,17 +5,22 @@ import cm.jemil.shared.utils.CreatedAt;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Domain entity representing a trip.
  */
+@Getter
+@Setter
 public class Trip {
 
     private final TripId id;
     private final ScheduleTemplateId templateId;
     private final BusId busId;
-    private final java.util.UUID agencyId;
-    private final java.util.UUID routeId;
+    private final UUID agencyId;
+    private final UUID routeId;
     private final OffsetDateTime departureAt;
     private final LocalDate serviceDate;
     private final PriceXaf priceXaf;
@@ -29,8 +34,8 @@ public class Trip {
             TripId id,
             ScheduleTemplateId templateId,
             BusId busId,
-            java.util.UUID agencyId,
-            java.util.UUID routeId,
+            UUID agencyId,
+            UUID routeId,
             OffsetDateTime departureAt,
             LocalDate serviceDate,
             PriceXaf priceXaf,
@@ -57,8 +62,8 @@ public class Trip {
     public static Trip create(
             ScheduleTemplateId templateId,
             BusId busId,
-            java.util.UUID agencyId,
-            java.util.UUID routeId,
+            UUID agencyId,
+            UUID routeId,
             OffsetDateTime departureAt,
             LocalDate serviceDate,
             PriceXaf priceXaf,
@@ -83,74 +88,6 @@ public class Trip {
                 createdAt);
     }
 
-    public TripId getId() {
-        return id;
-    }
-
-    public ScheduleTemplateId getTemplateId() {
-        return templateId;
-    }
-
-    public BusId getBusId() {
-        return busId;
-    }
-
-    public java.util.UUID getAgencyId() {
-        return agencyId;
-    }
-
-    public java.util.UUID getRouteId() {
-        return routeId;
-    }
-
-    public OffsetDateTime getDepartureAt() {
-        return departureAt;
-    }
-
-    public LocalDate getServiceDate() {
-        return serviceDate;
-    }
-
-    public PriceXaf getPriceXaf() {
-        return priceXaf;
-    }
-
-    public int getPriceXafValue() {
-        return priceXaf.amount();
-    }
-
-    public TravelClass getTravelClass() {
-        return travelClass;
-    }
-
-    public TripStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(TripStatus status) {
-        this.status = Objects.requireNonNull(status, "Trip status cannot be null");
-    }
-
-    public int getSeatsTotal() {
-        return seatsTotal;
-    }
-
-    public int getSeatsSold() {
-        return seatsSold;
-    }
-
-    public void setSeatsSold(int seatsSold) {
-        this.seatsSold = seatsSold;
-    }
-
-    public int getSeatsRemaining() {
-        return seatsTotal - seatsSold;
-    }
-
-    public CreatedAt getCreatedAt() {
-        return createdAt;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -162,22 +99,5 @@ public class Trip {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Trip{" + "id="
-                + id + ", templateId="
-                + templateId + ", busId="
-                + busId + ", agencyId="
-                + agencyId + ", routeId="
-                + routeId + ", departureAt="
-                + departureAt + ", serviceDate="
-                + serviceDate + ", priceXaf="
-                + priceXaf + ", travelClass="
-                + travelClass + ", status="
-                + status + ", seatsTotal="
-                + seatsTotal + ", seatsSold="
-                + seatsSold + '}';
     }
 }

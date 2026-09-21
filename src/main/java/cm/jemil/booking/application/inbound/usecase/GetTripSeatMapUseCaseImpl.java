@@ -1,9 +1,7 @@
 package cm.jemil.booking.application.inbound.usecase;
 
-import cm.jemil.booking.domain.exception.BookingErrorCode;
 import cm.jemil.booking.domain.trip.TripRepository;
 import cm.jemil.booking.domain.trip.TripSeatMap;
-import cm.jemil.shared.exception.DomainException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
@@ -14,8 +12,6 @@ public class GetTripSeatMapUseCaseImpl implements GetTripSeatMapUseCase {
 
     @Override
     public TripSeatMap execute(UUID tripId) {
-        return tripRepository
-                .findSeatMap(tripId)
-                .orElseThrow(() -> new DomainException(BookingErrorCode.BOOKING_404_001));
+        return tripRepository.findSeatMap(tripId);
     }
 }

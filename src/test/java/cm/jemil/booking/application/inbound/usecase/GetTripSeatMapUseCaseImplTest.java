@@ -6,11 +6,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import cm.jemil.booking.domain.exception.BookingErrorCode;
+import cm.jemil.booking.domain.exception.TripNotFoundException;
 import cm.jemil.booking.domain.trip.TripRepository;
 import cm.jemil.booking.domain.trip.TripSeatMap;
 import cm.jemil.shared.exception.DomainException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class GetTripSeatMapUseCaseImplTest {
     void executeReturnsSeatMapWhenTripExists() {
         var tripId = UUID.randomUUID();
         var seatMap = new TripSeatMap(tripId, 40, "2-2", List.of(7, 12));
-        when(tripRepository.findSeatMap(tripId)).thenReturn(Optional.of(seatMap));
+        when(tripRepository.findSeatMap(tripId)).thenReturn(seatMap);
 
         assertThat(useCase.execute(tripId)).isEqualTo(seatMap);
         verify(tripRepository).findSeatMap(tripId);
@@ -43,7 +43,7 @@ class GetTripSeatMapUseCaseImplTest {
     @Test
     void executeThrowsWhenTripMissing() {
         var tripId = UUID.randomUUID();
-        when(tripRepository.findSeatMap(tripId)).thenReturn(Optional.empty());
+        when(tripRepository.findSeatMap(tripId)).thenThrow(new TripNotFoundException());
 
         assertThatThrownBy(() -> useCase.execute(tripId))
                 .isInstanceOf(DomainException.class)

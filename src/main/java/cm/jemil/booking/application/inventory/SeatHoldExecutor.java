@@ -11,11 +11,13 @@ import cm.jemil.booking.domain.seat.SeatNumber;
 import cm.jemil.booking.domain.seat.SeatStatus;
 import cm.jemil.booking.domain.trip.TripId;
 import cm.jemil.shared.utils.CreatedAt;
+import cm.jemil.shared.utils.PhoneNumber;
+import java.time.Clock;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,16 +29,20 @@ public class SeatHoldExecutor {
 
     private final BookingRepository bookingRepository;
     private final SeatAssignmentRepository seatAssignmentRepository;
+    private final Clock clock;
 
-    public SeatHoldExecutor(BookingRepository bookingRepository, SeatAssignmentRepository seatAssignmentRepository) {
+    public SeatHoldExecutor(
+            BookingRepository bookingRepository,
+            SeatAssignmentRepository seatAssignmentRepository,
+            @Qualifier("bookingClock") Clock clock) {
         this.bookingRepository = bookingRepository;
         this.seatAssignmentRepository = seatAssignmentRepository;
+        this.clock = clock;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    BookingHoldResult placeHold(
-            UUID tripId, List<Integer> seatNos, String passengerName, String passengerMsisdn, int amountXaf) {
-        var now = OffsetDateTime.now(ZoneOffset.UTC);
+    UUID placeHold(UUID tripId, List<Integer> seatNos, String passengerName, String passengerMsisdn, int amountXaf) {
+        var now = OffsetDateTime.now(clock);
         var holdExpiresAt = now.plusMinutes(HOLD_MINUTES);
         var bookingId = BookingId.generate();
         var tripIdVo = new TripId(tripId);
@@ -44,12 +50,12 @@ public class SeatHoldExecutor {
         // Use CM country code (+237) for Cameroon
         // If passengerMsisdn is null or blank, use a placeholder
         var msisdn = passengerMsisdn != null && !passengerMsisdn.isBlank() ? passengerMsisdn : "0000000000";
-        var phoneNumber = new cm.jemil.shared.utils.PhoneNumber("237", msisdn);
+        var phoneNumber = new PhoneNumber("237", msisdn);
         var passengerInfo = new PassengerInfo(passengerName, phoneNumber);
 
         // Create booking with specific ID
         var booking = Booking.hold(
-                bookingId, tripIdVo, Channel.ONLINE, passengerInfo, amountXaf, holdExpiresAt, CreatedAt.now());
+                bookingId, tripIdVo, Channel.ONLINE, passengerInfo, amountXaf, holdExpiresAt, CreatedAt.now(clock));
 
         // Save booking first
         bookingRepository.save(booking);
@@ -58,14 +64,14 @@ public class SeatHoldExecutor {
         List<SeatAssignment> seatAssignments = seatNos.stream()
                 .map(seatNo -> {
                     var seatNumber = new SeatNumber(seatNo);
-                    return SeatAssignment.create(tripIdVo, seatNumber, bookingId, SeatStatus.HELD, CreatedAt.now());
+                    return SeatAssignment.create(
+                            tripIdVo, seatNumber, bookingId, SeatStatus.HELD, CreatedAt.now(clock));
                 })
                 .toList();
 
         seatAssignmentRepository.saveAll(seatAssignments);
 
-        return new BookingHoldResult(
-                bookingId.value(), booking.getRef().value(), tripId, holdExpiresAt, amountXaf, List.copyOf(seatNos));
+        return bookingId.value();
     }
 
     public static boolean isSeatConflict(Throwable throwable) {

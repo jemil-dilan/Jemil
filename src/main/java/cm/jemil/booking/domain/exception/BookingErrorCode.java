@@ -9,6 +9,7 @@ public enum BookingErrorCode implements ErrorCode {
     BOOKING_400_004("BOOKING_400_004", "A booking cannot hold more than 5 seats"),
     BOOKING_400_005("BOOKING_400_005", "Invalid seat number for this trip"),
     BOOKING_400_006("BOOKING_400_006", "Passenger name is required"),
+    BOOKING_400_007("BOOKING_400_007", "Booking amount exceeds supported range"),
     BOOKING_404_001("BOOKING_404_001", "Trip not found"),
     BOOKING_409_001("BOOKING_409_001", "One or more seats are no longer available");
 
