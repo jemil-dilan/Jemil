@@ -122,7 +122,7 @@ class TripGenerationServiceTest {
             assertThat(trip.priceXaf()).isEqualTo(DAILY_TEMPLATE.priceXaf());
             assertThat(trip.travelClass()).isEqualTo(DAILY_TEMPLATE.travelClass());
             assertThat(trip.seatsTotal()).isEqualTo(DAILY_TEMPLATE.seatsTotal());
-            assertThat(trip.status()).isEqualTo("OPEN");
+            assertThat(trip.status()).isEqualTo("OPEN_FOR_SALE");
             assertThat(trip.seatsSold()).isZero();
             assertThat(trip.serviceDate()).isBetween(WINDOW_START, WINDOW_START.plusDays(13));
             assertThat(trip.departureAt().toLocalDate()).isEqualTo(trip.serviceDate());

@@ -6,7 +6,7 @@ package cm.nyi.booking.domain.booking;
 public enum BookingStatus {
     HELD,
     PENDING_PAYMENT,
-    PAID,
+    CONFIRMED,
     CANCELLED,
     EXPIRED
 }

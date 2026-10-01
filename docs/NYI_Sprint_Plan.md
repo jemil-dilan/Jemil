@@ -273,18 +273,18 @@ Each sprint below is a unit of deployable value: by the end of a sprint, somethi
 
 ## Full Traceability Table
 
-| Sprint | Use cases covered |
-|---|---|
-| 0 | Full rebrand JEMIL → NYI (prerequisite, no use case ID) |
-| 1 | ONB-01, ONB-02, ONB-03 |
-| 2 | UC-07, UC-08 |
-| 3 | UC-01, UC-02, SYS-01 |
-| 4 | UC-03, UC-12, SYS-02 |
-| 5 | UC-04, SYS-04, UC-14 |
-| 6 | UC-05, UC-06 |
-| 7 | UC-09, UC-10, SYS-05 |
-| 8 | UC-11, SYS-03 |
-| 9 | UC-13 |
-| 10 | Hardening / compliance / launch readiness (no new UC) |
+| Sprint | Use cases covered                                       |
+|--------|---------------------------------------------------------|
+| 0      | Full rebrand JEMIL → NYI (prerequisite, no use case ID) |
+| 1      | ONB-01, ONB-02, ONB-03                                  |
+| 2      | UC-07, UC-08                                            |
+| 3      | UC-01, UC-02, SYS-01                                    |
+| 4      | UC-03, UC-12, SYS-02                                    |
+| 5      | UC-04, SYS-04, UC-14                                    |
+| 6      | UC-05, UC-06                                            |
+| 7      | UC-09, UC-10, SYS-05                                    |
+| 8      | UC-11, SYS-03                                           |
+| 9      | UC-13                                                   |
+| 10     | Hardening / compliance / launch readiness (no new UC)   |
 
 If any implementation task doesn't map to a row in this table, stop and check it against the spec's §3.1 MVP scope before proceeding — per the spec's Final Directive, anything not listed goes to the backlog, not into the sprint.

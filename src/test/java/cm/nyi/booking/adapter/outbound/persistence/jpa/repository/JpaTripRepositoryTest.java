@@ -65,7 +65,7 @@ class JpaTripRepositoryTest {
                 LocalDate.of(2026, 9, 7),
                 4500,
                 "ECONOMY",
-                "OPEN",
+                "OPEN_FOR_SALE",
                 50,
                 0);
     }

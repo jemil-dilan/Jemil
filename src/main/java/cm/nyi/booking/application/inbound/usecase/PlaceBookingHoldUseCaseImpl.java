@@ -30,7 +30,7 @@ public class PlaceBookingHoldUseCaseImpl implements PlaceBookingHoldUseCase {
         }
 
         var trip = tripRepository.findById(command.tripId());
-        if (trip.status() != TripStatus.OPEN) {
+        if (trip.status() != TripStatus.OPEN_FOR_SALE) {
             throw new SeatNotAvailableException();
         }
 

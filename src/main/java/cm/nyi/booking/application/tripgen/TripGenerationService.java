@@ -3,6 +3,7 @@ package cm.nyi.booking.application.tripgen;
 import cm.nyi.booking.domain.trip.ActiveScheduleTemplate;
 import cm.nyi.booking.domain.trip.ScheduleTemplateRepository;
 import cm.nyi.booking.domain.trip.TripRepository;
+import cm.nyi.booking.domain.trip.TripStatus;
 import cm.nyi.booking.domain.trip.TripToCreate;
 import java.time.Clock;
 import java.time.DayOfWeek;
@@ -81,7 +82,7 @@ public class TripGenerationService {
                 serviceDate,
                 template.priceXaf(),
                 template.travelClass(),
-                "OPEN",
+                TripStatus.OPEN_FOR_SALE.name(),
                 template.seatsTotal(),
                 0);
         return tripRepository.tryInsertTrip(trip);

@@ -12,19 +12,19 @@ Spec: `docs/NYI_MVP_Specification_Document_v1.1.docx` — all 12 sections presen
 
 ## Sprint progress (per `docs/NYI_Sprint_Plan.md`)
 
-| Sprint | Status | Notes |
-|---|---|---|
-| 0 — Rebrand to NYI | **Done** | See "Sprint 0 — what changed" below. Verified green. |
-| 1 — Foundations & Onboarding | **Not started** (partial prior art) | `agency` + `auth` exist but do not match ONB-01/02/03 (see below). |
-| 2 — Trip Catalog & Fleet | **Not started** (partial prior art) | Trip aggregate exists inside the `booking` module; fleet is absent. |
-| 3 — Booking Engine & Seat Inventory | **Not started** (partial prior art) | Seat hold + expiry exist; states and APIs do not match the spec. |
-| 4 — Payments (MTN MoMo) & Reconciliation | Not started | `payment` module is an empty shell. |
-| 5 — Ticket Issuance & Notification | Not started | `ticket` module is an empty shell. |
-| 6 — Counter Sales & Cash | Not started | No `cash` module, no `CashRegisterSession`. |
-| 7 — Controller, Boarding & Manifest | Not started | No `boarding` module. DB tables only. |
-| 8 — Cancellation, Mass Refund | Not started | No refund code. DB tables only. |
-| 9 — Scoped Dashboards & Reporting | Not started | No `reporting` module. |
-| 10 — Hardening, Compliance, Pilot | Not started | — |
+| Sprint                                   | Status                              | Notes                                                               |
+|------------------------------------------|-------------------------------------|---------------------------------------------------------------------|
+| 0 — Rebrand to NYI                       | **Done**                            | See "Sprint 0 — what changed" below. Verified green.                |
+| 1 — Foundations & Onboarding             | **Not started** (partial prior art) | `agency` + `auth` exist but do not match ONB-01/02/03 (see below).  |
+| 2 — Trip Catalog & Fleet                 | **Not started** (partial prior art) | Trip aggregate exists inside the `booking` module; fleet is absent. |
+| 3 — Booking Engine & Seat Inventory      | **Not started** (partial prior art) | Seat hold + expiry exist; states and APIs do not match the spec.    |
+| 4 — Payments (MTN MoMo) & Reconciliation | Not started                         | `payment` module is an empty shell.                                 |
+| 5 — Ticket Issuance & Notification       | Not started                         | `ticket` module is an empty shell.                                  |
+| 6 — Counter Sales & Cash                 | Not started                         | No `cash` module, no `CashRegisterSession`.                         |
+| 7 — Controller, Boarding & Manifest      | Not started                         | No `boarding` module. DB tables only.                               |
+| 8 — Cancellation, Mass Refund            | Not started                         | No refund code. DB tables only.                                     |
+| 9 — Scoped Dashboards & Reporting        | Not started                         | No `reporting` module.                                              |
+| 10 — Hardening, Compliance, Pilot        | Not started                         | —                                                                   |
 
 **Important:** sprints 1–3 are marked "Not started" against the *NYI spec*, but substantial pre-rebrand code already implements adjacent functionality. That is prior art to be assessed and reused or refactored during those sprints — it is **not** credit toward the sprint's Definition of Done, because the domain model, states, and module boundaries do not match the spec.
 

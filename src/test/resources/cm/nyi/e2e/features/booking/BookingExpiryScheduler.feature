@@ -7,8 +7,8 @@ Feature: Booking expiry scheduler (simulated tick)
   Scenario: Simulated tick releases a backdated hold
     Given I am connected as user id "user-1" with the roles "PASSENGER"
     And I assume that the trips with the following data are inside the database
-      | id                                   | agencyId                             | routeId                              | busId                                | priceXaf | travelClass | status | seatsTotal | seatsSold |
-      | dddddddd-dddd-dddd-dddd-dddddddddddd | 99999999-9999-9999-9999-999999999999 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | cccccccc-cccc-cccc-cccc-cccccccccccc | 5000     | STANDARD    | OPEN   | 40         | 0         |
+      | id                                   | agencyId                             | routeId                              | busId                                | priceXaf | travelClass | status        | seatsTotal | seatsSold |
+      | dddddddd-dddd-dddd-dddd-dddddddddddd | 99999999-9999-9999-9999-999999999999 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | cccccccc-cccc-cccc-cccc-cccccccccccc | 5000     | STANDARD    | OPEN_FOR_SALE | 40         | 0         |
     When I place a booking hold with the following data
       | tripId                               | seatNos | passengerName | passengerMsisdn |
       | dddddddd-dddd-dddd-dddd-dddddddddddd | 21      | Jean Mbarga   | +237699000111   |

@@ -89,7 +89,7 @@ class SeatAssignmentConcurrencyIntegrationTest {
         trip.setServiceDate(LocalDate.of(2026, 8, 20));
         trip.setPriceXaf(5000);
         trip.setTravelClass("STANDARD");
-        trip.setStatus("OPEN");
+        trip.setStatus("OPEN_FOR_SALE");
         trip.setSeatsTotal(40);
         trip.setSeatsSold(0);
         tripSpringRepository.saveAndFlush(trip);

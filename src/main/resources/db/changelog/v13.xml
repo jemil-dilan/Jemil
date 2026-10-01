@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+	<changeSet id="NYI-2-rename-open-to-open-for-sale"
+		author="nyi">
+		<comment>Align the persisted TripStatus value with spec 6.1. The enum
+			constant was
+			renamed OPEN -&gt; OPEN_FOR_SALE; stored rows keep the
+			old literal until this
+			migration rewrites them, otherwise
+			TripStatus.valueOf() fails on read.</comment>
+		<sql>
+			UPDATE trips SET status = 'OPEN_FOR_SALE' WHERE status = 'OPEN';
+		</sql>
+		<rollback>
+			UPDATE trips SET status = 'OPEN' WHERE status =
+			'OPEN_FOR_SALE';
+		</rollback>
+	</changeSet>
+
+	<changeSet id="NYI-2-rename-paid-to-confirmed" author="nyi">
+		<comment>Align the persisted BookingStatus value with spec 6.2. The
+			enum constant was
+			renamed PAID -&gt; CONFIRMED.
+			seat_assignments.status is a separate vocabulary and
+			is intentionally
+			left alone.</comment>
+		<sql>
+			UPDATE bookings SET status = 'CONFIRMED' WHERE status = 'PAID';
+		</sql>
+		<rollback>
+			UPDATE bookings SET status = 'PAID' WHERE status =
+			'CONFIRMED';
+		</rollback>
+	</changeSet>
+
+</databaseChangeLog>

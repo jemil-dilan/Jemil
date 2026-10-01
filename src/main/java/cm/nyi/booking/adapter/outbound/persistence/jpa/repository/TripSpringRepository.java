@@ -38,7 +38,7 @@ public interface TripSpringRepository extends JpaRepository<TripJpa, UUID> {
               AND r.departureId = :originCityId
               AND r.arrivalId = :destinationCityId
               AND t.serviceDate = :serviceDate
-              AND t.status = 'OPEN'
+              AND t.status = :openForSaleStatus
               AND t.departureAt > :earliestDeparture
               AND a.status = cm.nyi.agency.domain.agency.AgencyStatus.ACTIVE
             ORDER BY t.departureAt ASC
@@ -47,5 +47,6 @@ public interface TripSpringRepository extends JpaRepository<TripJpa, UUID> {
             @Param("originCityId") UUID originCityId,
             @Param("destinationCityId") UUID destinationCityId,
             @Param("serviceDate") LocalDate serviceDate,
-            @Param("earliestDeparture") OffsetDateTime earliestDeparture);
+            @Param("earliestDeparture") OffsetDateTime earliestDeparture,
+            @Param("openForSaleStatus") String openForSaleStatus);
 }

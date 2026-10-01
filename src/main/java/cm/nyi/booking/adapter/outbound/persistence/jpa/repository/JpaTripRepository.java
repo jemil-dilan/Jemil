@@ -26,7 +26,8 @@ public class JpaTripRepository implements TripRepository {
     @Override
     public List<TripSearchView> search(
             UUID originCityId, UUID destinationCityId, LocalDate serviceDate, OffsetDateTime earliestDeparture) {
-        return tripSpringRepository.searchTrips(originCityId, destinationCityId, serviceDate, earliestDeparture);
+        return tripSpringRepository.searchTrips(
+                originCityId, destinationCityId, serviceDate, earliestDeparture, TripStatus.OPEN_FOR_SALE.name());
     }
 
     @Override

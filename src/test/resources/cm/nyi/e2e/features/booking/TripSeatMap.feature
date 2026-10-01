@@ -6,16 +6,16 @@ Feature: Trip seat map
   Scenario: Seat map returns bus layout from the seeded trip
     Given I am connected as user id "user-1" with the roles "PASSENGER"
     And I assume that the trips with the following data are inside the database
-      | id                                   | agencyId                             | routeId                              | busId                                | priceXaf | travelClass | status | seatsTotal | seatsSold |
-      | dddddddd-dddd-dddd-dddd-dddddddddddd | 99999999-9999-9999-9999-999999999999 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | cccccccc-cccc-cccc-cccc-cccccccccccc | 5000     | STANDARD    | OPEN   | 40         | 0         |
+      | id                                   | agencyId                             | routeId                              | busId                                | priceXaf | travelClass | status        | seatsTotal | seatsSold |
+      | dddddddd-dddd-dddd-dddd-dddddddddddd | 99999999-9999-9999-9999-999999999999 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | cccccccc-cccc-cccc-cccc-cccccccccccc | 5000     | STANDARD    | OPEN_FOR_SALE | 40         | 0         |
     When I fetch the seat map for trip "dddddddd-dddd-dddd-dddd-dddddddddddd"
     Then the seat map has seat count 40 and layout "2-2"
 
   Scenario: Held seats appear as taken on the seat map
     Given I am connected as user id "user-1" with the roles "PASSENGER"
     And I assume that the trips with the following data are inside the database
-      | id                                   | agencyId                             | routeId                              | busId                                | priceXaf | travelClass | status | seatsTotal | seatsSold |
-      | dddddddd-dddd-dddd-dddd-dddddddddddd | 99999999-9999-9999-9999-999999999999 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | cccccccc-cccc-cccc-cccc-cccccccccccc | 5000     | STANDARD    | OPEN   | 40         | 0         |
+      | id                                   | agencyId                             | routeId                              | busId                                | priceXaf | travelClass | status        | seatsTotal | seatsSold |
+      | dddddddd-dddd-dddd-dddd-dddddddddddd | 99999999-9999-9999-9999-999999999999 | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | cccccccc-cccc-cccc-cccc-cccccccccccc | 5000     | STANDARD    | OPEN_FOR_SALE | 40         | 0         |
     When I place a booking hold with the following data
       | tripId                               | seatNos | passengerName | passengerMsisdn |
       | dddddddd-dddd-dddd-dddd-dddddddddddd | 33      | Jean Mbarga   | +237699000111   |
