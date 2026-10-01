@@ -1,0 +1,74 @@
+package cm.nyi.agency.application;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+
+import cm.nyi.agency.application.inbound.usecase.RegisterAgencyUseCaseImpl;
+import cm.nyi.agency.domain.agency.Agency;
+import cm.nyi.agency.domain.agency.AgencyName;
+import cm.nyi.agency.domain.agency.AgencyRepository;
+import cm.nyi.agency.domain.agency.AgencyStatus;
+import cm.nyi.agency.domain.agency.LicenceNumber;
+import cm.nyi.shared.outbox.OutboxEventPublisher;
+import cm.nyi.shared.utils.PhoneNumber;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+class RegisterAgencyUseCaseImplTest {
+
+    @Mock
+    private AgencyRepository agencyRepository;
+
+    @Mock
+    private OutboxEventPublisher eventPublisher;
+
+    @Captor
+    private ArgumentCaptor<Agency> agencyCaptor;
+
+    private RegisterAgencyUseCaseImpl service;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        service = new RegisterAgencyUseCaseImpl(agencyRepository, eventPublisher);
+    }
+
+    @Test
+    void shouldExecuteAgency() {
+        var phoneNumber = new PhoneNumber("237", "653492410");
+
+        var command = new RegisterAgencyUseCaseImpl.Command("Global Voyages", phoneNumber, "LIC-001");
+        var id = service.execute(command);
+
+        assertThat(id).isNotNull();
+        assertThat(id.value()).isNotNull();
+    }
+
+    @Test
+    void shouldSaveAgencyToRepository() {
+        var phoneNumber = new PhoneNumber("237", "653492410");
+
+        var command = new RegisterAgencyUseCaseImpl.Command("Global Voyages", phoneNumber, "LIC-001");
+        service.execute(command);
+
+        verify(agencyRepository).insert(agencyCaptor.capture());
+        var saved = agencyCaptor.getValue();
+        assertThat(saved.getName()).isEqualTo(new AgencyName("Global Voyages"));
+        assertThat(saved.getPhoneNumber()).isEqualTo(phoneNumber);
+        assertThat(saved.getLicenseNumber()).isEqualTo(new LicenceNumber("LIC-001"));
+        assertThat(saved.getStatus()).isEqualTo(AgencyStatus.ACTIVE);
+    }
+
+    @Test
+    void shouldPublishEventAfterRegistration() {
+        var command2 = new RegisterAgencyUseCaseImpl.Command("Test", new PhoneNumber("1", "2"), "LIC-002");
+        service.execute(command2);
+
+        verify(eventPublisher).publish(any());
+    }
+}

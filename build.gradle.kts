@@ -15,7 +15,7 @@ plugins {
     alias(libs.plugins.error.prone)
 }
 
-group = "cm.jemil"
+group = "cm.nyi"
 version = "0.0.1-SNAPSHOT"
 
 java {
@@ -217,8 +217,8 @@ tasks.register("e2eTest") {
                     "--tags",
                     "not @Disabled and not @pending",
                     "--glue",
-                    "cm.jemil.e2e",
-                    "src/test/resources/cm/jemil/e2e/features",
+                    "cm.nyi.e2e",
+                    "src/test/resources/cm/nyi/e2e/features",
                 )
         }
     }
@@ -292,9 +292,9 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/inbound/agency.yaml",
     outputDirName = "agency",
     libraryName = "spring-boot",
-    taskApiPackage = "cm.jemil.generated.agency.adapter.rest.inbound.api",
-    taskModelPackage = "cm.jemil.generated.agency.adapter.rest.inbound.dto",
-    taskConfigPackage = "cm.jemil.generated.agency.adapter.rest.inbound.config",
+    taskApiPackage = "cm.nyi.generated.agency.adapter.rest.inbound.api",
+    taskModelPackage = "cm.nyi.generated.agency.adapter.rest.inbound.dto",
+    taskConfigPackage = "cm.nyi.generated.agency.adapter.rest.inbound.config",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -306,7 +306,7 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/outbound/domain-events.yaml",
     outputDirName = "agency-events",
     libraryName = "spring-http-interface",
-    taskModelPackage = "cm.jemil.generated.agency.adapter.messaging.outbound.dto",
+    taskModelPackage = "cm.nyi.generated.agency.adapter.messaging.outbound.dto",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -318,9 +318,9 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/inbound/booking.yaml",
     outputDirName = "booking",
     libraryName = "spring-boot",
-    taskApiPackage = "cm.jemil.generated.booking.adapter.rest.inbound.api",
-    taskModelPackage = "cm.jemil.generated.booking.adapter.rest.inbound.dto",
-    taskConfigPackage = "cm.jemil.generated.booking.adapter.rest.inbound.config",
+    taskApiPackage = "cm.nyi.generated.booking.adapter.rest.inbound.api",
+    taskModelPackage = "cm.nyi.generated.booking.adapter.rest.inbound.dto",
+    taskConfigPackage = "cm.nyi.generated.booking.adapter.rest.inbound.config",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -340,7 +340,7 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/outbound/booking-domain-events.yaml",
     outputDirName = "booking-events",
     libraryName = "spring-http-interface",
-    taskModelPackage = "cm.jemil.generated.booking.adapter.messaging.outbound.dto",
+    taskModelPackage = "cm.nyi.generated.booking.adapter.messaging.outbound.dto",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -351,9 +351,9 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/inbound/payment.yaml",
     outputDirName = "payment",
     libraryName = "spring-boot",
-    taskApiPackage = "cm.jemil.generated.payment.adapter.rest.inbound.api",
-    taskModelPackage = "cm.jemil.generated.payment.adapter.rest.inbound.dto",
-    taskConfigPackage = "cm.jemil.generated.payment.adapter.rest.inbound.config",
+    taskApiPackage = "cm.nyi.generated.payment.adapter.rest.inbound.api",
+    taskModelPackage = "cm.nyi.generated.payment.adapter.rest.inbound.dto",
+    taskConfigPackage = "cm.nyi.generated.payment.adapter.rest.inbound.config",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -365,7 +365,7 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/outbound/payment-domain-events.yaml",
     outputDirName = "payment-events",
     libraryName = "spring-http-interface",
-    taskModelPackage = "cm.jemil.generated.payment.adapter.messaging.outbound.dto",
+    taskModelPackage = "cm.nyi.generated.payment.adapter.messaging.outbound.dto",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -377,9 +377,9 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/inbound/ticket.yaml",
     outputDirName = "ticket",
     libraryName = "spring-boot",
-    taskApiPackage = "cm.jemil.generated.ticket.adapter.rest.inbound.api",
-    taskModelPackage = "cm.jemil.generated.ticket.adapter.rest.inbound.dto",
-    taskConfigPackage = "cm.jemil.generated.ticket.adapter.rest.inbound.config",
+    taskApiPackage = "cm.nyi.generated.ticket.adapter.rest.inbound.api",
+    taskModelPackage = "cm.nyi.generated.ticket.adapter.rest.inbound.dto",
+    taskConfigPackage = "cm.nyi.generated.ticket.adapter.rest.inbound.config",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -391,7 +391,7 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/outbound/domain-events.yaml",
     outputDirName = "ticket-events",
     libraryName = "spring-http-interface",
-    taskModelPackage = "cm.jemil.generated.ticket.adapter.messaging.outbound.dto",
+    taskModelPackage = "cm.nyi.generated.ticket.adapter.messaging.outbound.dto",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -404,9 +404,9 @@ registerOpenApiGenerateTask(
     specFile = "$rootDir/specs/openapi/inbound/auth.yaml",
     outputDirName = "auth",
     libraryName = "spring-boot",
-    taskApiPackage = "cm.jemil.generated.auth.adapter.rest.inbound.api",
-    taskModelPackage = "cm.jemil.generated.auth.adapter.rest.inbound.dto",
-    taskConfigPackage = "cm.jemil.generated.auth.adapter.rest.inbound.config",
+    taskApiPackage = "cm.nyi.generated.auth.adapter.rest.inbound.api",
+    taskModelPackage = "cm.nyi.generated.auth.adapter.rest.inbound.dto",
+    taskConfigPackage = "cm.nyi.generated.auth.adapter.rest.inbound.config",
     extraConfigOptions =
         mapOf(
             "skipDefaultInterface" to "true",
@@ -468,8 +468,8 @@ sourceSets.main.get().java.srcDirs(
 // ── Sonar ────────────────────────────────────────────────────
 sonar {
     properties {
-        property("sonar.projectKey", "jemil-backend")
-        property("sonar.projectName", "JEMIL Transport Backend")
+        property("sonar.projectKey", "nyi-backend")
+        property("sonar.projectName", "NYI Transport Backend")
         property("sonar.host.url", System.getenv("SONAR_HOST_URL") ?: "http://localhost:9000")
         property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
         property("sonar.java.coveragePlugin", "jacoco")

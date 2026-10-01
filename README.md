@@ -1,10 +1,10 @@
-# JEMIL Backend
+# NYI Backend
 
-Backend for an interurban transport platform in Cameroon.
+Backend for **NYI — Le Voyage, Autrement**, an interurban transport platform in Cameroon.
 
 **Modular monolith** · Hexagonal / DDD · OpenAPI contract-first · PostgreSQL + Liquibase
 
-> Live progress tracker: [`docs/STATUS.md`](docs/STATUS.md)
+> Live progress tracker: [`status.md`](status.md)
 
 ## Current Status (Sep 2026)
 
@@ -12,7 +12,7 @@ Backend for an interurban transport platform in Cameroon.
 |-------|--------|
 | Sprint 0 — Foundation | Done |
 | Sprint 1 — Agency & routes | Done (Cucumber e2e green) |
-| **S1.5 — Model correction + trip/hold + tripgen** | **Closed** (see [`docs/STATUS.md`](docs/STATUS.md)) |
+| **S1.5 — Model correction + trip/hold + tripgen** | **Closed** (see [`status.md`](status.md)) |
 | Sprint 2 — Seat map + hold expiry | Not started |
 | Sprint 3 — Payment MoMo | Not started |
 | Sprint 4+ — Ticket, counter, launch | Not started |
@@ -20,7 +20,7 @@ Backend for an interurban transport platform in Cameroon.
 ### Modules
 
 ```text
-src/main/java/cm/jemil/
+src/main/java/cm/nyi/
 ├── agency/       # Production — agencies, branches, cities, routes, schedules
 ├── booking/      # Trips search, seat hold, trip generation (payment not yet)
 ├── auth/         # JWT login/register (roles include CASHIER)
@@ -49,7 +49,7 @@ src/main/java/cm/jemil/
 ## Architecture
 
 ```text
-cm.jemil.{context}/
+cm.nyi.{context}/
 ├── domain/
 ├── application/
 ├── adapter/inbound/rest/
@@ -85,13 +85,12 @@ Swagger: `http://localhost:8080/swagger-ui.html`
 
 | Doc | Purpose |
 |-----|---------|
-| [`docs/STATUS.md`](docs/STATUS.md) | **Progress board — update this first** |
-| [`docs/JEMIL_MVP_Build_Spec.md`](docs/JEMIL_MVP_Build_Spec.md) | MVP product / schema / payment rules |
-| [`docs/JEMIL_Backend_Gap_Analysis.md`](docs/JEMIL_Backend_Gap_Analysis.md) | Defects D1–D7 + revised sprint plan (S1.5…) |
-| [`docs/JEMIL_Use_Cases_Acceptance_Criteria.md`](docs/JEMIL_Use_Cases_Acceptance_Criteria.md) | P0/P1/P2 use cases + AC |
-| [`docs/JEMIL_UC_Detail_Part1_Passenger_System.md`](docs/JEMIL_UC_Detail_Part1_Passenger_System.md) | Passenger/system UC detail |
-| [`docs/JEMIL_UC_Detail_Part2_Staff_Apps.md`](docs/JEMIL_UC_Detail_Part2_Staff_Apps.md) | Counter/controller UC detail |
-| [`docs/sprints/`](docs/sprints/) | Sprint retrospectives |
+| [`status.md`](status.md) | **Progress board — update this first** |
+| [`docs/NYI_MVP_Specification_Document_v1.1.docx`](docs/NYI_MVP_Specification_Document_v1.1.docx) | **MVP specification — source of truth** |
+| [`docs/NYI_Sprint_Plan.md`](docs/NYI_Sprint_Plan.md) | Sprint-by-sprint plan |
+| [`docs/NYI_Implementation_Guideline.md`](docs/NYI_Implementation_Guideline.md) | How work is executed and verified |
+| [`docs/deployment/`](docs/deployment/) | Deployment guides |
+| [`docs/archive/`](docs/archive/) | Superseded pre-rebrand documents — historical record only |
 | [`specs/adr/`](specs/adr/) | Architecture decision records |
 | [`specs/openapi/`](specs/openapi/) | API contracts (source of truth) |
 | [`specs/documentation/ERROR_CODES.md`](specs/documentation/ERROR_CODES.md) | Error code catalogue |

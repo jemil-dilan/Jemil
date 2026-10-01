@@ -1,4 +1,4 @@
-# Error Codes — JEMIL Backend
+# Error Codes — NYI Backend
 
 | Type              | HTTP Code | Business Code    | Description                                |
 |-------------------|-----------|------------------|--------------------------------------------|
