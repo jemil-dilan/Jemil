@@ -1,8 +1,8 @@
 ---
 openapi: "3.0.3"
 info:
-  title: "JEMIL Payment API"
-  description: "Payment operations for the JEMIL platform.
+  title: "NYI Payment API"
+  description: "Payment operations for the NYI platform.
     
     Placeholder health path retained until payment endpoints are defined.
     
@@ -10,7 +10,7 @@ info:
     Code is generated from this spec — not the other way around."
   version: "2026-W01"
   contact:
-    name: "JEMIL Dev Team"
+    name: "NYI Dev Team"
 servers:
 - url: "https"
 - url: "http"

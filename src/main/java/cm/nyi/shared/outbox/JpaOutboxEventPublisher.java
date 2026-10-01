@@ -1,0 +1,36 @@
+package cm.nyi.shared.outbox;
+
+import cm.nyi.shared.events.DomainEvent;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.ObjectMapper;
+
+@Service
+@RequiredArgsConstructor
+public class JpaOutboxEventPublisher implements OutboxEventPublisher {
+
+    private final OutboxRepository outboxRepository;
+    private final ObjectMapper objectMapper;
+
+    @Override
+    @Transactional
+    @SneakyThrows
+    public void publish(Object event) {
+        if (!(event instanceof DomainEvent domainEvent)) {
+            return;
+        }
+
+        String payload = objectMapper.writeValueAsString(domainEvent);
+
+        OutboxEvent outboxEvent = new OutboxEvent(
+                domainEvent.eventId(),
+                domainEvent.aggregateType(),
+                domainEvent.aggregateId(),
+                domainEvent.getClass().getSimpleName(),
+                payload);
+
+        outboxRepository.save(outboxEvent);
+    }
+}

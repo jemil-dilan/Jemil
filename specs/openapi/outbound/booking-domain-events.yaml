@@ -1,14 +1,14 @@
 ---
 openapi: "3.0.3"
 info:
-  title: "JEMIL Transport Backend"
-  description: "Booking Domain Events for JEMIL Transport System"
+  title: "NYI Transport Backend"
+  description: "Booking Domain Events for NYI Transport System"
   version: "2026-W27"
 servers:
   - url: "https"
   - url: "http"
 tags:
-  - name: "JEMIL"
+  - name: "NYI"
     description: "Booking domain operations"
 paths: {}
 components:

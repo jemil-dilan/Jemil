@@ -2,7 +2,7 @@
 
 ## Contexte
 
-Nous devons choisir l'architecture de base pour le système JEMIL Transport Ecosystem. Les deux options principales sont :
+Nous devons choisir l'architecture de base pour le système NYI Transport Ecosystem. Les deux options principales sont :
 - **Modular Monolith** : Une seule application avec des modules logiquement séparés
 - **Microservices** : Plusieurs services indépendants communiquant via API
 
@@ -12,7 +12,7 @@ Nous devons choisir l'architecture de base pour le système JEMIL Transport Ecos
 
 ## Justification
 
-### Avantages du Modular Monolith pour JEMIL
+### Avantages du Modular Monolith pour NYI
 
 1. **Simplicité de développement et déploiement**
    - Un seul codebase à gérer
@@ -38,7 +38,7 @@ Nous devons choisir l'architecture de base pour le système JEMIL Transport Ecos
 ### Structure du Modular Monolith
 
 ```
-jemil-backend/
+nyi-backend/
 ├── auth/           # Module d'authentification
 ├── agency/         # Module de gestion des agences
 ├── booking/        # Module de réservation

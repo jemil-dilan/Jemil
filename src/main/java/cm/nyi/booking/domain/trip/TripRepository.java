@@ -1,0 +1,26 @@
+package cm.nyi.booking.domain.trip;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.UUID;
+
+public interface TripRepository {
+    List<TripSearchView> search(
+            UUID originCityId, UUID destinationCityId, LocalDate serviceDate, OffsetDateTime earliestDeparture);
+
+    TripDetails findById(UUID tripId);
+
+    /**
+     * Seat map for UC-P-02; empty when the trip does not exist.
+     */
+    TripSeatMap findSeatMap(UUID tripId);
+
+    /**
+     * Persists a newly materialised trip. Returns {@code false} when a matching trip already
+     * exists for the same template and service date (unique index {@code trip_once_per_template_date}).
+     */
+    boolean tryInsertTrip(TripToCreate trip);
+
+    record TripDetails(UUID id, int priceXaf, int seatsTotal, TripStatus status) {}
+}

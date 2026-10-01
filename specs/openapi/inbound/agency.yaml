@@ -1,8 +1,8 @@
 ---
 openapi: "3.0.3"
 info:
-  title: "JEMIL Agency API"
-  description: "API for managing partner transport agencies in the JEMIL platform.
+  title: "NYI Agency API"
+  description: "API for managing partner transport agencies in the NYI platform.
     
     This contract is the single source of truth between the backend and clients 
     (Android mobile app, agency web dashboard, QA team).
@@ -11,12 +11,12 @@ info:
     Code is generated from this spec — not the other way around."
   version: "2026-W02"
   contact:
-    name: "JEMIL Dev Team"
+    name: "NYI Dev Team"
 
 servers:
   - url: "http://localhost:8080"
     description: "Local development"
-  - url: "https://api.jemil.cm"
+  - url: "https://api.nyi.cm"
     description: "Production"
 
 tags:

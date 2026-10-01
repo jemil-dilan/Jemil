@@ -1,4 +1,4 @@
-# 🚀 Sprint 1 Deployment Guide - JEMIL Agency & Route Management
+# 🚀 Sprint 1 Deployment Guide - NYI Agency & Route Management
 
 **Version:** 1.0.0  
 **Sprint:** Sprint 1 - Agency & Route Management  
@@ -65,8 +65,8 @@ This guide provides step-by-step instructions for deploying the **Sprint 1 featu
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-repo/jemil-backend.git
-cd jemil-backend
+git clone https://github.com/your-repo/nyi-backend.git
+cd nyi-backend
 
 # 2. Check out Sprint 1 tag
 git checkout sprint-1-done
@@ -101,18 +101,18 @@ sleep 30
 ./gradlew bootJar
 
 # Build Docker image
-docker build -t jemil-backend:sprint-1 .
+docker build -t nyi-backend:sprint-1 .
 
 # Push to registry (if using remote registry)
-docker tag jemil-backend:sprint-1 your-registry/jemil-backend:sprint-1
-docker push your-registry/jemil-backend:sprint-1
+docker tag nyi-backend:sprint-1 your-registry/nyi-backend:sprint-1
+docker push your-registry/nyi-backend:sprint-1
 ```
 
 #### Step 2: Database Setup
 
 ```bash
 # Create database (if not exists)
-createdb jemil_production
+createdb nyi_production
 
 # Run migrations (Liquibase will run on startup)
 # Migrations are in: src/main/resources/db/changelog/
@@ -123,20 +123,20 @@ createdb jemil_production
 ```bash
 # Using Docker
 docker run -d \
-  --name jemil-backend \
+  --name nyi-backend \
   -p 8080:8080 \
   -e SPRING_PROFILES_ACTIVE=prod \
-  -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/jemil_production \
-  -e SPRING_DATASOURCE_USERNAME=jemil_user \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/nyi_production \
+  -e SPRING_DATASOURCE_USERNAME=nyi_user \
   -e SPRING_DATASOURCE_PASSWORD=secure_password \
   -e SPRING_JPA_HIBERNATE_DDL_AUTO=validate \
-  jemil-backend:sprint-1
+  nyi-backend:sprint-1
 
 # Or using Java directly
-java -jar build/libs/jemil-backend-*.jar \
+java -jar build/libs/nyi-backend-*.jar \
   --spring.profiles.active=prod \
-  --spring.datasource.url=jdbc:postgresql://localhost:5432/jemil_production \
-  --spring.datasource.username=jemil_user \
+  --spring.datasource.url=jdbc:postgresql://localhost:5432/nyi_production \
+  --spring.datasource.username=nyi_user \
   --spring.datasource.password=secure_password
 ```
 
@@ -157,8 +157,8 @@ java -jar build/libs/jemil-backend-*.jar \
 #### Required (No Defaults)
 ```bash
 # Database
-SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/jemil
-SPRING_DATASOURCE_USERNAME=jemil_user
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/nyi
+SPRING_DATASOURCE_USERNAME=nyi_user
 SPRING_DATASOURCE_PASSWORD=your_password
 
 # JWT Secret (for token signing)
@@ -181,7 +181,7 @@ SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL=false
 
 # Logging
 LOGGING_LEVEL_ORG_SPRINGFRAMEWORK=INFO
-LOGGING_LEVEL_CM_JEMIL=DEBUG
+LOGGING_LEVEL_CM_NYI=DEBUG
 
 # Application
 SPRING_PROFILES_ACTIVE=dev
@@ -320,7 +320,7 @@ curl http://your-server:8080/actuator/health
 ### 2. Database Connection
 ```bash
 # Connect to PostgreSQL
-psql -h localhost -p 5432 -U jemil_user -d jemil_production
+psql -h localhost -p 5432 -U nyi_user -d nyi_production
 
 # Verify tables exist
 \dt
@@ -358,7 +358,7 @@ curl -X GET "http://localhost:8080/routes/search?originCityName=Douala&destinati
 ### 4. Log Verification
 ```bash
 # Check application logs
-docker logs jemil-backend 2>&1 | grep -i "started\|error\|exception"
+docker logs nyi-backend 2>&1 | grep -i "started\|error\|exception"
 
 # Or for local deployment
 tail -f logs/application.log
@@ -379,7 +379,7 @@ tail -f logs/application.log
 docker ps | grep postgres
 
 # Check connection manually
-psql -h localhost -p 5432 -U jemil_user -d jemil
+psql -h localhost -p 5432 -U nyi_user -d nyi
 
 # Verify credentials in application.yml
 ```
@@ -429,10 +429,10 @@ SERVER_PORT=8081 ./gradlew bootRun
 **Solution:**
 ```bash
 # Increase JVM heap size
-java -Xmx2g -Xms512m -jar build/libs/jemil-backend-*.jar
+java -Xmx2g -Xms512m -jar build/libs/nyi-backend-*.jar
 
 # Or in Docker
-docker run -e JAVA_OPTS="-Xmx2g -Xms512m" jemil-backend:sprint-1
+docker run -e JAVA_OPTS="-Xmx2g -Xms512m" nyi-backend:sprint-1
 ```
 
 ---
@@ -441,9 +441,9 @@ docker run -e JAVA_OPTS="-Xmx2g -Xms512m" jemil-backend:sprint-1
 
 | Role              | Contact          | Responsibility   |
 |-------------------|------------------|------------------|
-| Backend Developer | dev@jemil.cm     | Code, Deployment |
-| DevOps            | devops@jemil.cm  | Infrastructure   |
-| Product Owner     | product@jemil.cm | Requirements     |
+| Backend Developer | dev@nyi.cm     | Code, Deployment |
+| DevOps            | devops@nyi.cm  | Infrastructure   |
+| Product Owner     | product@nyi.cm | Requirements     |
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## Contexte
 
-Nous devons choisir comment gérer les événements de domaine (Domain Events) dans l'architecture JEMIL. Les deux approches principales sont :
+Nous devons choisir comment gérer les événements de domaine (Domain Events) dans l'architecture NYI. Les deux approches principales sont :
 - **Outbox Pattern** : Stocker les événements dans une table avant publication
 - **Spring ApplicationEvent** : Publier directement les événements via le contexte Spring
 
@@ -23,7 +23,7 @@ Nous devons choisir comment gérer les événements de domaine (Domain Events) d
 | **Complexité**    | ❌ Plus complexe            | ✅ Simple et direct                |
 | **Performance**   | ❌ Latence DB               | ✅ Temps réel                      |
 
-### Avantages du Outbox Pattern pour JEMIL
+### Avantages du Outbox Pattern pour NYI
 
 1. **Garantie de livraison (At-least-once)**
    - Les événements sont persistés dans la base de données avant d'être publiés
@@ -50,7 +50,7 @@ Nous devons choisir comment gérer les événements de domaine (Domain Events) d
    - Découplage entre les modules producteurs et consommateurs
    - Meilleure évolutivité
 
-### Implémentation dans JEMIL
+### Implémentation dans NYI
 
 #### Structure de la table `outbox_events`
 

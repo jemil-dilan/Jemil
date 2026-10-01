@@ -1,4 +1,4 @@
-rootProject.name = "jemil-backend"
+rootProject.name = "nyi-backend"
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)

@@ -2,7 +2,7 @@
 
 ## Contexte
 
-Nous devons choisir un outil de gestion des migrations de base de données pour le projet JEMIL. Les deux options principales sont :
+Nous devons choisir un outil de gestion des migrations de base de données pour le projet NYI. Les deux options principales sont :
 - **Liquibase** : Utilise des fichiers XML, YAML, JSON ou SQL
 - **Flyway** : Utilise principalement des fichiers SQL
 
@@ -23,7 +23,7 @@ Nous devons choisir un outil de gestion des migrations de base de données pour 
 | **Flexibilité**              | ✅ Très flexible (changelog master) | ✅ Simple et conventionnel    |
 | **Intégration Spring Boot**  | ✅ Excellente                       | ✅ Excellente                 |
 
-### Avantages de Liquibase pour JEMIL
+### Avantages de Liquibase pour NYI
 
 1. **XML structuré**
    - Meilleure organisation visuelle des migrations

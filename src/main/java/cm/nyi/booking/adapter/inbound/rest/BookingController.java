@@ -1,0 +1,45 @@
+package cm.nyi.booking.adapter.inbound.rest;
+
+import cm.nyi.booking.application.inbound.usecase.GetTripSeatMapUseCase;
+import cm.nyi.booking.application.inbound.usecase.PlaceBookingHoldUseCase;
+import cm.nyi.booking.application.inbound.usecase.SearchTripsUseCase;
+import cm.nyi.generated.booking.adapter.rest.inbound.api.BookingApi;
+import cm.nyi.generated.booking.adapter.rest.inbound.api.TripApi;
+import cm.nyi.generated.booking.adapter.rest.inbound.dto.CreateBookingHoldDTO;
+import cm.nyi.generated.booking.adapter.rest.inbound.dto.CreationResponseDTO;
+import cm.nyi.generated.booking.adapter.rest.inbound.dto.TripSearchResponseDTO;
+import cm.nyi.generated.booking.adapter.rest.inbound.dto.TripSeatMapDTO;
+import java.time.LocalDate;
+import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+public class BookingController implements TripApi, BookingApi {
+
+    private final SearchTripsUseCase searchTripsUseCase;
+    private final GetTripSeatMapUseCase getTripSeatMapUseCase;
+    private final PlaceBookingHoldUseCase placeBookingHoldUseCase;
+    private final BookingRestMapper restMapper;
+
+    @Override
+    public ResponseEntity<TripSearchResponseDTO> searchTrips(
+            UUID originCityId, UUID destinationCityId, LocalDate serviceDate) {
+        var trips = searchTripsUseCase.execute(originCityId, destinationCityId, serviceDate);
+        return ResponseEntity.ok(restMapper.toTripSearchResponse(trips));
+    }
+
+    @Override
+    public ResponseEntity<TripSeatMapDTO> getTripSeats(UUID tripId) {
+        return ResponseEntity.ok(restMapper.toTripSeatMap(getTripSeatMapUseCase.execute(tripId)));
+    }
+
+    @Override
+    public ResponseEntity<CreationResponseDTO> createBookingHold(CreateBookingHoldDTO createBookingHoldDTO) {
+        var result = placeBookingHoldUseCase.execute(restMapper.toCommand(createBookingHoldDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(restMapper.toCreationResponse(result));
+    }
+}

@@ -1,25 +1,23 @@
-version: '3.8'
-
 # ============================================================
-# JEMIL — Environnement de développement local (Single Module)
+# NYI — Environnement de développement local (Single Module)
 # ============================================================
 
 services:
 
-  # ── PostgreSQL — Base de données unique pour JEMIL ─────────
+  # ── PostgreSQL — Base de données unique pour NYI ─────────
   postgres:
     image: postgres:15-alpine
-    container_name: jemil-postgres
+    container_name: nyi-postgres
     ports:
       - "5433:5432"
     environment:
-      POSTGRES_DB: ${DB_NAME:-jemil_db}
-      POSTGRES_USER: ${DB_USER:-jemil}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-jemil_secret}
+      POSTGRES_DB: ${DB_NAME:-nyi_db}
+      POSTGRES_USER: ${DB_USER:-nyi}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-nyi_secret}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-jemil} -d ${DB_NAME:-jemil_db}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-nyi} -d ${DB_NAME:-nyi_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,7 +25,7 @@ services:
   # ── Keycloak — Gestion des identités ───────────────────────────
   keycloak:
     image: quay.io/keycloak/keycloak:26.6.3
-    container_name: jemil-keycloak
+    container_name: nyi-keycloak
     command: start-dev
     ports:
       - "8081:8080"
@@ -38,7 +36,7 @@ services:
   # ── SonarQube — Analyse qualité ───────────────────────────
   sonarqube:
     image: sonarqube:10-community
-    container_name: jemil-sonarqube
+    container_name: nyi-sonarqube
     ports:
       - "9000:9000"
     environment:
@@ -61,7 +59,7 @@ services:
   # Base de données dédiée à SonarQube
   postgres-sonar:
     image: postgres:15-alpine
-    container_name: jemil-postgres-sonar
+    container_name: nyi-postgres-sonar
     ports:
       - "5433:5432"
     environment:

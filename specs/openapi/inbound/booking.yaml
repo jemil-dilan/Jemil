@@ -1,16 +1,16 @@
 ---
 openapi: "3.0.3"
 info:
-  title: "JEMIL Booking API"
+  title: "NYI Booking API"
   description: "Trip search, seat map, and passenger booking hold operations."
   version: "2026-W04"
   contact:
-    name: "JEMIL Dev Team"
+    name: "NYI Dev Team"
 
 servers:
   - url: "http://localhost:8080"
     description: "Local development"
-  - url: "https://api.jemil.cm"
+  - url: "https://api.nyi.cm"
     description: "Production"
 
 tags:
