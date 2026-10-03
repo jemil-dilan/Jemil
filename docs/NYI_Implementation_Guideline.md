@@ -4,6 +4,10 @@
 
 This guideline has four mandatory phases, in order: **Status Analysis → Plan & Approval → Git Setup → TDD Implementation.** Do not begin writing implementation code before Phase 4, and do not begin Phase 4 before the plan in Phase 2 has been explicitly approved.
 
+Phase 1 carries a rule that is easy to skim past and expensive to get wrong, so it is stated here too: **check what has already been done before you build on it, and never modify previously completed work without stating why and getting explicit approval for that specific change.** Verifying a foundation is not the same as being entitled to change it. Approval of a plan is not approval to modify another task's work — that is a separate decision, asked and answered on its own. Equally, do not reach into a sprint or task you do not own to make the current one look demonstrable.
+
+Phase 3 assumes `main` is a truthful baseline. If the branch you are told to build on contradicts `status.md`, resolve that before starting, not after the first commit.
+
 ---
 
 ## Phase 1 — Analyze Current Project Status
@@ -15,6 +19,14 @@ Before proposing any plan, you must understand the actual, current state of the 
    - **If it does not exist:** create it from your analysis (template below).
    - **If it exists:** read it fully, then compare it against your own fresh analysis of the codebase. `status.md` is a snapshot written after a previous task — it may be stale, incomplete, or simply wrong if it wasn't updated after the last change. Do not trust it blindly. Flag every discrepancy you find between what it claims and what the code actually shows.
 3. Update `status.md` to reflect reality, and explicitly note any discrepancies you just resolved (e.g. "status.md claimed UC-02 was complete; concurrency test was missing — corrected below").
+4. **Check what has already been done, and confirm the task at hand is actually entitled to build on it.** Do this before proposing any plan, at both levels that matter:
+   - **Sprint level:** is every prior sprint the current one depends on genuinely complete, per its own Definition of Done? "Mostly implemented" is not done.
+   - **Step level, inside the current sprint:** are the *earlier steps of the sprint you are working in* actually implemented, or only scaffolded? A step marked "not started" is not a foundation you may lean on, and a step marked "in progress" may be someone else's unfinished work. Read the steps in order — an out-of-order step is not automatically unblocked just because its table or module happens to exist.
+   - **Verify by reading the code or running the tests.** Never infer completion from a status file, a commit message, a branch name, or your own memory of an earlier session. A commit whose message says the tests pass is a claim, not evidence. If the branch you would build on is unmerged, that is an open question to resolve, not a detail to skip.
+5. **If the task requires modifying, undoing, or building on work that an earlier task already completed, you must state why the change is necessary and get explicit user approval for it before making any change.** This holds even when the change is obviously correct, when the earlier work is unmerged, when it is only a rename, and when it is a single line. It also covers work that is *incomplete but committed* — finishing, renaming, or reinterpreting another task's half-done change is a modification of that task, not a new task.
+   - Present the specific change, the concrete reason it is needed, what it would break, and what happens if it is deferred. A change can be necessary and still be worth declining.
+   - Approval of the plan as a whole is **not** approval to modify previously completed work. It must be asked for separately and given on its own. Do not infer it from silence, from an unrelated follow-up, or from agreement with an unrelated part of the plan.
+6. **Do not pull another sprint's or another task's work into the current task** in order to make it demonstrable or testable. Choosing what to instrument, migrate, or refactor is part of the task's scope, and it belongs to whichever task owns that code. Reaching into a later sprint's use cases to produce a realistic-looking test is scope creep even when the code change is small and even when the test genuinely needs it. If a realistic test seems to require touching code the current task does not own, that is a signal to split the task or to agree the dependency explicitly — not to proceed.
 
 ### `status.md` template
 
@@ -111,6 +123,9 @@ Follow this order strictly. Do not write implementation code before its correspo
 ## Summary checklist (pin this)
 
 - [ ] Analyzed current project state; `status.md` created or reconciled against reality
+- [ ] Confirmed the task's real dependencies are complete, at sprint level *and* step level, verified against code/tests rather than claimed by a status file or commit message
+- [ ] Any modification to already-completed work was stated, justified, and explicitly approved as its own decision — not folded into plan approval
+- [ ] No other sprint's or task's code was pulled in to make this task demonstrable
 - [ ] Plan proposed, follows existing architecture, explicitly approved before coding started
 - [ ] On main, updated, new `working/NYI-<task-number>` branch created
 - [ ] Task file created and kept current throughout
